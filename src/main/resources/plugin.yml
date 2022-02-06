@@ -1,0 +1,11 @@
+main: de.timesnake.basic.lounge.main.BasicLounge
+version: 3.1
+name: basic-lounge
+author: Mn
+database: true
+depend: [ basic-bukkit ]
+api-version: 1.13
+
+commands:
+  startserver:
+  startgame:
