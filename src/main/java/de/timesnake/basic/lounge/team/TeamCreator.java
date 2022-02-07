@@ -9,6 +9,7 @@ import de.timesnake.basic.game.util.TeamUser;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.extension.util.chat.Chat;
 import net.kyori.adventure.text.Component;
 
 import java.util.*;
@@ -155,8 +156,8 @@ public class TeamCreator {
 
             if (user.getTeam() == null) {
                 user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Please contact a supporter");
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Error while team creation " + Server.getChat().getMessageCode("E", 1700, Plugin.LOUNGE));
-                user.getPlayer().kick(Component.text(ChatColor.WARNING + "Error: Please contact an admin " + Server.getChat().getMessageCode("E", 1700, Plugin.LOUNGE) + ChatColor.PUBLIC + "\nYou can rejoin in a few seconds\n" + ChatColor.VALUE + "§lUSE /support"));
+                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Error while team creation " + Chat.getMessageCode("E", 1700, Plugin.LOUNGE));
+                user.getPlayer().kick(Component.text(ChatColor.WARNING + "Error: Please contact an admin " + Chat.getMessageCode("E", 1700, Plugin.LOUNGE) + ChatColor.PUBLIC + "\nYou can rejoin in a few seconds\n" + ChatColor.VALUE + "§lUSE /support"));
             }
         }
 
