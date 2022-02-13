@@ -20,12 +20,12 @@ public class TeamCreator {
     private int sumMaxTeamPlayer = 0;
     private final int playerAmount;
 
-    private final LinkedList<Team> teams;
+    private final LinkedList<LoungeTeam> teams;
 
     public TeamCreator() {
         this.usersWithRandomTeam = new ArrayList<>();
         this.playerAmount = Server.getPreGameUsers().size();
-        this.teams = new LinkedList<>(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values());
+        this.teams = new LinkedList(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values());
         this.teams.sort(Comparator.comparingInt(Team::getRank));
     }
 
@@ -60,8 +60,8 @@ public class TeamCreator {
     private void calcTeamSizes() {
         Integer maxPerTeam = LoungeServer.getGameServer().getMaxPlayersPerTeam();
         if (maxPerTeam != null) {
-            for (Team team : this.teams) {
-                ((LoungeTeam) team).setMaxPlayers(maxPerTeam);
+            for (LoungeTeam team : this.teams) {
+                team.setMaxPlayers(maxPerTeam);
             }
             if (LoungeServer.getGameServer().isMergeTeams()) {
                 int smallestTeamAmount = (int) Math.ceil(this.playerAmount / ((double) maxPerTeam));
@@ -71,23 +71,27 @@ public class TeamCreator {
                     smallestTeamAmount = 2;
                 }
 
+                // try to keep teams with higher user selections
+                this.teams.sort(Comparator.comparingInt(t -> t.getUsersSelected().size()));
+                Collections.reverse(this.teams);
+
                 // remove not used teams
                 while (smallestTeamAmount < this.teams.size()) {
                     this.teams.removeLast();
                 }
 
-                // adjust team size to player size (decrease size team size, begin last)
+                // adjust team size to player size (decrease size team size)
                 int teamPlayerSum = this.teams.size() * maxPerTeam;
-                LinkedList<Team> teamsSortedByPlayerSelectedAmount = new LinkedList<>(this.teams);
-                teamsSortedByPlayerSelectedAmount.sort((team, team1) -> ((LoungeTeam) team1).getUsersSelected().size() - ((LoungeTeam) team).getUsersSelected().size());
 
+                Iterator<LoungeTeam> teamIterator = this.teams.descendingIterator();
                 while (teamPlayerSum > playerAmount) {
-                    Iterator<Team> teamIterator = teamsSortedByPlayerSelectedAmount.descendingIterator();
-                    while (teamIterator.hasNext() && teamPlayerSum > playerAmount) {
-                        LoungeTeam team = (LoungeTeam) teamIterator.next();
-                        team.setMaxPlayers(team.getMaxPlayers() - 1);
-                        teamPlayerSum--;
+                    if (!teamIterator.hasNext()) {
+                        teamIterator = this.teams.descendingIterator();
                     }
+
+                    LoungeTeam team = teamIterator.next();
+                    team.setMaxPlayers(team.getMaxPlayers() - 1);
+                    teamPlayerSum--;
                 }
             }
         } else {
@@ -96,26 +100,26 @@ public class TeamCreator {
             for (Team team : this.teams) {
                 ratioSum += team.getRatio();
             }
-            for (Team team : this.teams) {
-                ((LoungeTeam) team).setMaxPlayers((int) (playerAmount * team.getRatio() / ratioSum));
-                sumMaxTeamPlayer += ((LoungeTeam) team).getMaxPlayers();
+            for (LoungeTeam team : this.teams) {
+                team.setMaxPlayers((int) (playerAmount * team.getRatio() / ratioSum));
+                sumMaxTeamPlayer += team.getMaxPlayers();
             }
 
             // fix round fails
             while (sumMaxTeamPlayer < playerAmount) {
-                for (Team team : this.teams) {
+                for (LoungeTeam team : this.teams) {
                     if (sumMaxTeamPlayer >= playerAmount) {
                         break;
                     } else {
-                        ((LoungeTeam) team).setMaxPlayers(((LoungeTeam) team).getMaxPlayers() + 1);
+                        team.setMaxPlayers(team.getMaxPlayers() + 1);
                         sumMaxTeamPlayer++;
                     }
                 }
             }
         }
 
-        for (Team team : this.teams) {
-            Server.printText(Plugin.LOUNGE, team.getName() + ": " + ((LoungeTeam) team).getMaxPlayers());
+        for (LoungeTeam team : this.teams) {
+            Server.printText(Plugin.LOUNGE, team.getName() + ": " + team.getMaxPlayers());
         }
     }
 
@@ -125,14 +129,15 @@ public class TeamCreator {
         Collections.shuffle(users);
 
         for (User user : users) {
-            LoungeTeam team = ((LoungeUser) user).getSelectedTeam();
-            if (team == null) {
+            LoungeTeam selectedTeam = ((LoungeUser) user).getSelectedTeam();
+
+            if (selectedTeam == null) {
                 usersWithRandomTeam.add(((LoungeUser) user));
-            } else if (team.getUsers().size() < team.getMaxPlayers()) {
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
-                ((LoungeUser) user).setTeam(team);
-                ((LoungeUser) user).setSelectedTeam(team);
-                Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(), "Team");
+            } else if (selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
+                ((LoungeUser) user).setTeam(selectedTeam);
+                ((LoungeUser) user).setSelectedTeam(selectedTeam);
+
+                this.sendJoinedTeamMessage(user, selectedTeam);
             } else {
                 usersWithRandomTeam.add(((LoungeUser) user));
             }
@@ -143,20 +148,17 @@ public class TeamCreator {
 
         //random
         for (LoungeUser user : usersWithRandomTeam) {
-            for (Team team : this.teams) {
-                if (team.getUsers().size() < ((LoungeTeam) team).getMaxPlayers()) {
-                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
-                    user.setSelectedTeam(((LoungeTeam) team));
+            for (LoungeTeam team : this.teams) {
+                if (team.getUsers().size() < team.getMaxPlayers()) {
+                    user.setSelectedTeam(team);
                     user.setTeam(team);
-                    Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + user.getTeam().getName(), "Team");
+                    this.sendJoinedTeamMessage(user, team);
                     break;
                 }
 
             }
 
             if (user.getTeam() == null) {
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Please contact a supporter");
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Error while team creation " + Chat.getMessageCode("E", 1700, Plugin.LOUNGE));
                 user.getPlayer().kick(Component.text(ChatColor.WARNING + "Error: Please contact an admin " + Chat.getMessageCode("E", 1700, Plugin.LOUNGE) + ChatColor.PUBLIC + "\nYou can rejoin in a few seconds\n" + ChatColor.VALUE + "§lUSE /support"));
             }
         }
@@ -168,11 +170,15 @@ public class TeamCreator {
         Team team = GameServer.getGame().getTeams().iterator().next();
 
         for (User user : Server.getGameNotServiceUsers()) {
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
             ((TeamUser) user).setTeam(team);
             ((LoungeUser) user).setSelectedTeam((LoungeTeam) team);
-            Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(), "Team");
+            this.sendJoinedTeamMessage(user, team);
         }
+    }
+
+    private void sendJoinedTeamMessage(User user, Team team) {
+        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
+        Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(), "Team");
     }
 
 }
