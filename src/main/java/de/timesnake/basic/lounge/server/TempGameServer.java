@@ -3,13 +3,18 @@ package de.timesnake.basic.lounge.server;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
-import de.timesnake.channel.api.message.ChannelServerMessage;
-import de.timesnake.channel.listener.ChannelServerListener;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.channel.util.listener.ChannelHandler;
+import de.timesnake.channel.util.listener.ChannelListener;
+import de.timesnake.channel.util.listener.ListenerType;
+import de.timesnake.channel.util.message.ChannelServerMessage;
+import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.server.DbTempGameServer;
+import de.timesnake.library.basic.util.Status;
 import org.bukkit.Bukkit;
 
-public class TempGameServer implements ChannelServerListener {
+import java.util.Collections;
+
+public class TempGameServer implements ChannelListener {
 
     public enum State {
         OFFLINE, STARTING, READY, PREGAME, INGAME, POSTGAME
@@ -45,6 +50,7 @@ public class TempGameServer implements ChannelServerListener {
         this.teamAmount = teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
         this.mergeTeams = server.isTeamMerging();
 
+        Server.getChannel().addListener(this, () -> Collections.singleton(this.getPort()));
     }
 
     public DbTempGameServer getDatabase() {
@@ -59,7 +65,7 @@ public class TempGameServer implements ChannelServerListener {
         this.state = state;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
@@ -95,7 +101,7 @@ public class TempGameServer implements ChannelServerListener {
         }
 
         this.state = State.STARTING;
-        Server.getChannel().sendMessageToProxy(ChannelServerMessage.getCommandMessage(Server.getChannel().getProxyPort(), "start server " + database.getName() + " " + this.maxPlayers));
+        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getChannel().getProxyPort(), MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
         Server.printText(Plugin.LOUNGE, "Starting game server");
         this.checkIfStarted();
     }
@@ -109,13 +115,9 @@ public class TempGameServer implements ChannelServerListener {
         }, 20 * 130, BasicLounge.getPlugin());
     }
 
-    @Override
-    public void onServerMessage(ChannelServerMessage msg) {
-        if (!msg.getPort().equals(this.getPort())) {
-            return;
-        }
-
-        if (msg.getType().equals(ChannelServerMessage.MessageType.STATE)) {
+    @ChannelHandler(type = {ListenerType.SERVER_STATUS, ListenerType.SERVER_STATE}, filtered = true)
+    public void onServerMessage(ChannelServerMessage<?> msg) {
+        if (msg.getMessageType().equals(MessageType.Server.STATE)) {
             if (msg.getValue().equals(ChannelServerMessage.State.READY.name())) {
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 this.setState(State.READY);
@@ -124,7 +126,7 @@ public class TempGameServer implements ChannelServerListener {
             }
         }
 
-        if (msg.getType().equals(ChannelServerMessage.MessageType.STATUS)) {
+        if (msg.getMessageType().equals(MessageType.Server.STATUS)) {
             Status.Server status = this.getDatabase().getStatus();
             if (Status.Server.ONLINE.equals(status)) {
                 LoungeServer.setState(LoungeServerManager.State.WAITING);

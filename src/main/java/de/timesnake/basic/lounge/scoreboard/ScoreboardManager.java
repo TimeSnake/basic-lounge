@@ -10,7 +10,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.extension.util.cmd.ChatDivider;
 
 import java.util.LinkedList;

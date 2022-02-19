@@ -6,7 +6,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.main.BasicLounge;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.boss.BarColor;

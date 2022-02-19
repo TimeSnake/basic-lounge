@@ -21,13 +21,14 @@ import de.timesnake.basic.lounge.team.TeamManager;
 import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
-import de.timesnake.channel.api.message.ChannelServerMessage;
-import de.timesnake.channel.listener.ChannelServerListener;
+import de.timesnake.channel.util.listener.ChannelListener;
+import de.timesnake.channel.util.message.ChannelServerMessage;
+import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.*;
-import de.timesnake.database.util.object.Status;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTempGameServer;
+import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -38,7 +39,7 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoungeServerManager extends GameServerManager implements Listener, ChannelServerListener {
+public class LoungeServerManager extends GameServerManager implements Listener, ChannelListener {
 
     public static LoungeServerManager getInstance() {
         return (LoungeServerManager) ServerManager.getInstance();
@@ -84,8 +85,6 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
         }
 
         this.tempGameServer = new TempGameServer(gameDbServer);
-
-        Server.getChannel().addServerListener(this.tempGameServer, this.tempGameServer.getPort());
 
         Server.registerListener(this.userManager, BasicLounge.getPlugin());
 
@@ -197,7 +196,7 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
 
     public void startGame() {
         this.setState(State.PRE_GAME);
-        Server.getChannel().sendMessage(this.getGameServer().getPort(), ChannelServerMessage.getCustomMessage(this.getPort(), "estimatedPlayers:" + this.getGameUsers().size()));
+        Server.getChannel().sendMessage(this.getGameServer().getPort(), new ChannelServerMessage<>(this.getPort(), MessageType.Server.CUSTOM, "estimatedPlayers:" + this.getGameUsers().size()));
         Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
 

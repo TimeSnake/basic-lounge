@@ -30,8 +30,9 @@ public class KitManager {
             if (kit == null || kit.getName().equals(Kit.RANDOM.getName())) {
                 int random = (int) (Math.random() * (LoungeServer.getGame().getKits().size() - 1));
                 ((LoungeUser) user).setSelectedKit(LoungeServer.getGame().getKit(random));
+            } else {
+                ((LoungeUser) user).setSelectedKit(kit);
             }
-
             user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You will get the kit " + ((LoungeUser) user).getSelectedKit().getName());
         }
     }
