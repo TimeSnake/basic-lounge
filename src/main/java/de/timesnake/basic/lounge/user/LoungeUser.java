@@ -4,7 +4,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.*;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.team.LoungeTeam;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 import org.bukkit.entity.Player;
 
 public class LoungeUser extends StatUser {
@@ -212,4 +212,6 @@ public class LoungeUser extends StatUser {
             }
         }
     }
+
+
 }

@@ -11,7 +11,7 @@ import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,7 +71,6 @@ public class UserManager implements Listener {
 
                 ((LoungeUser) user).setSelectedMap(null);
                 ((LoungeUser) user).setSelectedTeam(null);
-                ((LoungeUser) user).setSelectedKit(null);
             }
         }
     }
