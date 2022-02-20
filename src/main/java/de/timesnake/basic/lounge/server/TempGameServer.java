@@ -118,7 +118,7 @@ public class TempGameServer implements ChannelListener {
     @ChannelHandler(type = {ListenerType.SERVER_STATUS, ListenerType.SERVER_STATE}, filtered = true)
     public void onServerMessage(ChannelServerMessage<?> msg) {
         if (msg.getMessageType().equals(MessageType.Server.STATE)) {
-            if (msg.getValue().equals(ChannelServerMessage.State.READY.name())) {
+            if (msg.getValue().equals(ChannelServerMessage.State.READY)) {
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 this.setState(State.READY);
                 Server.printText(Plugin.LOUNGE, "Game-Server is ready");
