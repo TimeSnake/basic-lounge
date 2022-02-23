@@ -177,7 +177,7 @@ public class TeamCreator {
     }
 
     private void sendJoinedTeamMessage(User user, Team team) {
-        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
+        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
         Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(), "Team");
     }
 
