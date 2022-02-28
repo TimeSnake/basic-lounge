@@ -23,6 +23,7 @@ public class TempGameServer implements ChannelListener {
     private final DbTempGameServer database;
 
     private final int port;
+    private final String name;
 
     private State state;
 
@@ -32,10 +33,12 @@ public class TempGameServer implements ChannelListener {
     private final Integer teamAmount;
     private final Integer maxPlayersPerTeam;
     private final boolean mergeTeams;
+    private boolean discord;
 
     public TempGameServer(DbTempGameServer server) {
         this.database = server;
         this.port = database.getPort();
+        this.name = database.getName();
         if (server.getStatus().equals(Status.Server.ONLINE)) {
             this.state = State.READY;
         } else {
@@ -49,6 +52,7 @@ public class TempGameServer implements ChannelListener {
         Integer teamAmount = server.getTeamAmount();
         this.teamAmount = teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
         this.mergeTeams = server.isTeamMerging();
+        this.discord = server.isDiscordEnabled();
 
         Server.getChannel().addListener(this, () -> Collections.singleton(this.getPort()));
     }
@@ -69,6 +73,10 @@ public class TempGameServer implements ChannelListener {
         return port;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public boolean areKitsEnabled() {
         return kitsEnabled;
     }
@@ -87,6 +95,15 @@ public class TempGameServer implements ChannelListener {
 
     public boolean isMergeTeams() {
         return mergeTeams;
+    }
+
+    public boolean isDiscord() {
+        return discord;
+    }
+
+    public void setDiscord(boolean enabled) {
+        this.discord = enabled;
+        this.database.setDiscord(enabled);
     }
 
     public void start() {

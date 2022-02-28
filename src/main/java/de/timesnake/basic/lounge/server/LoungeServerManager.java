@@ -22,6 +22,7 @@ import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
+import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
@@ -143,6 +144,7 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
     }
 
     public final void onDisable() {
+        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
         this.tempGameServer.getDatabase().setTwinServerPort(null);
         ((DbLoungeServer) Server.getDatabase()).setTask(null);
     }

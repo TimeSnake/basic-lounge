@@ -97,7 +97,7 @@ public class LoungeUser extends StatUser {
     }
 
     public void openInventorySettings() {
-        this.openInventory(InventoryManager.SETTINGS);
+        this.openInventory(LoungeServer.getInventoryManager().getSettingsInv());
     }
 
     public void openInventoryMapSelection() {

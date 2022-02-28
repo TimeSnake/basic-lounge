@@ -15,19 +15,24 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.TempGameServer;
+import de.timesnake.channel.util.message.ChannelDiscordMessage;
+import de.timesnake.channel.util.message.MessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.BookMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener {
+public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener, InventoryHolder {
 
     private static final Integer LEAVE_TIME = 1200;
 
@@ -39,8 +44,10 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
     public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of("§fClick to start the game in 30s"));
     public static final ExItemStack START_SERVER = new ExItemStack(1, Material.BEACON, "§cGame Server", List.of("§fClick to force the game server to start", "§fUse only if the game is not starting"));
-    public static final ExInventory SETTINGS = Server.createExInventory(9, "Settings", QUICK_START, START_SERVER);
+    public static final ExItemStack DISCORD = new ExItemStack(2, Material.NOTE_BLOCK, "§9Discord", List.of("§fClick to toggle the discord bot"));
 
+
+    private final ExInventory settingsInv;
 
     private final ExItemStack gameDescriptionItem = new ExItemStack(Material.WRITTEN_BOOK, "§6Game Description");
 
@@ -67,9 +74,10 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
         this.gameDescriptionItem.setItemMeta(meta);
 
+        this.settingsInv = Server.createExInventory(9, "Settings", this, QUICK_START, START_SERVER, DISCORD);
 
         Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM, START_SERVER);
-        Server.getInventoryEventManager().addClickListener(this, QUICK_START, START_SERVER);
+        Server.getInventoryEventManager().addClickListener(this, this);
     }
 
 
@@ -100,6 +108,15 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
         } else if (item.equals(START_SERVER)) {
             user.runCommand("/startserver");
             user.closeInventory();
+        } else if (item.equals(DISCORD)) {
+            LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
+            if (LoungeServer.getGameServer().isDiscord()) {
+                this.settingsInv.setItemStack(2, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
+            } else {
+                this.settingsInv.setItemStack(2, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
+                Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
+            }
+            user.updateInventory();
         }
     }
 
@@ -140,5 +157,14 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
     public ExItemStack getGameDescriptionItem() {
         return gameDescriptionItem;
+    }
+
+    public ExInventory getSettingsInv() {
+        return settingsInv;
+    }
+
+    @Override
+    public @NotNull Inventory getInventory() {
+        return settingsInv.getInventory();
     }
 }

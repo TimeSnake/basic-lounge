@@ -7,6 +7,7 @@ import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.game.util.TeamUser;
 import de.timesnake.basic.lounge.chat.Plugin;
+import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.extension.util.chat.Chat;
@@ -39,13 +40,13 @@ public class TeamCreator {
 
         Server.printText(Plugin.LOUNGE, "Team-creation:", "Team");
 
-        new Thread(() -> {
+        Server.runTaskAsynchrony(() -> {
             if (LoungeServer.getGameServer().getTeamAmount() == 1) {
                 this.createSingleTeam();
             } else {
                 this.createMultipleTeams();
             }
-        }).start();
+        }, BasicLounge.getPlugin());
 
         for (Team team : LoungeServer.getGame().getTeams()) {
             ((LoungeTeam) team).clearUserSelected();
@@ -164,6 +165,8 @@ public class TeamCreator {
         }
 
         Server.printText(Plugin.LOUNGE, "Finished team creation", "Team");
+
+        LoungeServer.getTeamManager().initDiscord();
     }
 
     private void createSingleTeam() {
