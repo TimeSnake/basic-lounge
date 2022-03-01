@@ -109,14 +109,23 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             user.runCommand("/startserver");
             user.closeInventory();
         } else if (item.equals(DISCORD)) {
-            LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
-            if (LoungeServer.getGameServer().isDiscord()) {
-                this.settingsInv.setItemStack(2, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
+            if (LoungeServer.getGameServer().getTeamAmount() > 1) {
+                if (LoungeServer.getGameServer().getState().equals(TempGameServer.State.READY)) {
+                    LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
+                    if (LoungeServer.getGameServer().isDiscord()) {
+                        this.settingsInv.setItemStack(2, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
+                    } else {
+                        this.settingsInv.setItemStack(2, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
+                        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
+                    }
+                    user.updateInventory();
+                } else {
+                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game server is not ready");
+                }
             } else {
-                this.settingsInv.setItemStack(2, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
-                Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
+                user.closeInventory();
+                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Too few teams to enable discord");
             }
-            user.updateInventory();
         }
     }
 
