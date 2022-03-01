@@ -103,7 +103,10 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
             loungeMap.getWorld().allowEntityExplode(false);
             loungeMap.getWorld().allowDropPickItem(false);
             loungeMap.getWorld().allowBlockBreak(false);
-            loungeMap.getWorld().setBlockPlaceAllow(false);
+            loungeMap.getWorld().allowBlockPlace(false);
+            loungeMap.getWorld().allowBlockBurnUp(false);
+            loungeMap.getWorld().allowFireSpread(false);
+            loungeMap.getWorld().allowPlaceInBlock(false);
             loungeMap.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             this.loungeMaps.add(loungeMap);
             Server.printText(Plugin.LOUNGE, "Loaded map " + loungeMap.getName() + " successfully", "Map");
