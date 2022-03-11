@@ -63,15 +63,18 @@ public class TeamManager {
     }
 
     public void initDiscord() {
-        LinkedHashMap<String, List<UUID>> uuidsByTeam = new LinkedHashMap<>();
-        for (User user : LoungeServer.getUsers()) {
-            List<UUID> uuids = uuidsByTeam.computeIfAbsent(((LoungeUser) user).getTeam().getDisplayName(), k -> new LinkedList<>());
-            uuids.add(user.getUniqueId());
+        if (LoungeServer.getGameServer().isDiscord()) {
+            LinkedHashMap<String, List<UUID>> uuidsByTeam = new LinkedHashMap<>();
+            for (User user : LoungeServer.getUsers()) {
+                List<UUID> uuids = uuidsByTeam.computeIfAbsent(((LoungeUser) user).getTeam().getDisplayName(), k -> new LinkedList<>());
+                uuids.add(user.getUniqueId());
+            }
+
+            uuidsByTeam.put(LoungeServer.DISCORD_SPECTATOR, List.of());
+            uuidsByTeam.put(LoungeServer.DISCORD_LOUNGE, List.of());
+
+            Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.MOVE_TEAMS, new ChannelDiscordMessage.Allocation(uuidsByTeam)));
         }
 
-        uuidsByTeam.put(LoungeServer.DISCORD_SPECTATOR, List.of());
-        uuidsByTeam.put(LoungeServer.DISCORD_LOUNGE, List.of());
-
-        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.MOVE_TEAMS, new ChannelDiscordMessage.Allocation(uuidsByTeam)));
     }
 }
