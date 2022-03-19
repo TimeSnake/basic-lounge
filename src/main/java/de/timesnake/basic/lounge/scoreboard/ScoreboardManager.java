@@ -144,7 +144,7 @@ public class ScoreboardManager {
     public void updateScoreboardPlayerNumber(int online) {
         if (LoungeServer.getGameServer().getTeamAmount() > 1) {
             if (LoungeServer.getGameServer().areKitsEnabled()) {
-                this.updateScoreboardPlayerNumber(9, online);
+                this.updateScoreboardPlayerNumber(10, online);
             } else {
                 this.updateScoreboardPlayerNumber(7, online);
             }
