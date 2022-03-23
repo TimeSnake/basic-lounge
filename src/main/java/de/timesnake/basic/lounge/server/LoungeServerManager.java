@@ -201,7 +201,8 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
 
     public void startGame() {
         this.setState(State.PRE_GAME);
-        Server.getChannel().sendMessage(this.getGameServer().getPort(), new ChannelServerMessage<>(this.getPort(), MessageType.Server.CUSTOM, "estimatedPlayers:" + this.getGameUsers().size()));
+        Server.getChannel().sendMessage(new ChannelServerMessage<>(this.getPort(), MessageType.Server.CUSTOM,
+                "estimatedPlayers:" + this.getGameUsers().size()));
         Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
 
