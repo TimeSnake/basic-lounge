@@ -36,15 +36,23 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
     private static final Integer LEAVE_TIME = 1200;
 
-    public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL, "§cLeave (hold right)", Collections.emptyList());
+    public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL, "§cLeave (hold right)",
+            Collections.emptyList());
 
-    public static final ExItemStack JOIN_LOUNGE_ITEM = new ExItemStack(0, "§6Join", Color.GRAY, Material.LEATHER_HELMET);
+    public static final ExItemStack JOIN_LOUNGE_ITEM = new ExItemStack(0, "§6Join", Color.GRAY,
+            Material.LEATHER_HELMET);
 
-    public static final ExItemStack SETTINGS_ITEM = new ExItemStack(Material.CLOCK, "§6Settings", Collections.emptyList());
+    public static final ExItemStack SETTINGS_ITEM = new ExItemStack(Material.CLOCK, "§6Settings",
+            Collections.emptyList());
 
-    public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of("§fClick to start the game in 30s"));
-    public static final ExItemStack START_SERVER = new ExItemStack(1, Material.BEACON, "§cGame Server", List.of("§fClick to force the game server to start", "§fUse only if the game is not starting"));
-    public static final ExItemStack DISCORD = new ExItemStack(2, Material.NOTE_BLOCK, "§9Discord", List.of("§fClick to toggle the discord bot"));
+    public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of(
+            "§fClick to start the game in 30s"));
+    public static final ExItemStack WAIT = new ExItemStack(1, Material.CLOCK, "§6Wait", List.of("§fClick to toggle " +
+            "waiting"));
+    public static final ExItemStack START_SERVER = new ExItemStack(2, Material.BEACON, "§cGame Server", List.of(
+            "§fClick to force the game server to start", "§fUse only if the game is not starting"));
+    public static final ExItemStack DISCORD = new ExItemStack(3, Material.NOTE_BLOCK, "§9Discord", List.of("§fClick " +
+            "to toggle the discord bot"));
 
 
     private final ExInventory settingsInv;
@@ -74,7 +82,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
         this.gameDescriptionItem.setItemMeta(meta);
 
-        this.settingsInv = Server.createExInventory(9, "Settings", this, QUICK_START, START_SERVER, DISCORD);
+        this.settingsInv = Server.createExInventory(9, "Settings", this, QUICK_START, WAIT, START_SERVER, DISCORD);
 
         Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM, START_SERVER);
         Server.getInventoryEventManager().addClickListener(this, this);
@@ -98,13 +106,28 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                     LoungeServer.getTimeManager().setGameCountdown(30);
                     user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "Forced quick start");
                 } else {
-                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The countdown must running to " + "force a quick-start");
+                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The countdown must running to " +
+                            "force a quick-start");
                 }
             } else {
                 user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game server is not ready");
             }
             user.closeInventory();
             e.setCancelled(true);
+        } else if (item.equals(WAIT)) {
+            if (LoungeServer.getTimeManager().getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
+                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is already starting");
+                user.clearInventory();
+                return;
+            }
+            LoungeServer.getTimeManager().setWait(!LoungeServer.getTimeManager().isWait());
+
+            if (LoungeServer.getTimeManager().isWait()) {
+                this.settingsInv.setItemStack(1, WAIT.enchant().setExLore(List.of("", "§2Enabled")));
+            } else {
+                this.settingsInv.setItemStack(1, WAIT.disenchant().setExLore(List.of("", "§cDisabled")));
+            }
+            user.updateInventory();
         } else if (item.equals(START_SERVER)) {
             user.runCommand("/startserver");
             user.closeInventory();
@@ -113,9 +136,9 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                 if (LoungeServer.getGameServer().getState().equals(TempGameServer.State.READY)) {
                     LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
                     if (LoungeServer.getGameServer().isDiscord()) {
-                        this.settingsInv.setItemStack(2, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
+                        this.settingsInv.setItemStack(3, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
                     } else {
-                        this.settingsInv.setItemStack(2, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
+                        this.settingsInv.setItemStack(3, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
                         Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
                     }
                     user.updateInventory();
