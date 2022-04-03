@@ -37,6 +37,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,6 +225,7 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
             if (this.tempGameServer.getState().equals(TempGameServer.State.READY)) {
                 for (User user : Server.getSpectatorUsers()) {
                     ((LoungeUser) user).loadSpectatorInventory();
+                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(3));
                 }
                 this.scheduler.startGameCountdown();
             } else {
@@ -277,20 +279,10 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
     public void setState(State state) {
         this.state = state;
         switch (state) {
-            case PREPARING:
-            case PRE_GAME:
-                Server.setStatus(Status.Server.PRE_GAME);
-                break;
-            case IN_GAME:
-                Server.setStatus(Status.Server.IN_GAME);
-                break;
-            case POST_GAME:
-                Server.setStatus(Status.Server.POST_GAME);
-                break;
-            case WAITING:
-            case STARTING:
-                Server.setStatus(Status.Server.ONLINE);
-                break;
+            case PREPARING, PRE_GAME -> Server.setStatus(Status.Server.PRE_GAME);
+            case IN_GAME -> Server.setStatus(Status.Server.IN_GAME);
+            case POST_GAME -> Server.setStatus(Status.Server.POST_GAME);
+            case WAITING, STARTING -> Server.setStatus(Status.Server.ONLINE);
         }
     }
 

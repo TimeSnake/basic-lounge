@@ -5,6 +5,7 @@ import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Map;
+import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Instrument;
@@ -23,6 +24,8 @@ public class Scheduler {
     private boolean isGameCountdownRunning = false;
     private BukkitTask gameCountdownTask;
 
+    private boolean wait = false;
+
     private final BossBar infoBar;
 
     public Scheduler() {
@@ -36,6 +39,11 @@ public class Scheduler {
     }
 
     public void startGameCountdown() {
+        if (this.wait) {
+            Server.printText(Plugin.LOUNGE, "Waiting...");
+            return;
+        }
+
         if (!this.isGameCountdownRunning) {
             this.isGameCountdownRunning = true;
             if (Server.getGameNotServiceUsers().size() - GameServer.getGame().getAutoStart() <= 0) {
@@ -59,15 +67,9 @@ public class Scheduler {
                 }
 
                 switch (gameCountdown) {
-                    case 60:
-                    case 45:
-                    case 30:
-                    case 20:
-                    case 15:
-                    case 10:
-                        LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "The Game starts in " + ChatColor.VALUE + gameCountdown + ChatColor.PUBLIC + " seconds");
-                        break;
-                    case 16:
+                    case 60, 45, 30, 20, 15, 10 -> LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "The Game " +
+                            "starts in " + ChatColor.VALUE + gameCountdown + ChatColor.PUBLIC + " seconds");
+                    case 16 -> {
                         Server.setStatus(Status.Server.PRE_GAME);
                         if (LoungeServer.getGameServer().areMapsEnabled()) {
                             Map map = LoungeServer.getMapManager().getVotedMap();
@@ -75,15 +77,16 @@ public class Scheduler {
                             LoungeServer.broadcastLoungeMessage(ChatColor.WARNING + "Map: " + ChatColor.VALUE + map.getDisplayName());
                             LoungeServer.getMapManager().resetMapVotes();
                         }
-                        break;
-                    case 14:
+                    }
+                    case 14 -> {
                         LoungeServer.getTeamManager().createTeams();
-                        Server.runTaskAsynchrony(() -> LoungeServer.getKitManager().loadUserKits(), BasicLounge.getPlugin());
-                        break;
-                    case 8:
+                        Server.runTaskAsynchrony(() -> LoungeServer.getKitManager().loadUserKits(),
+                                BasicLounge.getPlugin());
+                    }
+                    case 8 -> {
                         LoungeServer.startGame();
                         gameCountdownTask.cancel();
-                        break;
+                    }
                 }
                 gameCountdown--;
 
@@ -117,5 +120,21 @@ public class Scheduler {
 
     public BossBar getInfoBar() {
         return infoBar;
+    }
+
+    public boolean isWait() {
+        return wait;
+    }
+
+    public void setWait(boolean wait) {
+        this.wait = wait;
+
+        if (wait) {
+            if (this.isGameCountdownRunning) {
+                this.resetGameCountdown();
+            }
+        } else {
+            LoungeServer.checkAutoStart();
+        }
     }
 }
