@@ -37,7 +37,7 @@ public class BasicLounge extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        LoungeServerManager.getInstance().onDisable();
+        LoungeServerManager.getInstance().onLoungeDisable();
     }
 
 }

@@ -147,8 +147,9 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
         Server.printText(Plugin.LOUNGE, "Server loaded");
     }
 
-    public final void onDisable() {
-        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
+    public final void onLoungeDisable() {
+        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
+                MessageType.Discord.DESTROY_TEAMS, List.of()));
         this.tempGameServer.getDatabase().setTwinServerPort(null);
         ((DbLoungeServer) Server.getDatabase()).setTask(null);
     }
