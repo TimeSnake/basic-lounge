@@ -35,22 +35,25 @@ public class ScoreboardManager {
         LinkedList<TablistGroupType> types = new LinkedList<>();
         types.add(Group.getTablistType());
 
-        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY, TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types, this.spectatorTeam, types, (e, tablist) -> {
-            User user = e.getUser();
-            String task = user.getTask();
+        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
+                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types,
+                this.spectatorTeam, types,
+                (e, tablist) -> {
+                    User user = e.getUser();
+                    String task = user.getTask();
 
-            if (task == null) {
-                ((TeamTablist) tablist).addRemainEntry(e.getUser());
-            }
+                    if (task == null) {
+                        ((TeamTablist) tablist).addRemainEntry(e.getUser());
+                    }
 
-            if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
-                if (e.getUser().getStatus().equals(Status.User.PRE_GAME) || e.getUser().getStatus().equals(Status.User.IN_GAME)) {
-                    tablist.addEntry(e.getUser());
-                } else {
-                    ((TeamTablist) tablist).addRemainEntry(e.getUser());
-                }
-            }
-        }, (e, tablist) -> tablist.removeEntry(e.getUser()));
+                    if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
+                        if (e.getUser().getStatus().equals(Status.User.PRE_GAME) || e.getUser().getStatus().equals(Status.User.IN_GAME)) {
+                            tablist.addEntry(e.getUser());
+                        } else {
+                            ((TeamTablist) tablist).addRemainEntry(e.getUser());
+                        }
+                    }
+                }, (e, tablist) -> tablist.removeEntry(e.getUser()));
 
         if (LoungeServer.getGameServer().areKitsEnabled()) {
             this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName() + " §bKits");
@@ -66,9 +69,11 @@ public class ScoreboardManager {
 
         // sideboard
 
-        this.sideboard = Server.getScoreboardManager().registerNewSideboard("lounge", "§6§l" + LoungeServer.getGame().getDisplayName());
+        this.sideboard = Server.getScoreboardManager().registerNewSideboard("lounge",
+                "§6§l" + LoungeServer.getGame().getDisplayName());
 
-        this.spectatorSideboard = Server.getScoreboardManager().registerNewSideboard("lounge_spectator", "§6§l" + LoungeServer.getGame().getDisplayName());
+        this.spectatorSideboard = Server.getScoreboardManager().registerNewSideboard("lounge_spectator",
+                "§6§l" + LoungeServer.getGame().getDisplayName());
 
         if (LoungeServer.getGameServer().areKitsEnabled()) {
             this.sideboard.setScore(4, "§lKit");

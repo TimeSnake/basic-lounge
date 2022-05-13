@@ -91,12 +91,13 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
         Server.registerListener(this.userManager, BasicLounge.getPlugin());
 
         // lounge maps
-        for (DbLoungeMap map : Database.getLounges().getMaps()) {
+        for (DbLoungeMap map : Database.getLounges().getCachedMaps()) {
             LoungeMap loungeMap;
             try {
                 loungeMap = new LoungeMap(map);
             } catch (WorldNotExistException e) {
-                Server.printWarning(Plugin.LOUNGE, "Map " + map.getName() + " could not loaded, world not exists", "lounge", "Map");
+                Server.printWarning(Plugin.LOUNGE, "Map " + map.getName() + " could not loaded, world not exists",
+                        "lounge", "Map");
                 continue;
             }
             loungeMap.getWorld().setExceptService(true);
@@ -260,6 +261,7 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
             int index = (int) (Math.random() * this.loungeMaps.size());
             this.currentMap = this.loungeMaps.get(index);
             this.currentMap.getWorld().loadChunk(this.currentMap.getSpawn().getChunk());
+            this.statsManager.updateGlobalDisplays();
             Server.printText(Plugin.LOUNGE, "Loaded map " + this.currentMap.getName(), "Map");
         }, BasicLounge.getPlugin());
 
