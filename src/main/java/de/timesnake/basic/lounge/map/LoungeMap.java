@@ -6,6 +6,7 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.database.util.game.DbLoungeMap;
+import de.timesnake.database.util.game.DbLoungeMapDisplay;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 
@@ -13,30 +14,30 @@ import java.util.HashMap;
 
 public class LoungeMap {
 
-    private static final String SPAWN = "spawn";
-    private static final String PERSONAL_STATS_DISPLAY_0 = "personal_stats_display_0";
-    private static final String PERSONAL_STATS_DISPLAY_1 = "personal_stats_display_1";
-    private static final String PERSONAL_STATS_DISPLAY_2 = "personal_stats_display_2";
-
     private final String name;
     private final ExWorld world;
     private final ExLocation spawn;
 
-    private final HashMap<Integer, ExLocation> personalStatsDisplayLocationByIndex = new HashMap<>();
+    private final HashMap<Integer, StatDisplay> personalStatsDisplayLocationByIndex = new HashMap<>();
+    private final HashMap<Integer, StatDisplay> globalStatsDisplayLocationByIndex = new HashMap<>();
 
     public LoungeMap(DbLoungeMap dbMap) throws WorldNotExistException {
         this.name = dbMap.getName();
 
-        this.spawn = Server.getExLocationFromDbLocation(dbMap.getLocation(SPAWN));
-
-        this.personalStatsDisplayLocationByIndex.put(0, Server.getExLocationFromDbLocation(dbMap.getLocation(PERSONAL_STATS_DISPLAY_0)));
-        this.personalStatsDisplayLocationByIndex.put(1, Server.getExLocationFromDbLocation(dbMap.getLocation(PERSONAL_STATS_DISPLAY_1)));
-        this.personalStatsDisplayLocationByIndex.put(2, Server.getExLocationFromDbLocation(dbMap.getLocation(PERSONAL_STATS_DISPLAY_2)));
-
+        this.spawn = Server.getExLocationFromDbLocation(dbMap.getLocation());
         this.world = this.spawn.getExWorld();
 
+        for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
+            this.personalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+        }
+
+        for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
+            this.globalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+        }
+
         if (this.world == null) {
-            Server.printWarning(Plugin.LOUNGE, "Map-World " + this.world.getName() + " of map " + this.name + " could not loaded, world not exists", "lounge", "Map");
+            Server.printWarning(Plugin.LOUNGE, "Map-World " + this.world.getName() + " of map " + this.name +
+                    " could not loaded, world not exists", "lounge", "Map");
             return;
         }
 
@@ -66,7 +67,11 @@ public class LoungeMap {
         return spawn;
     }
 
-    public ExLocation getPersonalStatsDisplayLocation(Integer index) {
+    public StatDisplay getPersonalStatsDisplayLocation(Integer index) {
         return personalStatsDisplayLocationByIndex.get(index);
+    }
+
+    public StatDisplay getGlobalStatsDisplayLocation(Integer index) {
+        return globalStatsDisplayLocationByIndex.get(index);
     }
 }
