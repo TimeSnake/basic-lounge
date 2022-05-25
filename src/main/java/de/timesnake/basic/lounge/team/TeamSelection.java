@@ -34,7 +34,9 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Teamselection", this);
 
         // random team
-        ExItemStack randomTeamItem = new ExItemStack(Material.LEATHER_HELMET, "§fRandom", Color.GRAY).setLore(ChatColor.GRAY + "Join Random team").hideAll();
+        ExItemStack randomTeamItem =
+                new ExItemStack(Material.LEATHER_HELMET, "§fRandom", Color.GRAY).setLore(ChatColor.GRAY + "Join " +
+                        "Random team").hideAll();
 
         this.inventory.setItemStack(0, randomTeamItem);
 
@@ -44,7 +46,8 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
 
     protected void loadTeams() {
         int i = 2;
-        for (Team team : GameServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values()) {
+        for (Team team :
+                GameServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values()) {
             // first and second inventory column empty (for random selection)
             if (i % 9 == 0) i += 2;
 

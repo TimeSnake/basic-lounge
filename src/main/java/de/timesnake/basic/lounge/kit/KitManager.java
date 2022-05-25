@@ -33,7 +33,8 @@ public class KitManager {
             } else {
                 ((LoungeUser) user).setSelectedKit(kit);
             }
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You will get the kit " + ((LoungeUser) user).getSelectedKit().getName());
+            user.sendPluginMessage(Plugin.LOUNGE,
+                    ChatColor.PERSONAL + "You will get the kit " + ((LoungeUser) user).getSelectedKit().getName());
         }
     }
 

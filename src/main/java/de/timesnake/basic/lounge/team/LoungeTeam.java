@@ -27,14 +27,16 @@ public class LoungeTeam extends Team {
     }
 
     public ExItemStack createTeamItem(int slot) {
-        this.item = new ExItemStack(Material.LEATHER_HELMET, this.getChatColor() + this.getDisplayName(), this.getColor()).setSlot(slot).hideAll();
+        this.item = new ExItemStack(Material.LEATHER_HELMET, this.getChatColor() + this.getDisplayName(),
+                this.getColor()).setSlot(slot).hideAll();
         this.updateItem();
         return item;
     }
 
     private void updateItem() {
         if (this.maxPlayersDisplay != null) {
-            item.setExLore(List.of("§f" + this.usersSelected.size() + " §7/ §f" + this.maxPlayersDisplay, "", ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
+            item.setExLore(List.of("§f" + this.usersSelected.size() + " §7/ §f" + this.maxPlayersDisplay, "",
+                    ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
         } else {
             item.setExLore(List.of(ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
         }

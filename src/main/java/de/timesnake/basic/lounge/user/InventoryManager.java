@@ -34,17 +34,12 @@ import java.util.List;
 
 public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener, InventoryHolder {
 
-    private static final Integer LEAVE_TIME = 1200;
-
     public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL, "§cLeave (hold right)",
             Collections.emptyList());
-
     public static final ExItemStack JOIN_LOUNGE_ITEM = new ExItemStack(0, "§6Join", Color.GRAY,
             Material.LEATHER_HELMET);
-
     public static final ExItemStack SETTINGS_ITEM = new ExItemStack(Material.CLOCK, "§6Settings",
             Collections.emptyList());
-
     public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of(
             "§fClick to start the game in 30s"));
     public static final ExItemStack WAIT = new ExItemStack(1, Material.CLOCK, "§6Wait", List.of("§fClick to toggle " +
@@ -53,8 +48,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             "§fClick to force the game server to start", "§fUse only if the game is not starting"));
     public static final ExItemStack DISCORD = new ExItemStack(3, Material.NOTE_BLOCK, "§9Discord", List.of("§fClick " +
             "to toggle the discord bot"));
-
-
+    private static final Integer LEAVE_TIME = 1200;
     private final ExInventory settingsInv;
 
     private final ExItemStack gameDescriptionItem = new ExItemStack(Material.WRITTEN_BOOK, "§6Game Description");
@@ -63,28 +57,31 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
     public InventoryManager() {
 
-        BookMeta meta = ((BookMeta) this.gameDescriptionItem.getItemMeta());
+        if (LoungeServer.getGame().getDescription() != null) {
+            BookMeta meta = ((BookMeta) this.gameDescriptionItem.getItemMeta());
 
-        List<BaseComponent[]> pages = new ArrayList<>();
+            List<BaseComponent[]> pages = new ArrayList<>();
 
-        for (String page : LoungeServer.getGame().getDescription()) {
-            String[] lines = page.split("\\\\n");
-            BaseComponent[] baseComponent = new BaseComponent[lines.length];
-            for (int i = 0; i < lines.length; i++) {
-                baseComponent[i] = new TextComponent(lines[i] + "\n");
+            for (String page : LoungeServer.getGame().getDescription()) {
+                String[] lines = page.split("\\\\n");
+                BaseComponent[] baseComponent = new BaseComponent[lines.length];
+                for (int i = 0; i < lines.length; i++) {
+                    baseComponent[i] = new TextComponent(lines[i] + "\n");
+                }
+                pages.add(baseComponent);
             }
-            pages.add(baseComponent);
+
+            meta.spigot().setPages(pages);
+            meta.setAuthor("Game System");
+            meta.setTitle(LoungeServer.getGame().getDisplayName());
+
+            this.gameDescriptionItem.setItemMeta(meta);
         }
-
-        meta.spigot().setPages(pages);
-        meta.setAuthor("Game System");
-        meta.setTitle(LoungeServer.getGame().getDisplayName());
-
-        this.gameDescriptionItem.setItemMeta(meta);
 
         this.settingsInv = Server.createExInventory(9, "Settings", this, QUICK_START, WAIT, START_SERVER, DISCORD);
 
-        Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM, START_SERVER);
+        Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM,
+                START_SERVER);
         Server.getInventoryEventManager().addClickListener(this, this);
     }
 

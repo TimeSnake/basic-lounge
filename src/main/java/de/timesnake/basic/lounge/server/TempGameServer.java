@@ -16,25 +16,17 @@ import java.util.Collections;
 
 public class TempGameServer implements ChannelListener {
 
-    public enum State {
-        OFFLINE, STARTING, READY, PREGAME, INGAME, POSTGAME
-    }
-
     private final DbTempGameServer database;
-
     private final int port;
     private final String name;
-
-    private State state;
-
     private final Integer maxPlayers;
     private final boolean mapsEnabled;
     private final boolean kitsEnabled;
     private final Integer teamAmount;
     private final Integer maxPlayersPerTeam;
     private final boolean mergeTeams;
+    private State state;
     private boolean discord;
-
     public TempGameServer(DbTempGameServer server) {
         this.database = server;
         this.port = database.getPort();
@@ -118,7 +110,8 @@ public class TempGameServer implements ChannelListener {
         }
 
         this.state = State.STARTING;
-        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getChannel().getProxyPort(), MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
+        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getChannel().getProxyPort(),
+                MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
         Server.printText(Plugin.LOUNGE, "Starting game server");
         this.checkIfStarted();
     }
@@ -172,6 +165,15 @@ public class TempGameServer implements ChannelListener {
             }
         }
 
+    }
+
+    public enum State {
+        OFFLINE,
+        STARTING,
+        READY,
+        PREGAME,
+        INGAME,
+        POSTGAME
     }
 
 }

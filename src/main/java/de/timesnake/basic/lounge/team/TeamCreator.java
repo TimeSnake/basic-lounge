@@ -18,15 +18,15 @@ import java.util.*;
 public class TeamCreator {
 
     private final List<LoungeUser> usersWithRandomTeam;
-    private int sumMaxTeamPlayer = 0;
     private final int playerAmount;
-
     private final LinkedList<LoungeTeam> teams;
+    private int sumMaxTeamPlayer = 0;
 
     public TeamCreator() {
         this.usersWithRandomTeam = new ArrayList<>();
         this.playerAmount = Server.getPreGameUsers().size();
-        this.teams = new LinkedList(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values());
+        this.teams =
+                new LinkedList(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values());
         this.teams.sort(Comparator.comparingInt(Team::getRank));
     }
 
@@ -180,8 +180,10 @@ public class TeamCreator {
     }
 
     private void sendJoinedTeamMessage(User user, Team team) {
-        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
-        Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(), "Team");
+        user.sendPluginMessage(Plugin.LOUNGE,
+                ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
+        Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(),
+                "Team");
     }
 
 }

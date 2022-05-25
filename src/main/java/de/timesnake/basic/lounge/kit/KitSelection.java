@@ -43,7 +43,8 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
             return;
         }
 
-        this.inventory = Server.createExInventory((int) (9 * Math.ceil((((double) GameServer.getGame().getKits().size()) / 7))), "Kitselection", this);
+        this.inventory =
+                Server.createExInventory((int) (9 * Math.ceil((((double) GameServer.getGame().getKits().size()) / 7))), "Kitselection", this);
 
         ExItemStack item = this.createKitItem(Kit.RANDOM);
 
