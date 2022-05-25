@@ -43,20 +43,11 @@ import java.util.List;
 
 public class LoungeServerManager extends GameServerManager implements Listener, ChannelListener {
 
-    public static LoungeServerManager getInstance() {
-        return (LoungeServerManager) ServerManager.getInstance();
-    }
-
-    public enum State {
-        PREPARING, WAITING, STARTING, PRE_GAME, IN_GAME, POST_GAME;
-    }
-
-    private TempGameServer tempGameServer;
-
-    private InventoryManager inventoryManager;
-
+    protected final List<LoungeMap> loungeMaps = new ArrayList<>();
     private final UserManager userManager = new UserManager();
-
+    protected LoungeMap currentMap;
+    private TempGameServer tempGameServer;
+    private InventoryManager inventoryManager;
     private de.timesnake.basic.lounge.scoreboard.ScoreboardManager scoreboardManager;
 
     private MapManager mapManager;
@@ -64,15 +55,13 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
     private TeamManager teamManager;
 
     private Scheduler scheduler;
-
-    protected final List<LoungeMap> loungeMaps = new ArrayList<>();
-    protected LoungeMap currentMap;
-
     private WaitingGameManager waitingGameManager;
-
     private StatsManager statsManager;
-
     private State state;
+
+    public static LoungeServerManager getInstance() {
+        return (LoungeServerManager) ServerManager.getInstance();
+    }
 
     public void onLoungeEnable() {
         super.onGameEnable();
@@ -209,14 +198,14 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
         Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
 
-        Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(), Server.getGameUsers(), BasicLounge.getPlugin());
+        Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(), Server.getGameUsers(),
+                BasicLounge.getPlugin());
 
         Server.runTaskLaterSynchrony(() -> {
             Server.getChat().broadcastJoinQuit(true);
             this.prepareLounge();
         }, 5 * 20, BasicLounge.getPlugin());
     }
-
 
     public Location getSpawn() {
         return this.currentMap.getSpawn();
@@ -279,6 +268,10 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
         return scheduler;
     }
 
+    public State getState() {
+        return this.state;
+    }
+
     public void setState(State state) {
         this.state = state;
         switch (state) {
@@ -287,10 +280,6 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
             case POST_GAME -> Server.setStatus(Status.Server.POST_GAME);
             case WAITING, STARTING -> Server.setStatus(Status.Server.ONLINE);
         }
-    }
-
-    public State getState() {
-        return this.state;
     }
 
     public void resetGameCountdown() {
@@ -315,5 +304,14 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
 
     public WaitingGameManager getWaitingGameManager() {
         return waitingGameManager;
+    }
+
+    public enum State {
+        PREPARING,
+        WAITING,
+        STARTING,
+        PRE_GAME,
+        IN_GAME,
+        POST_GAME;
     }
 }

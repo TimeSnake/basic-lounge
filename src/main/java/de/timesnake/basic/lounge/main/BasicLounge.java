@@ -13,6 +13,10 @@ public class BasicLounge extends JavaPlugin {
 
     public static BasicLounge plugin;
 
+    public static Plugin getPlugin() {
+        return plugin;
+    }
+
     @Override
     public void onLoad() {
         ServerManager.setInstance(new LoungeServerManager());
@@ -23,16 +27,13 @@ public class BasicLounge extends JavaPlugin {
 
         BasicLounge.plugin = this;
 
-        Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(), de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
-        Server.getCommandManager().addCommand(this, "startgame", new GameCmd(), de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+        Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(),
+                de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+        Server.getCommandManager().addCommand(this, "startgame", new GameCmd(),
+                de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
 
         LoungeServerManager.getInstance().onLoungeEnable();
 
-    }
-
-
-    public static Plugin getPlugin() {
-        return plugin;
     }
 
     @Override
