@@ -29,15 +29,21 @@ public class UserManager implements Listener {
         // spectator
         if (user.getStatus().equals(Status.User.SPECTATOR)) {
             ((LoungeUser) user).joinSpectator();
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You can join the game in a few " + "moments");
+            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You can join the game in a few moments");
             return;
+        }
+
+        if (LoungeServer.getGame().hasTexturePack()) {
+            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "This game uses a texture pack. " +
+                    "It is highly recommended to use the texture pack. The texture pack will be loaded at the game " +
+                    "start.");
         }
 
         // game user
         if (task != null) {
             if (task.equalsIgnoreCase(GameServer.getGame().getName())) {
                 ((LoungeUser) user).joinLounge();
-                LoungeServer.checkAutoStart();
+                LoungeServer.getTimeManager().checkCountdown();
                 LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber();
 
                 if (Server.getGameNotServiceUsers().size() == 1) {
@@ -64,8 +70,12 @@ public class UserManager implements Listener {
         String task = user.getTask();
         if (task != null) {
             if (task.equalsIgnoreCase(GameServer.getGame().getName())) {
-                LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(Server.getPreGameUsers().size());
-                if (Server.getGameNotServiceUsers().size() <= GameServer.getGame().getAutoStart()) {
+                int size = Server.getPreGameUsers().size();
+                LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(size);
+
+
+                if (size <= GameServer.getGame().getAutoStart()
+                        || (GameServer.getGame().isEqualTeamSize() && size % GameServer.getGame().getTeams().size() != 0)) {
                     LoungeServer.resetGameCountdown();
                 }
 
@@ -93,7 +103,8 @@ public class UserManager implements Listener {
 
     @EventHandler
     public void onUserDamage(UserDamageEvent e) {
-        if (!e.getDamageCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) && !e.getDamageCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
+        if (!e.getDamageCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+                && !e.getDamageCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
             e.setCancelled(true);
         }
     }

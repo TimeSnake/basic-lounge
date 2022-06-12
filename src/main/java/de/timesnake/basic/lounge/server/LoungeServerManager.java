@@ -5,7 +5,6 @@ import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.exceptions.WorldNotExistException;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.Game;
 import de.timesnake.basic.game.util.GameServerManager;
 import de.timesnake.basic.game.util.Kit;
@@ -37,7 +36,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,30 +207,6 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
 
     public Location getSpawn() {
         return this.currentMap.getSpawn();
-    }
-
-    public void checkAutoStart() {
-        if (Server.getPreGameUsers().size() >= LoungeServer.getGame().getAutoStart()) {
-            if (this.tempGameServer.getState().equals(TempGameServer.State.READY)) {
-                for (User user : Server.getSpectatorUsers()) {
-                    ((LoungeUser) user).loadSpectatorInventory();
-                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(3));
-                }
-                this.scheduler.startGameCountdown();
-            } else {
-                this.tempGameServer.start();
-            }
-        } else {
-            if (Server.getNotServiceUsers().size() >= LoungeServer.getGame().getAutoStart()) {
-                for (User user : Server.getSpectatorUsers()) {
-                    ((LoungeUser) user).loadSpectatorInventory();
-                }
-            }
-
-            if (Server.getUsers().size() >= 1) {
-                this.scheduler.startWaitTask();
-            }
-        }
     }
 
     public void broadcastLoungeMessage(String msg) {

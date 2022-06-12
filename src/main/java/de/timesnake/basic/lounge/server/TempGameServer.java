@@ -27,6 +27,7 @@ public class TempGameServer implements ChannelListener {
     private final boolean mergeTeams;
     private State state;
     private boolean discord;
+
     public TempGameServer(DbTempGameServer server) {
         this.database = server;
         this.port = database.getPort();
@@ -132,7 +133,7 @@ public class TempGameServer implements ChannelListener {
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 this.setState(State.READY);
                 Server.printText(Plugin.LOUNGE, "Game-Server is ready");
-                LoungeServer.checkAutoStart();
+                LoungeServer.getTimeManager().checkCountdown();
             }
         }
 

@@ -18,6 +18,8 @@ import de.timesnake.database.util.user.DbUser;
 import de.timesnake.library.basic.util.Triple;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.statistics.Stat;
+import de.timesnake.library.basic.util.statistics.StatPeriod;
+import de.timesnake.library.basic.util.statistics.StatType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,11 +50,11 @@ public class StatsManager implements Listener, ChannelListener {
 
         HashMap<Integer, MapDisplay> displays = this.displayByUser.computeIfAbsent(user, u -> new HashMap<>());
 
-        for (Map.Entry<Integer, HashMap<Integer, Stat<?>>> displayEntry :
+        for (Map.Entry<Integer, HashMap<Integer, StatType<?>>> displayEntry :
                 LoungeServer.getGame().getStatByLineByDisplay().entrySet()) {
 
             Integer displayIndex = displayEntry.getKey();
-            HashMap<Integer, Stat<?>> statsByLine = displayEntry.getValue();
+            HashMap<Integer, StatType<?>> statsByLine = displayEntry.getValue();
 
             if (statsByLine.keySet().isEmpty()) {
                 continue;
@@ -82,15 +84,16 @@ public class StatsManager implements Listener, ChannelListener {
                     "Personal Stats", background, MapDisplayBuilder.Align.CENTER);
 
             for (int line = 0; line < maxLine; ++line) {
-                Stat<?> stat = statsByLine.get(line + 1);
-                if (stat != null) {
+                StatType<?> stat = statsByLine.get(line + 1);
+                String value = this.getPersonalStat(user, stat);
+                if (stat != null && value != null) {
                     int y = yOffset + line * (FONT_SIZE + lineOffset);
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE), nameColor,
                             stat.getDisplayName(), background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            firstColor, this.getPersonalStat(user, stat), background, MapDisplayBuilder.Align.RIGHT);
+                            firstColor, value, background, MapDisplayBuilder.Align.RIGHT);
                 }
             }
 
@@ -103,8 +106,9 @@ public class StatsManager implements Listener, ChannelListener {
 
     }
 
-    private <Value> String getPersonalStat(LoungeUser user, Stat<Value> stat) {
-        return stat.getType().valueToDisplay(user.getStat(stat));
+    private <Value> String getPersonalStat(LoungeUser user, StatType<Value> type) {
+        Stat<Value> stat = type != null ? user.getStat(type) : null;
+        return stat != null ? type.valueToDisplay(stat.get(StatPeriod.QUARTER)) : null;
     }
 
     @EventHandler
@@ -133,11 +137,11 @@ public class StatsManager implements Listener, ChannelListener {
 
         this.globalDisplayByIndex.clear();
 
-        for (Map.Entry<Integer, HashMap<Integer, Stat<?>>> displayEntry :
+        for (Map.Entry<Integer, HashMap<Integer, StatType<?>>> displayEntry :
                 LoungeServer.getGame().getGlobalStatByLineByDisplay().entrySet()) {
 
             Integer displayIndex = displayEntry.getKey();
-            HashMap<Integer, Stat<?>> statsByLine = displayEntry.getValue();
+            HashMap<Integer, StatType<?>> statsByLine = displayEntry.getValue();
 
             if (statsByLine.keySet().isEmpty()) {
                 continue;
@@ -169,7 +173,7 @@ public class StatsManager implements Listener, ChannelListener {
                     "Global Stats", background, MapDisplayBuilder.Align.CENTER);
 
             for (int line = 0; line < maxLine; ++line) {
-                Stat<?> stat = statsByLine.get(line + 1);
+                StatType<?> stat = statsByLine.get(line + 1);
                 if (stat != null) {
                     Triple<Tuple<String, String>, Tuple<String, String>, Tuple<String, String>> places =
                             this.getGlobalLine(stat);
@@ -216,21 +220,23 @@ public class StatsManager implements Listener, ChannelListener {
         }
     }
 
-    private <Value> Triple<Tuple<String, String>, Tuple<String, String>, Tuple<String, String>> getGlobalLine(Stat<Value> stat) {
+    private <Value> Triple<Tuple<String, String>, Tuple<String, String>, Tuple<String, String>> getGlobalLine(StatType<Value> stat) {
         Tuple<UUID, Value> first = new Tuple<>(null, stat.getDefaultValue());
         Tuple<UUID, Value> second = new Tuple<>(null, stat.getDefaultValue());
         Tuple<UUID, Value> third = new Tuple<>(null, stat.getDefaultValue());
 
-        for (Tuple<UUID, Value> userStat : LoungeServer.getGame().getDatabase().getStatOfUsers(stat)) {
-            if (stat.compare(userStat.getB(), first.getB()) >= 0) {
+        for (Map.Entry<UUID, Value> userStat :
+                LoungeServer.getGame().getDatabase().getStatOfUsers(StatPeriod.QUARTER, stat).entrySet()) {
+            if (userStat.getValue() == null) continue;
+            if (stat.compare(userStat.getValue(), first.getB()) >= 0) {
                 third = second;
                 second = first;
-                first = userStat;
-            } else if (stat.compare(userStat.getB(), second.getB()) >= 0) {
+                first = new Tuple<>(userStat);
+            } else if (stat.compare(userStat.getValue(), second.getB()) >= 0) {
                 third = second;
-                second = userStat;
-            } else if (stat.compare(userStat.getB(), third.getB()) >= 0) {
-                third = userStat;
+                second = new Tuple<>(userStat);
+            } else if (stat.compare(userStat.getValue(), third.getB()) >= 0) {
+                third = new Tuple<>(userStat);
             }
         }
 
@@ -243,15 +249,15 @@ public class StatsManager implements Listener, ChannelListener {
         Tuple<String, String> thirdPlace = new Tuple<>("-", "-");
 
         if (first.getA() != null && firstUser != null && firstUser.exists()) {
-            firstPlace = new Tuple<>(firstUser.getName(), stat.getType().valueToDisplay(first.getB()));
+            firstPlace = new Tuple<>(firstUser.getName(), stat.valueToDisplay(first.getB()));
         }
 
         if (second.getA() != null && secondUser != null && secondUser.exists()) {
-            secondPlace = new Tuple<>(secondUser.getName(), stat.getType().valueToDisplay(second.getB()));
+            secondPlace = new Tuple<>(secondUser.getName(), stat.valueToDisplay(second.getB()));
         }
 
         if (third.getA() != null && thirdUser != null && thirdUser.exists()) {
-            thirdPlace = new Tuple<>(thirdUser.getName(), stat.getType().valueToDisplay(third.getB()));
+            thirdPlace = new Tuple<>(thirdUser.getName(), stat.valueToDisplay(third.getB()));
         }
 
         return new Triple<>(firstPlace, secondPlace, thirdPlace);
