@@ -7,6 +7,7 @@ import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
+import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
@@ -15,18 +16,17 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
+
 public class Scheduler {
 
     private static final String STARTING_BAR_TEXT = "§fStarting in §c";
     private static final String WAITING_BAR_TEXT = "§fWaiting for players/server ...";
-
+    private final BossBar infoBar;
     private int gameCountdown = 60;
     private boolean isGameCountdownRunning = false;
     private BukkitTask gameCountdownTask;
-
     private boolean wait = false;
-
-    private final BossBar infoBar;
 
     public Scheduler() {
         this.infoBar = Server.createBossBar(WAITING_BAR_TEXT, BarColor.WHITE, BarStyle.SOLID);
@@ -38,6 +38,41 @@ public class Scheduler {
         this.infoBar.setColor(BarColor.WHITE);
     }
 
+    public void checkCountdown() {
+        if (this.wait) {
+            LoungeServer.broadcastLoungeMessage("Waiting...");
+            return;
+        }
+
+        int size = Server.getPreGameUsers().size();
+        int autoStartSize = LoungeServer.getGame().getAutoStart();
+        TempGameServer.State state = LoungeServer.getGameServer().getState();
+
+        if (size >= autoStartSize) {
+            if (GameServer.getGame().isEqualTeamSize() && size % GameServer.getGame().getTeams().size() != 0) {
+                LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "Waiting for players to create equal teams.");
+                this.resetGameCountdown();
+            } else if (state.equals(TempGameServer.State.READY)) {
+                Server.getSpectatorUsers().forEach(user -> {
+                    ((LoungeUser) user).loadSpectatorInventory();
+                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(5));
+                });
+                this.startGameCountdown();
+            } else {
+                LoungeServer.getGameServer().start();
+            }
+        } else {
+            this.resetGameCountdown();
+
+            if (LoungeServer.getNotServiceUsers().size() >= autoStartSize) {
+                Server.getSpectatorUsers().forEach(user -> {
+                    ((LoungeUser) user).loadSpectatorInventory();
+                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(5));
+                });
+            }
+        }
+    }
+
     public void startGameCountdown() {
         if (this.wait) {
             Server.printText(Plugin.LOUNGE, "Waiting...");
@@ -46,7 +81,8 @@ public class Scheduler {
 
         if (!this.isGameCountdownRunning) {
             this.isGameCountdownRunning = true;
-            if (Server.getGameNotServiceUsers().size() - GameServer.getGame().getAutoStart() <= 0) {
+            int size = Server.getGameNotServiceUsers().size();
+            if (size - GameServer.getGame().getAutoStart() <= 0) {
                 this.gameCountdown = 60;
             }
             LoungeServer.setState(LoungeServerManager.State.STARTING);
@@ -82,6 +118,11 @@ public class Scheduler {
                         LoungeServer.getTeamManager().createTeams();
                         Server.runTaskAsynchrony(() -> LoungeServer.getKitManager().loadUserKits(),
                                 BasicLounge.getPlugin());
+                    }
+                    case 9 -> {
+                        if (LoungeServer.getGame().hasTexturePack()) {
+                            LoungeServer.broadcastTitle("", "§cLoading texture pack...", Duration.ofSeconds(3));
+                        }
                     }
                     case 8 -> {
                         LoungeServer.startGame();
@@ -134,7 +175,7 @@ public class Scheduler {
                 this.resetGameCountdown();
             }
         } else {
-            LoungeServer.checkAutoStart();
+            LoungeServer.getTimeManager().checkCountdown();
         }
     }
 }

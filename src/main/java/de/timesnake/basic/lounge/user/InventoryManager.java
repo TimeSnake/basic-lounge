@@ -179,7 +179,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             ((LoungeUser) user).joinLounge();
             LoungeServer.getLoungeScoreboardManager().getTablist().addEntry(user);
             user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "Joined the game");
-            LoungeServer.checkAutoStart();
+            LoungeServer.getTimeManager().checkCountdown();
             e.setCancelled(true);
         }
     }

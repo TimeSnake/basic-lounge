@@ -44,10 +44,6 @@ public class LoungeServer extends GameServer {
         return server.getSpawn();
     }
 
-    public static void checkAutoStart() {
-        server.checkAutoStart();
-    }
-
     public static void broadcastLoungeMessage(String msg) {
         server.broadcastLoungeMessage(msg);
     }
@@ -68,12 +64,12 @@ public class LoungeServer extends GameServer {
         return server.getCurrentMap();
     }
 
-    public static void setState(LoungeServerManager.State state) {
-        server.setState(state);
-    }
-
     public static LoungeServerManager.State getState() {
         return server.getState();
+    }
+
+    public static void setState(LoungeServerManager.State state) {
+        server.setState(state);
     }
 
     public static Scheduler getTimeManager() {
