@@ -11,11 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BasicLounge extends JavaPlugin {
 
-    public static BasicLounge plugin;
-
     public static Plugin getPlugin() {
         return plugin;
     }
+    public static BasicLounge plugin;
 
     @Override
     public void onLoad() {

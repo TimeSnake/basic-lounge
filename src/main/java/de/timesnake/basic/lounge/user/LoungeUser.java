@@ -168,10 +168,6 @@ public class LoungeUser extends StatUser {
         return selectedMap;
     }
 
-    public LoungeTeam getSelectedTeam() {
-        return selectedTeam;
-    }
-
     public void setSelectedMap(Map map) {
         if (this.selectedMap != null) {
             this.selectedMap.removeVote();
@@ -182,6 +178,10 @@ public class LoungeUser extends StatUser {
         if (this.selectedMap != null) {
             this.selectedMap.addVote();
         }
+    }
+
+    public LoungeTeam getSelectedTeam() {
+        return selectedTeam;
     }
 
     public void setSelectedTeam(LoungeTeam team) {

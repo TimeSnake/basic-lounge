@@ -18,8 +18,6 @@ public class LoungeServer extends GameServer {
     public static final Integer KIT_SELECTION_CLOSED = 14;
     public static final Integer TEAM_SELECTION_CLOSED = 14;
 
-    private static final LoungeServerManager server = LoungeServerManager.getInstance();
-
     public static Game getGame() {
         return server.getGame();
     }
@@ -95,5 +93,6 @@ public class LoungeServer extends GameServer {
     public static WaitingGameManager getWaitingGameManager() {
         return server.getWaitingGameManager();
     }
+    private static final LoungeServerManager server = LoungeServerManager.getInstance();
 
 }

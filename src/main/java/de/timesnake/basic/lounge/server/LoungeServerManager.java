@@ -41,25 +41,23 @@ import java.util.List;
 
 public class LoungeServerManager extends GameServerManager implements Listener, ChannelListener {
 
+    public static LoungeServerManager getInstance() {
+        return (LoungeServerManager) ServerManager.getInstance();
+    }
+
     protected final List<LoungeMap> loungeMaps = new ArrayList<>();
     private final UserManager userManager = new UserManager();
     protected LoungeMap currentMap;
     private TempGameServer tempGameServer;
     private InventoryManager inventoryManager;
     private de.timesnake.basic.lounge.scoreboard.ScoreboardManager scoreboardManager;
-
     private MapManager mapManager;
     private KitManager kitManager;
     private TeamManager teamManager;
-
     private Scheduler scheduler;
     private WaitingGameManager waitingGameManager;
     private StatsManager statsManager;
     private State state;
-
-    public static LoungeServerManager getInstance() {
-        return (LoungeServerManager) ServerManager.getInstance();
-    }
 
     public void onLoungeEnable() {
         super.onGameEnable();
