@@ -44,9 +44,7 @@ public class ScoreboardManager {
 
                     if (task == null) {
                         ((TeamTablist) tablist).addRemainEntry(e.getUser());
-                    }
-
-                    if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
+                    } else if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
                         if (e.getUser().getStatus().equals(Status.User.PRE_GAME) || e.getUser().getStatus().equals(Status.User.IN_GAME)) {
                             tablist.addEntry(e.getUser());
                         } else {
