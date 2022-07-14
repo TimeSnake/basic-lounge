@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
-import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
@@ -172,7 +171,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             ((LoungeUser) user).openInventorySettings();
             e.setCancelled(true);
         } else if (item.equals(JOIN_LOUNGE_ITEM)) {
-            if (Server.getGameNotServiceUsers().size() >= GameServer.getGame().getMaxPlayers()) {
+            if (Server.getGameNotServiceUsers().size() >= LoungeServer.getGame().getMaxPlayers()) {
                 user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is full");
                 e.setCancelled(true);
             }

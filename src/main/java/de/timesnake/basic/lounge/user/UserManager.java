@@ -7,7 +7,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
-import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
@@ -41,7 +40,7 @@ public class UserManager implements Listener {
 
         // game user
         if (task != null) {
-            if (task.equalsIgnoreCase(GameServer.getGame().getName())) {
+            if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
                 ((LoungeUser) user).joinLounge();
                 LoungeServer.getTimeManager().checkCountdown();
                 LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber();
@@ -69,13 +68,13 @@ public class UserManager implements Listener {
         User user = e.getUser();
         String task = user.getTask();
         if (task != null) {
-            if (task.equalsIgnoreCase(GameServer.getGame().getName())) {
+            if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
                 int size = Server.getPreGameUsers().size();
                 LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(size);
 
 
-                if (size <= GameServer.getGame().getAutoStart()
-                        || (GameServer.getGame().isEqualTeamSize() && size % GameServer.getGame().getTeams().size() != 0)) {
+                if (size <= LoungeServer.getGame().getAutoStartPlayerNumber()
+                        || (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0)) {
                     LoungeServer.resetGameCountdown();
                 }
 

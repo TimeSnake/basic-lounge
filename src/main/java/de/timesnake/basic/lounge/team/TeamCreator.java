@@ -3,7 +3,6 @@ package de.timesnake.basic.lounge.team;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.game.util.TeamUser;
 import de.timesnake.basic.lounge.chat.Plugin;
@@ -170,7 +169,7 @@ public class TeamCreator {
     }
 
     private void createSingleTeam() {
-        Team team = GameServer.getGame().getTeams().iterator().next();
+        Team team = LoungeServer.getGame().getTeams().iterator().next();
 
         for (User user : Server.getGameNotServiceUsers()) {
             ((TeamUser) user).setTeam(team);
