@@ -95,7 +95,7 @@ public class UserManager implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         if (!Server.getUser(e.getPlayer().getUniqueId()).isService()) {
-            if (e.getTo().getBlockY() <= 10) {
+            if (e.getTo().getBlockY() <= e.getTo().getWorld().getMinHeight()) {
                 e.getPlayer().teleport(LoungeServer.getSpawn());
             }
         }
