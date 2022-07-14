@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserInventoryClickEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
-import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
@@ -47,7 +46,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
     protected void loadTeams() {
         int i = 2;
         for (Team team :
-                GameServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values()) {
+                LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values()) {
             // first and second inventory column empty (for random selection)
             if (i % 9 == 0) i += 2;
 

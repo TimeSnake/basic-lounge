@@ -1,7 +1,7 @@
 package de.timesnake.basic.lounge.server;
 
-import de.timesnake.basic.game.util.Game;
 import de.timesnake.basic.game.util.GameServer;
+import de.timesnake.basic.game.util.TmpGame;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.map.LoungeMap;
 import de.timesnake.basic.lounge.map.MapManager;
@@ -18,8 +18,8 @@ public class LoungeServer extends GameServer {
     public static final Integer KIT_SELECTION_CLOSED = 14;
     public static final Integer TEAM_SELECTION_CLOSED = 14;
 
-    public static Game getGame() {
-        return server.getGame();
+    public static TmpGame getGame() {
+        return (TmpGame) server.getGame();
     }
 
     public static InventoryManager getInventoryManager() {
@@ -93,6 +93,7 @@ public class LoungeServer extends GameServer {
     public static WaitingGameManager getWaitingGameManager() {
         return server.getWaitingGameManager();
     }
+
     private static final LoungeServerManager server = LoungeServerManager.getInstance();
 
 }

@@ -5,10 +5,10 @@ import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.exceptions.WorldNotExistException;
-import de.timesnake.basic.game.util.Game;
 import de.timesnake.basic.game.util.GameServerManager;
 import de.timesnake.basic.game.util.Kit;
 import de.timesnake.basic.game.util.Map;
+import de.timesnake.basic.game.util.TmpGame;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.main.BasicLounge;
@@ -39,7 +39,7 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoungeServerManager extends GameServerManager implements Listener, ChannelListener {
+public class LoungeServerManager extends GameServerManager<TmpGame> implements Listener, ChannelListener {
 
     public static LoungeServerManager getInstance() {
         return (LoungeServerManager) ServerManager.getInstance();
@@ -146,8 +146,8 @@ public class LoungeServerManager extends GameServerManager implements Listener, 
     }
 
     @Override
-    protected Game loadGame(DbGame dbGame, boolean loadWorlds) {
-        return new Game(dbGame, false) {
+    protected TmpGame loadGame(DbGame dbGame, boolean loadWorlds) {
+        return new TmpGame((DbTmpGame) dbGame, false) {
             @Override
             public LoungeTeam loadTeam(DbTeam team) throws UnsupportedGroupRankException {
                 return new LoungeTeam(team);

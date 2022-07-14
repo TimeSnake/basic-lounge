@@ -126,7 +126,7 @@ public class ScoreboardManager {
     }
 
     public void updateScoreboardPlayerNumber(int line, int online) {
-        int needMore = LoungeServer.getGame().getAutoStart() - online;
+        int needMore = LoungeServer.getGame().getAutoStartPlayerNumber() - online;
         int max = Server.getMaxPlayers();
         this.sideboard.setScore(line, online + "§7/§f" + max);
         this.spectatorSideboard.setScore(4, online + "§7/§f" + max);

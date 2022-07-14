@@ -3,7 +3,6 @@ package de.timesnake.basic.lounge.server;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
@@ -45,11 +44,11 @@ public class Scheduler {
         }
 
         int size = Server.getPreGameUsers().size();
-        int autoStartSize = LoungeServer.getGame().getAutoStart();
+        int autoStartSize = LoungeServer.getGame().getAutoStartPlayerNumber();
         TempGameServer.State state = LoungeServer.getGameServer().getState();
 
         if (size >= autoStartSize) {
-            if (GameServer.getGame().isEqualTeamSize() && size % GameServer.getGame().getTeams().size() != 0) {
+            if (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0) {
                 LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "Waiting for players to create equal teams.");
                 this.resetGameCountdown();
             } else if (state.equals(TempGameServer.State.READY)) {
@@ -82,7 +81,7 @@ public class Scheduler {
         if (!this.isGameCountdownRunning) {
             this.isGameCountdownRunning = true;
             int size = Server.getGameNotServiceUsers().size();
-            if (size - GameServer.getGame().getAutoStart() <= 0) {
+            if (size - LoungeServer.getGame().getAutoStartPlayerNumber() <= 0) {
                 this.gameCountdown = 60;
             }
             LoungeServer.setState(LoungeServerManager.State.STARTING);
