@@ -27,7 +27,7 @@ import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.*;
 import de.timesnake.database.util.server.DbLoungeServer;
-import de.timesnake.database.util.server.DbTempGameServer;
+import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import org.bukkit.Bukkit;
@@ -48,7 +48,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     protected final List<LoungeMap> loungeMaps = new ArrayList<>();
     private final UserManager userManager = new UserManager();
     protected LoungeMap currentMap;
-    private TempGameServer tempGameServer;
+    private TmpGameServer tmpGameServer;
     private InventoryManager inventoryManager;
     private de.timesnake.basic.lounge.scoreboard.ScoreboardManager scoreboardManager;
     private MapManager mapManager;
@@ -64,14 +64,14 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
         Server.registerListener(this, BasicLounge.getPlugin());
 
-        DbTempGameServer gameDbServer = ((DbLoungeServer) Server.getDatabase()).getTwinServer();
+        DbTmpGameServer gameDbServer = ((DbLoungeServer) Server.getDatabase()).getTwinServer();
 
         if (gameDbServer == null || !gameDbServer.exists()) {
             Server.printError(Plugin.LOUNGE, "Game server not defined");
             Bukkit.shutdown();
         }
 
-        this.tempGameServer = new TempGameServer(gameDbServer);
+        this.tmpGameServer = new TmpGameServer(gameDbServer);
 
         Server.registerListener(this.userManager, BasicLounge.getPlugin());
 
@@ -136,7 +136,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     public final void onLoungeDisable() {
         Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
                 MessageType.Discord.DESTROY_TEAMS, List.of()));
-        this.tempGameServer.getDatabase().setTwinServerPort(null);
+        this.tmpGameServer.getDatabase().setTwinServerPort(null);
         ((DbLoungeServer) Server.getDatabase()).setTask(null);
     }
 
@@ -228,8 +228,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     }
 
-    public TempGameServer getGameServer() {
-        return tempGameServer;
+    public TmpGameServer getGameServer() {
+        return tmpGameServer;
     }
 
     public LoungeMap getCurrentMap() {

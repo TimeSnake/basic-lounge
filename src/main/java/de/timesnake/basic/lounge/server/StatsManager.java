@@ -16,7 +16,6 @@ import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.user.DbUser;
 import de.timesnake.library.basic.util.Triple;
-import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
@@ -175,7 +174,7 @@ public class StatsManager implements Listener, ChannelListener {
             for (int line = 0; line < maxLine; ++line) {
                 StatType<?> stat = statsByLine.get(line + 1);
                 if (stat != null) {
-                    Triple<Tuple<String, String>, Tuple<String, String>, Tuple<String, String>> places =
+                    Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> places =
                             this.getGlobalLine(stat);
 
                     int y = yOffset + 4 * line * (FONT_SIZE + lineOffset) + line * 32;
@@ -187,28 +186,28 @@ public class StatsManager implements Listener, ChannelListener {
 
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE), firstColor,
-                            "1. " + places.getA().getA(), background, MapDisplayBuilder.Align.LEFT);
+                            places.getA().getA() + ". " + places.getA().getB(), background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            firstColor, places.getA().getB(), background, MapDisplayBuilder.Align.RIGHT);
+                            firstColor, places.getA().getC(), background, MapDisplayBuilder.Align.RIGHT);
 
                     y += FONT_SIZE + lineOffset;
 
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, "2. " + places.getB().getA(), background, MapDisplayBuilder.Align.LEFT);
+                            secondColor, places.getB().getA() + ". " + places.getB().getB(), background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, places.getB().getB(), background, MapDisplayBuilder.Align.RIGHT);
+                            secondColor, places.getB().getC(), background, MapDisplayBuilder.Align.RIGHT);
 
                     y += FONT_SIZE + lineOffset;
 
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, "3. " + places.getC().getA(), background, MapDisplayBuilder.Align.LEFT);
+                            thirdColor, places.getC().getA() + ". " + places.getC().getB(), background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, places.getC().getB(), background, MapDisplayBuilder.Align.RIGHT);
+                            thirdColor, places.getC().getC(), background, MapDisplayBuilder.Align.RIGHT);
                 }
             }
 
@@ -220,44 +219,54 @@ public class StatsManager implements Listener, ChannelListener {
         }
     }
 
-    private <Value> Triple<Tuple<String, String>, Tuple<String, String>, Tuple<String, String>> getGlobalLine(StatType<Value> stat) {
-        Tuple<UUID, Value> first = new Tuple<>(null, stat.getDefaultValue());
-        Tuple<UUID, Value> second = new Tuple<>(null, stat.getDefaultValue());
-        Tuple<UUID, Value> third = new Tuple<>(null, stat.getDefaultValue());
+    private <Value> Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> getGlobalLine(StatType<Value> stat) {
+        Triple<Integer, UUID, Value> first = new Triple<>(1, null, stat.getDefaultValue());
+        Triple<Integer, UUID, Value> second = new Triple<>(2, null, stat.getDefaultValue());
+        Triple<Integer, UUID, Value> third = new Triple<>(3, null, stat.getDefaultValue());
 
-        for (Map.Entry<UUID, Value> userStat :
-                LoungeServer.getGame().getDatabase().getStatOfUsers(StatPeriod.QUARTER, stat).entrySet()) {
+        for (Map.Entry<UUID, Value> userStat : LoungeServer.getGame().getDatabase().getStatOfUsers(StatPeriod.QUARTER, stat).entrySet()) {
             if (userStat.getValue() == null) continue;
-            if (stat.compare(userStat.getValue(), first.getB()) >= 0) {
+            if (stat.compare(userStat.getValue(), first.getC()) > 0) {
                 third = second;
+                third.setA(third.getA() + 1);
                 second = first;
-                first = new Tuple<>(userStat);
-            } else if (stat.compare(userStat.getValue(), second.getB()) >= 0) {
+                second.setA(second.getA() + 1);
+                first = new Triple<>(1, userStat.getKey(), userStat.getValue());
+            } else if (stat.compare(userStat.getValue(), first.getC()) == 0) {
                 third = second;
-                second = new Tuple<>(userStat);
-            } else if (stat.compare(userStat.getValue(), third.getB()) >= 0) {
-                third = new Tuple<>(userStat);
+                third.setA(third.getA() + 1);
+                second = first;
+                first = new Triple<>(1, userStat.getKey(), userStat.getValue());
+            } else if (stat.compare(userStat.getValue(), second.getC()) > 0) {
+                third = second;
+                third.setA(third.getA() + 1);
+                second = new Triple<>(2, userStat.getKey(), userStat.getValue());
+            } else if (stat.compare(userStat.getValue(), second.getC()) == 0) {
+                third = second;
+                second = new Triple<>(2, userStat.getKey(), userStat.getValue());
+            } else if (stat.compare(userStat.getValue(), third.getC()) > 0) {
+                third = new Triple<>(third.getA(), userStat.getKey(), userStat.getValue());
             }
         }
 
-        DbUser firstUser = Database.getUsers().getUser(first.getA());
-        DbUser secondUser = Database.getUsers().getUser(second.getA());
-        DbUser thirdUser = Database.getUsers().getUser(third.getA());
+        DbUser firstUser = Database.getUsers().getUser(first.getB());
+        DbUser secondUser = Database.getUsers().getUser(second.getB());
+        DbUser thirdUser = Database.getUsers().getUser(third.getB());
 
-        Tuple<String, String> firstPlace = new Tuple<>("-", "-");
-        Tuple<String, String> secondPlace = new Tuple<>("-", "-");
-        Tuple<String, String> thirdPlace = new Tuple<>("-", "-");
+        Triple<String, String, String> firstPlace = new Triple<>("-", "-", "-");
+        Triple<String, String, String> secondPlace = new Triple<>("-", "-", "-");
+        Triple<String, String, String> thirdPlace = new Triple<>("-", "-", "-");
 
         if (first.getA() != null && firstUser != null && firstUser.exists()) {
-            firstPlace = new Tuple<>(firstUser.getName(), stat.valueToDisplay(first.getB()));
+            firstPlace = new Triple<>(first.getA().toString(), firstUser.getName(), stat.valueToDisplay(first.getC()));
         }
 
         if (second.getA() != null && secondUser != null && secondUser.exists()) {
-            secondPlace = new Tuple<>(secondUser.getName(), stat.valueToDisplay(second.getB()));
+            secondPlace = new Triple<>(second.getA().toString(), secondUser.getName(), stat.valueToDisplay(second.getC()));
         }
 
         if (third.getA() != null && thirdUser != null && thirdUser.exists()) {
-            thirdPlace = new Tuple<>(thirdUser.getName(), stat.valueToDisplay(third.getB()));
+            thirdPlace = new Triple<>(third.getA().toString(), thirdUser.getName(), stat.valueToDisplay(third.getC()));
         }
 
         return new Triple<>(firstPlace, secondPlace, thirdPlace);

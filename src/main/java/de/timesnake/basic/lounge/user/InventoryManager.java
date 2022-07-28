@@ -13,7 +13,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
-import de.timesnake.basic.lounge.server.TempGameServer;
+import de.timesnake.basic.lounge.server.TmpGameServer;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.MessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -91,7 +91,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
         ExItemStack item = e.getClickedItem();
 
         if (item.equals(QUICK_START)) {
-            if (LoungeServer.getGameServer().getState().equals(TempGameServer.State.READY)) {
+            if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
                 if (LoungeServer.getTimeManager().isGameCountdownRunning()) {
                     if (LoungeServer.getGameCountdown() <= 30) {
                         user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is already starting");
@@ -129,7 +129,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             user.closeInventory();
         } else if (item.equals(DISCORD)) {
             if (LoungeServer.getGameServer().getTeamAmount() > 1) {
-                if (LoungeServer.getGameServer().getState().equals(TempGameServer.State.READY)) {
+                if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
                     LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
                     if (LoungeServer.getGameServer().isDiscord()) {
                         this.settingsInv.setItemStack(3, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));

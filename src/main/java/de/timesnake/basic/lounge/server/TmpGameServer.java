@@ -8,15 +8,15 @@ import de.timesnake.channel.util.listener.ChannelListener;
 import de.timesnake.channel.util.listener.ListenerType;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
-import de.timesnake.database.util.server.DbTempGameServer;
+import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Bukkit;
 
 import java.util.Collections;
 
-public class TempGameServer implements ChannelListener {
+public class TmpGameServer implements ChannelListener {
 
-    private final DbTempGameServer database;
+    private final DbTmpGameServer database;
     private final int port;
     private final String name;
     private final Integer maxPlayers;
@@ -28,7 +28,7 @@ public class TempGameServer implements ChannelListener {
     private State state;
     private boolean discord;
 
-    public TempGameServer(DbTempGameServer server) {
+    public TmpGameServer(DbTmpGameServer server) {
         this.database = server;
         this.port = database.getPort();
         this.name = database.getName();
@@ -50,7 +50,7 @@ public class TempGameServer implements ChannelListener {
         Server.getChannel().addListener(this, () -> Collections.singleton(this.getPort()));
     }
 
-    public DbTempGameServer getDatabase() {
+    public DbTmpGameServer getDatabase() {
         return this.database;
     }
 
