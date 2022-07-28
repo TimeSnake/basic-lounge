@@ -131,9 +131,7 @@ public class TeamCreator {
         for (User user : users) {
             LoungeTeam selectedTeam = ((LoungeUser) user).getSelectedTeam();
 
-            if (selectedTeam == null) {
-                usersWithRandomTeam.add(((LoungeUser) user));
-            } else if (selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
+            if (selectedTeam != null && selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
                 ((LoungeUser) user).setTeam(selectedTeam);
                 ((LoungeUser) user).setSelectedTeam(selectedTeam);
 

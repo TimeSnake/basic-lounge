@@ -45,13 +45,13 @@ public class Scheduler {
 
         int size = Server.getPreGameUsers().size();
         int autoStartSize = LoungeServer.getGame().getAutoStartPlayerNumber();
-        TempGameServer.State state = LoungeServer.getGameServer().getState();
+        TmpGameServer.State state = LoungeServer.getGameServer().getState();
 
         if (size >= autoStartSize) {
             if (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0) {
                 LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "Waiting for players to create equal teams.");
                 this.resetGameCountdown();
-            } else if (state.equals(TempGameServer.State.READY)) {
+            } else if (state.equals(TmpGameServer.State.READY)) {
                 Server.getSpectatorUsers().forEach(user -> {
                     ((LoungeUser) user).loadSpectatorInventory();
                     user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(5));
