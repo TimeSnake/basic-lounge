@@ -145,7 +145,7 @@ public class TmpGameServer implements ChannelListener {
                 this.setState(State.OFFLINE);
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 LoungeServer.getTimeManager().resetGameCountdown();
-            } else if (Status.Server.STARTING.equals(status)) {
+            } else if (Status.Server.LAUNCHING.equals(status) || Status.Server.LOADING.equals(status)) {
                 this.setState(State.STARTING);
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 LoungeServer.getTimeManager().resetGameCountdown();

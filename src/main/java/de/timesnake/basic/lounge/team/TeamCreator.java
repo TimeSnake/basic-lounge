@@ -39,6 +39,12 @@ public class TeamCreator {
 
         Server.printText(Plugin.LOUNGE, "Team-creation:", "Team");
 
+        if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
+            for (Team team : LoungeServer.getGame().getTeams()) {
+                ((LoungeTeam) team).clearUserSelected();
+            }
+        }
+
         Server.runTaskAsynchrony(() -> {
             if (LoungeServer.getGameServer().getTeamAmount() == 1) {
                 this.createSingleTeam();
@@ -163,7 +169,7 @@ public class TeamCreator {
 
         Server.printText(Plugin.LOUNGE, "Finished team creation", "Team");
 
-        LoungeServer.getTeamManager().initDiscord();
+        LoungeServer.getDiscordManager().init();
     }
 
     private void createSingleTeam() {
