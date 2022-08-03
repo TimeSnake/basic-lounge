@@ -8,12 +8,9 @@ import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.game.util.TeamUser;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.channel.util.message.ChannelDiscordMessage;
-import de.timesnake.channel.util.message.MessageType;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.HashSet;
 
 public class TeamManager {
 
@@ -46,6 +43,10 @@ public class TeamManager {
         return this.teamSelection.getItem();
     }
 
+    public TeamSelection getTeamSelection() {
+        return teamSelection;
+    }
+
     public void createTeams() {
         for (User user : Server.getUsers()) {
             ((TeamUser) user).setTeam(null);
@@ -61,23 +62,5 @@ public class TeamManager {
             ((LoungeTeam) team).clearUserSelected();
             ((LoungeTeam) team).setMaxPlayers(null);
         }
-    }
-
-    public void initDiscord() {
-        if (LoungeServer.getGameServer().isDiscord()) {
-            LinkedHashMap<String, List<UUID>> uuidsByTeam = new LinkedHashMap<>();
-            for (User user : LoungeServer.getUsers()) {
-                List<UUID> uuids = uuidsByTeam.computeIfAbsent(((LoungeUser) user).getTeam().getDisplayName(),
-                        k -> new LinkedList<>());
-                uuids.add(user.getUniqueId());
-            }
-
-            uuidsByTeam.put(LoungeServer.DISCORD_SPECTATOR, List.of());
-            uuidsByTeam.put(LoungeServer.DISCORD_LOUNGE, List.of());
-
-            Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
-                    MessageType.Discord.MOVE_TEAMS, new ChannelDiscordMessage.Allocation(uuidsByTeam)));
-        }
-
     }
 }

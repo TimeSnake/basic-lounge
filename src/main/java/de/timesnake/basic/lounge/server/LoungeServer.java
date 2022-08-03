@@ -94,6 +94,10 @@ public class LoungeServer extends GameServer {
         return server.getWaitingGameManager();
     }
 
+    public static DiscordManager getDiscordManager() {
+        return server.getDiscordManager();
+    }
+
     private static final LoungeServerManager server = LoungeServerManager.getInstance();
 
 }

@@ -35,8 +35,8 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
 
     public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL, "§cLeave (hold right)",
             Collections.emptyList());
-    public static final ExItemStack JOIN_LOUNGE_ITEM = new ExItemStack(0, "§6Join", Color.GRAY,
-            Material.LEATHER_HELMET);
+    public static final ExItemStack JOIN_LOUNGE_ITEM = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
+            "§6Join", Color.GRAY).setSlot(0);
     public static final ExItemStack SETTINGS_ITEM = new ExItemStack(Material.CLOCK, "§6Settings",
             Collections.emptyList());
     public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of(
@@ -135,7 +135,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                         this.settingsInv.setItemStack(3, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
                     } else {
                         this.settingsInv.setItemStack(3, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
-                        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_TEAMS, List.of()));
+                        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_CHANNELS, List.of()));
                     }
                     user.updateInventory();
                 } else {

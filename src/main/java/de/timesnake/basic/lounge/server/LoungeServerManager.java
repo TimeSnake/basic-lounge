@@ -21,7 +21,6 @@ import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
-import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
@@ -57,6 +56,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     private Scheduler scheduler;
     private WaitingGameManager waitingGameManager;
     private StatsManager statsManager;
+    private DiscordManager discordManager;
     private State state;
 
     public void onLoungeEnable() {
@@ -127,6 +127,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
         this.waitingGameManager = new WaitingGameManager();
 
         this.statsManager = new StatsManager();
+        this.discordManager = new DiscordManager();
 
         this.state = State.WAITING;
 
@@ -134,8 +135,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     }
 
     public final void onLoungeDisable() {
-        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
-                MessageType.Discord.DESTROY_TEAMS, List.of()));
+        this.discordManager.cleanup();
         this.tmpGameServer.getDatabase().setTwinServerPort(null);
         ((DbLoungeServer) Server.getDatabase()).setTask(null);
     }
@@ -276,6 +276,10 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     public WaitingGameManager getWaitingGameManager() {
         return waitingGameManager;
+    }
+
+    public DiscordManager getDiscordManager() {
+        return discordManager;
     }
 
     public enum State {

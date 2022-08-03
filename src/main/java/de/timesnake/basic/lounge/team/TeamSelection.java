@@ -26,21 +26,44 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
     private final ExInventory inventory;
     private final HashMap<Integer, LoungeTeam> teams = new HashMap<>();
 
+    private boolean blocked = false;
+    private boolean silentBlocked = false;
+
     public TeamSelection() {
-        this.invItem = new ExItemStack(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK).hideAll();
+        this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK).hideAll();
 
         int invSize = (int) (9 * Math.ceil((((double) LoungeServer.getGameServer().getTeamAmount()) / 7)));
         this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Teamselection", this);
 
         // random team
         ExItemStack randomTeamItem =
-                new ExItemStack(Material.LEATHER_HELMET, "§fRandom", Color.GRAY).setLore(ChatColor.GRAY + "Join " +
+                ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§fRandom", Color.GRAY).setLore(ChatColor.GRAY + "Join " +
                         "Random team").hideAll();
 
         this.inventory.setItemStack(0, randomTeamItem);
 
         Server.getInventoryEventManager().addClickListener(this, this);
         Server.getInventoryEventManager().addInteractListener(this, invItem);
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void block(boolean allowed) {
+        this.blocked = allowed;
+        if (allowed) {
+            this.silentBlocked = false;
+        }
+    }
+
+    public boolean isSilentBlocked() {
+        return silentBlocked;
+    }
+
+    public void blockSilent(boolean blockSilent) {
+        this.block(blockSilent);
+        this.silentBlocked = blockSilent;
     }
 
     protected void loadTeams() {
@@ -64,7 +87,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         ExItemStack clickedItem = e.getClickedItem();
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + "The team selection is closed");
+            sender.sendPluginMessage(ChatColor.WARNING + "Team selection is closed");
             user.closeInventory();
             e.setCancelled(true);
             return;
@@ -72,6 +95,13 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
 
         LoungeTeam team = this.teams.get(clickedItem.getId());
         if (team != null) {
+            if (this.blocked && !this.silentBlocked) {
+                sender.sendPluginMessage(ChatColor.WARNING + "Team selection is forbidden");
+                user.closeInventory();
+                e.setCancelled(true);
+                return;
+            }
+
             if (team.getMaxPlayers() != null && team.getUsersSelected().size() >= team.getMaxPlayers()) {
                 sender.sendPluginMessage(ChatColor.WARNING + "Team " + team.getChatColor() + team.getDisplayName() + ChatColor.WARNING + " is full");
                 user.closeInventory();
