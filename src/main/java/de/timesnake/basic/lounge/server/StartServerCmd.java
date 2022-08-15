@@ -1,11 +1,12 @@
 package de.timesnake.basic.lounge.server;
 
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class StartServerCmd implements CommandListener {
         }
 
         LoungeServer.getGameServer().start();
-        sender.sendPluginMessage(ChatColor.PERSONAL + "Game server started");
+        sender.sendPluginMessage(Component.text("Game server started", ExTextColor.PERSONAL));
     }
 
     @Override

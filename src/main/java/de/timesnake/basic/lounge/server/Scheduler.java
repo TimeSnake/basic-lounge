@@ -1,13 +1,14 @@
 package de.timesnake.basic.lounge.server;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.boss.BarColor;
@@ -49,12 +50,14 @@ public class Scheduler {
 
         if (size >= autoStartSize) {
             if (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0) {
-                LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "Waiting for players to create equal teams.");
+                LoungeServer.broadcastLoungeMessage(Component.text("Waiting for players to create equal teams.", ExTextColor.PUBLIC));
                 this.resetGameCountdown();
             } else if (state.equals(TmpGameServer.State.READY)) {
                 Server.getSpectatorUsers().forEach(user -> {
                     ((LoungeUser) user).loadSpectatorInventory();
-                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(5));
+                    user.showTitle(Component.empty(),
+                            Component.text("Click the helmet to join the game", ExTextColor.WARNING),
+                            Duration.ofSeconds(5));
                 });
                 this.startGameCountdown();
             } else {
@@ -66,7 +69,9 @@ public class Scheduler {
             if (LoungeServer.getNotServiceUsers().size() >= autoStartSize) {
                 Server.getSpectatorUsers().forEach(user -> {
                     ((LoungeUser) user).loadSpectatorInventory();
-                    user.sendTitle("", "§cClick the helmet to join the game", Duration.ofSeconds(5));
+                    user.showTitle(Component.empty(),
+                            Component.text("Click the helmet to join the game", ExTextColor.WARNING),
+                            Duration.ofSeconds(5));
                 });
             }
         }
@@ -102,14 +107,17 @@ public class Scheduler {
                 }
 
                 switch (gameCountdown) {
-                    case 60, 45, 30, 20, 15, 10 -> LoungeServer.broadcastLoungeMessage(ChatColor.PUBLIC + "The Game " +
-                            "starts in " + ChatColor.VALUE + gameCountdown + ChatColor.PUBLIC + " seconds");
+                    case 60, 45, 30, 20, 15, 10 -> LoungeServer.broadcastLoungeMessage(
+                            Component.text("The Game starts in ", ExTextColor.PUBLIC)
+                                    .append(Component.text(gameCountdown, ExTextColor.VALUE))
+                                    .append(Component.text(" seconds", ExTextColor.PUBLIC)));
                     case 16 -> {
                         Server.setStatus(Status.Server.PRE_GAME);
                         if (LoungeServer.getGameServer().areMapsEnabled()) {
                             Map map = LoungeServer.getMapManager().getVotedMap();
                             LoungeServer.getGameServer().getDatabase().setMapName(map.getName());
-                            LoungeServer.broadcastLoungeMessage(ChatColor.WARNING + "Map: " + ChatColor.VALUE + map.getDisplayName());
+                            LoungeServer.broadcastLoungeMessage(Component.text("Map: ", ExTextColor.WARNING)
+                                    .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
                             LoungeServer.getMapManager().resetMapVotes();
                         }
                     }
@@ -120,7 +128,9 @@ public class Scheduler {
                     }
                     case 9 -> {
                         if (LoungeServer.getGame().hasTexturePack()) {
-                            LoungeServer.broadcastTitle("", "§cLoading texture pack...", Duration.ofSeconds(3));
+                            LoungeServer.broadcastTitle(Component.empty(),
+                                    Component.text("Loading texture pack...", ExTextColor.WARNING),
+                                    Duration.ofSeconds(3));
                         }
                     }
                     case 8 -> {

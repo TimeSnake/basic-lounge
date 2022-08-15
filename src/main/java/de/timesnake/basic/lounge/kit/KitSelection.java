@@ -1,7 +1,6 @@
 package de.timesnake.basic.lounge.kit;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.ExInventory;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
@@ -14,6 +13,8 @@ import de.timesnake.basic.game.util.Kit;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -85,19 +86,21 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
         Kit kit = this.kits.get(clickedItem.getId());
 
         if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The kit selection is closed");
+            user.sendPluginMessage(Plugin.LOUNGE, Component.text("The kit selection is closed", ExTextColor.WARNING));
             return;
         }
 
         if (kit != null) {
             if (kit.equals(Kit.RANDOM)) {
                 user.setSelectedKit(Kit.RANDOM);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "You selected kit " + ChatColor.VALUE + Kit.RANDOM.getName());
-                Server.printText(Plugin.LOUNGE, user.getChatName() + " selected kit " + Kit.RANDOM.getName(), "Kit");
+                sender.sendPluginMessage(Component.text("You selected kit ", ExTextColor.PERSONAL)
+                        .append(Component.text(Kit.RANDOM.getName(), ExTextColor.VALUE)));
+                Server.printText(Plugin.LOUNGE, user.getName() + " selected kit " + Kit.RANDOM.getName(), "Kit");
             } else {
                 user.setSelectedKit(kit);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "You selected kit " + ChatColor.VALUE + kit.getName());
-                Server.printText(Plugin.LOUNGE, user.getChatName() + " selected kit " + kit.getName(), "Kit");
+                sender.sendPluginMessage(Component.text("You selected kit ", ExTextColor.PERSONAL)
+                        .append(Component.text(kit.getName(), ExTextColor.VALUE)));
+                Server.printText(Plugin.LOUNGE, user.getName() + " selected kit " + kit.getName(), "Kit");
             }
             user.closeInventory();
         }
@@ -108,7 +111,7 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
     public void onUserInventoryInteract(UserInventoryInteractEvent e) {
         LoungeUser user = (LoungeUser) e.getUser();
         if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The kit selection is closed");
+            user.sendPluginMessage(Plugin.LOUNGE, Component.text("The kit selection is closed", ExTextColor.WARNING));
             return;
         }
         user.openInventory(this.getInventory());

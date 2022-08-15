@@ -21,7 +21,6 @@ public class GameTeam implements TablistableGroup, TablistableRemainTeam {
         this.chatColor = chatColor;
     }
 
-    @Override
     public TablistGroupType getTeamType() {
         return TablistGroupType.DUMMY;
     }

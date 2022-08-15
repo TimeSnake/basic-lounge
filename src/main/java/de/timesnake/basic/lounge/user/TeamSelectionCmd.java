@@ -4,9 +4,10 @@ import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.library.basic.util.chat.ChatColor;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -26,19 +27,19 @@ public class TeamSelectionCmd implements CommandListener {
             case "toggle" -> {
                 if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
                     LoungeServer.getTeamManager().getTeamSelection().block(false);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Allowed team selection");
+                    sender.sendPluginMessage(Component.text("Allowed team selection", ExTextColor.PERSONAL));
                 } else {
                     LoungeServer.getTeamManager().getTeamSelection().block(true);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Forbade team selection");
+                    sender.sendPluginMessage(Component.text("Forbade team selection", ExTextColor.PERSONAL));
                 }
             }
             case "toggle_silent" -> {
                 if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
                     LoungeServer.getTeamManager().getTeamSelection().blockSilent(false);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Allowed team selection");
+                    sender.sendPluginMessage(Component.text("Allowed team selection", ExTextColor.PERSONAL));
                 } else {
                     LoungeServer.getTeamManager().getTeamSelection().blockSilent(true);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Forbade team selection silently");
+                    sender.sendPluginMessage(Component.text("Forbade team selection silently", ExTextColor.PERSONAL));
                 }
             }
         }

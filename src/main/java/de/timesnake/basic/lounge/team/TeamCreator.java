@@ -1,7 +1,6 @@
 package de.timesnake.basic.lounge.team;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.game.util.TeamUser;
@@ -9,6 +8,7 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import net.kyori.adventure.text.Component;
 
@@ -163,7 +163,12 @@ public class TeamCreator {
             }
 
             if (user.getTeam() == null) {
-                user.getPlayer().kick(Component.text(ChatColor.WARNING + "Error: Please contact an admin " + Chat.getMessageCode("E", 1700, Plugin.LOUNGE) + ChatColor.PUBLIC + "\nYou can rejoin in a few seconds\n" + ChatColor.VALUE + "§lUSE /support"));
+                user.getPlayer().kick(Component.text("Error: Please contact an admin ", ExTextColor.WARNING)
+                        .append(Chat.getMessageCode("E", 1700, Plugin.LOUNGE))
+                        .append(Component.newline())
+                        .append(Component.text("You can rejoin in a few seconds", ExTextColor.PUBLIC))
+                        .append(Component.newline())
+                        .append(Component.text("USE /support", ExTextColor.VALUE)));
             }
         }
 
@@ -183,9 +188,9 @@ public class TeamCreator {
     }
 
     private void sendJoinedTeamMessage(User user, Team team) {
-        user.sendPluginMessage(Plugin.LOUNGE,
-                ChatColor.PERSONAL + "You joined team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
-        Server.printText(Plugin.LOUNGE, "User " + user.getPlayer().getName() + " joined team " + team.getName(),
+        user.sendPluginMessage(Plugin.LOUNGE, Component.text("You joined team ", ExTextColor.PERSONAL)
+                .append(Component.text(team.getDisplayName(), team.getTextColor())));
+        Server.printText(Plugin.LOUNGE, "User " + user.getName() + " joined team " + team.getName(),
                 "Team");
     }
 

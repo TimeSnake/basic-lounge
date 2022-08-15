@@ -1,7 +1,6 @@
 package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.ExInventory;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
@@ -16,6 +15,8 @@ import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.TmpGameServer;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.MessageType;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Color;
@@ -94,25 +95,25 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
                 if (LoungeServer.getTimeManager().isGameCountdownRunning()) {
                     if (LoungeServer.getGameCountdown() <= 30) {
-                        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is already starting");
+                        user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is already starting", ExTextColor.WARNING));
                         user.closeInventory();
                         return;
                     }
                     LoungeServer.setState(LoungeServerManager.State.STARTING);
                     LoungeServer.getTimeManager().setGameCountdown(30);
-                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "Forced quick start");
+                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("Forced quick start", ExTextColor.PERSONAL));
                 } else {
-                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The countdown must running to " +
-                            "force a quick-start");
+                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("The countdown must running to " +
+                            "force a quick-start", ExTextColor.WARNING));
                 }
             } else {
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game server is not ready");
+                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game server is not ready", ExTextColor.WARNING));
             }
             user.closeInventory();
             e.setCancelled(true);
         } else if (item.equals(WAIT)) {
             if (LoungeServer.getTimeManager().getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is already starting");
+                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is already starting", ExTextColor.WARNING));
                 user.clearInventory();
                 return;
             }
@@ -139,11 +140,11 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                     }
                     user.updateInventory();
                 } else {
-                    user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game server is not ready");
+                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game server is not ready", ExTextColor.WARNING));
                 }
             } else {
                 user.closeInventory();
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "Too few teams to enable discord");
+                user.sendPluginMessage(Plugin.LOUNGE, Component.text("Too few teams to enable discord", ExTextColor.WARNING));
             }
         }
     }
@@ -159,11 +160,11 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                     this.clickedLeaveUsers.put(user, new ItemHoldClick(LEAVE_TIME));
                 } else {
                     if (this.clickedLeaveUsers.get(user).click()) {
-                        user.sendActionBarText("");
+                        user.sendActionBarText(Component.empty());
                         ((LoungeUser) user).leaveLounge();
                         e.setCancelled(true);
                     } else {
-                        user.sendActionBarText("§cLeaving...");
+                        user.sendActionBarText(Component.text("Leaving...", ExTextColor.WARNING));
                     }
                 }
             }
@@ -172,12 +173,12 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             e.setCancelled(true);
         } else if (item.equals(JOIN_LOUNGE_ITEM)) {
             if (Server.getGameNotServiceUsers().size() >= LoungeServer.getGame().getMaxPlayers()) {
-                user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "The game is full");
+                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is full", ExTextColor.WARNING));
                 e.setCancelled(true);
             }
             ((LoungeUser) user).joinLounge();
             LoungeServer.getLoungeScoreboardManager().getTablist().addEntry(user);
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.PERSONAL + "Joined the game");
+            user.sendPluginMessage(Plugin.LOUNGE, Component.text("Joined the game", ExTextColor.PERSONAL));
             LoungeServer.getTimeManager().checkCountdown();
             e.setCancelled(true);
         }

@@ -13,6 +13,8 @@ import de.timesnake.basic.game.util.Team;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -87,7 +89,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         ExItemStack clickedItem = e.getClickedItem();
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(ChatColor.WARNING + "Team selection is closed");
+            sender.sendPluginMessage(Component.text("Team selection is closed", ExTextColor.WARNING));
             user.closeInventory();
             e.setCancelled(true);
             return;
@@ -96,26 +98,30 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         LoungeTeam team = this.teams.get(clickedItem.getId());
         if (team != null) {
             if (this.blocked && !this.silentBlocked) {
-                sender.sendPluginMessage(ChatColor.WARNING + "Team selection is forbidden");
+                sender.sendPluginMessage(Component.text("Team selection is forbidden", ExTextColor.WARNING));
                 user.closeInventory();
                 e.setCancelled(true);
                 return;
             }
 
             if (team.getMaxPlayers() != null && team.getUsersSelected().size() >= team.getMaxPlayers()) {
-                sender.sendPluginMessage(ChatColor.WARNING + "Team " + team.getChatColor() + team.getDisplayName() + ChatColor.WARNING + " is full");
+                sender.sendPluginMessage(Component.text("Team ", ExTextColor.WARNING)
+                        .append(Component.text(team.getDisplayName(), team.getTextColor()))
+                        .append(Component.text(" is full", ExTextColor.WARNING)));
                 user.closeInventory();
                 e.setCancelled(true);
                 return;
             }
 
             user.setSelectedTeam(team);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "You selected team " + ChatColor.VALUE + team.getChatColor() + team.getDisplayName());
-            Server.printText(Plugin.LOUNGE, user.getChatName() + " selected team " + team.getName(), "Team");
+            sender.sendPluginMessage(Component.text("You selected team ", ExTextColor.PERSONAL)
+                    .append(Component.text(team.getDisplayName(), team.getTextColor())));
+            Server.printText(Plugin.LOUNGE, user.getName() + " selected team " + team.getName(), "Team");
         } else {
             user.setSelectedTeam(null);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "You selected team " + ChatColor.GRAY + "Random");
-            Server.printText(Plugin.LOUNGE, user.getChatName() + " selected team random", "Team");
+            sender.sendPluginMessage(Component.text("You selected team ", ExTextColor.PERSONAL)
+                    .append(Component.text("Random", ExTextColor.GRAY)));
+            Server.printText(Plugin.LOUNGE, user.getName() + " selected team random", "Team");
         }
         user.closeInventory();
 
@@ -127,7 +133,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         LoungeUser user = ((LoungeUser) e.getUser());
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + "The team selection is closed");
+            sender.sendPluginMessage(Component.text("The team selection is closed", ExTextColor.WARNING));
             e.setCancelled(true);
             return;
         }
