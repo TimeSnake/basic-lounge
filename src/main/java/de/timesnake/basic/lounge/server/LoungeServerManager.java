@@ -29,6 +29,7 @@ import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -207,9 +208,16 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
         return this.currentMap.getSpawn();
     }
 
+    @Deprecated
     public void broadcastLoungeMessage(String msg) {
         Server.broadcastMessage(Plugin.LOUNGE, msg);
     }
+
+
+    public void broadcastLoungeMessage(Component msg) {
+        Server.broadcastMessage(Plugin.LOUNGE, msg);
+    }
+
 
     public void broadcastCountdownCancelledMessage() {
         if (this.state.equals(State.STARTING)) {

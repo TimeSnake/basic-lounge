@@ -14,6 +14,8 @@ import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -91,7 +93,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
 
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + "The map voting is closed");
+            sender.sendPluginMessage(Component.text("The map voting is closed", ExTextColor.WARNING));
             e.setCancelled(true);
             return;
         }
@@ -99,10 +101,11 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
         Map map = this.mapsByItemId.get(clickedItem.getId());
         if (map != null) {
             user.setSelectedMap(map);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "Voted for map " + ChatColor.VALUE + map.getDisplayName());
+            sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)
+                    .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
         } else {
             user.setSelectedMap(null);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "Voted for a random map");
+            sender.sendPluginMessage(Component.text("Voted for a random map", ExTextColor.PERSONAL));
         }
         user.closeInventory();
         e.setCancelled(true);
@@ -113,7 +116,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
         LoungeUser user = ((LoungeUser) e.getUser());
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + "The map voting is closed");
+            sender.sendPluginMessage(Component.text("The map voting is closed", ExTextColor.WARNING));
             e.setCancelled(true);
             return;
         }

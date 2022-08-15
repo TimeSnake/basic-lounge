@@ -2,18 +2,15 @@ package de.timesnake.basic.lounge.scoreboard;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.permission.Group;
+import de.timesnake.basic.bukkit.util.chat.DisplayGroup;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.extension.util.cmd.ChatDivider;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class ScoreboardManager {
@@ -32,12 +29,9 @@ public class ScoreboardManager {
         this.gameTeam = new GameTeam("0", "game", "", ChatColor.WHITE, ChatColor.WHITE);
         this.spectatorTeam = new GameTeam("0", "spec", "", ChatColor.WHITE, ChatColor.GRAY);
 
-        LinkedList<TablistGroupType> types = new LinkedList<>();
-        types.add(Group.getTablistType());
-
         this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
-                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types,
-                this.spectatorTeam, types,
+                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), DisplayGroup.MAIN_TABLIST_GROUPS,
+                this.spectatorTeam, DisplayGroup.MAIN_TABLIST_GROUPS,
                 (e, tablist) -> {
                     User user = e.getUser();
                     String task = user.getTask();
@@ -80,23 +74,23 @@ public class ScoreboardManager {
                 this.sideboard.setScore(11, "§9§lPlayers");
                 this.updateScoreboardPlayerNumber(10, 0);
                 // more needed display
-                this.sideboard.setScore(8, "§r§r" + ChatDivider.SECTION);
+                this.sideboard.setScore(8, "§r§r" + Sideboard.SPACER);
                 this.sideboard.setScore(7, "§9§lTeam");
                 //user team
-                this.sideboard.setScore(5, "§r" + ChatDivider.SECTION);
+                this.sideboard.setScore(5, "§r" + Sideboard.SPACER);
                 // kit
             } else {
                 this.sideboard.setScore(8, "§9§lPlayers");
                 this.updateScoreboardPlayerNumber(7, 0);
                 // more needed display
-                this.sideboard.setScore(5, "§r§r" + ChatDivider.SECTION);
+                this.sideboard.setScore(5, "§r§r" + Sideboard.SPACER);
                 // kit
             }
         } else if (LoungeServer.getGameServer().getTeamAmount() > 1) {
             this.sideboard.setScore(9, "§9§lPlayers");
             this.updateScoreboardPlayerNumber(7, 0);
             // more needed display
-            this.sideboard.setScore(5, "§r§r" + ChatDivider.SECTION);
+            this.sideboard.setScore(5, "§r§r" + Sideboard.SPACER);
             this.sideboard.setScore(4, "§9§lTeam");
             // user team
         } else {
@@ -104,14 +98,14 @@ public class ScoreboardManager {
             this.updateScoreboardPlayerNumber(4, 0);
             // more needed display
         }
-        this.sideboard.setScore(2, ChatDivider.SECTION);
+        this.sideboard.setScore(2, Sideboard.SPACER);
         this.sideboard.setScore(1, "§7§lServer");
         this.sideboard.setScore(0, "§7" + Server.getName());
         Server.printText(Plugin.LOUNGE, "Scoreboard loaded");
 
         this.spectatorSideboard.setScore(5, "§l§9Players");
         // player amount
-        this.spectatorSideboard.setScore(2, ChatDivider.SECTION);
+        this.spectatorSideboard.setScore(2, Sideboard.SPACER);
         this.spectatorSideboard.setScore(1, "§7§lServer");
         this.spectatorSideboard.setScore(0, "§7" + Server.getName());
         Server.printText(Plugin.LOUNGE, "Spectator scoreboard loaded");

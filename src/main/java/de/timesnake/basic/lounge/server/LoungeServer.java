@@ -9,6 +9,7 @@ import de.timesnake.basic.lounge.scoreboard.ScoreboardManager;
 import de.timesnake.basic.lounge.team.TeamManager;
 import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 
 public class LoungeServer extends GameServer {
@@ -42,7 +43,12 @@ public class LoungeServer extends GameServer {
         return server.getSpawn();
     }
 
+    @Deprecated
     public static void broadcastLoungeMessage(String msg) {
+        server.broadcastLoungeMessage(msg);
+    }
+
+    public static void broadcastLoungeMessage(Component msg) {
         server.broadcastLoungeMessage(msg);
     }
 

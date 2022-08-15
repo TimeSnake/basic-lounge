@@ -1,7 +1,6 @@
 package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
@@ -11,7 +10,9 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -28,14 +29,14 @@ public class UserManager implements Listener {
         // spectator
         if (user.getStatus().equals(Status.User.SPECTATOR)) {
             ((LoungeUser) user).joinSpectator();
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You can join the game in a few moments");
+            user.sendPluginMessage(Plugin.LOUNGE, Component.text("You can join the game in a few moments", ExTextColor.WARNING));
             return;
         }
 
         if (LoungeServer.getGame().hasTexturePack()) {
-            user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "This game uses a texture pack. " +
+            user.sendPluginMessage(Plugin.LOUNGE, Component.text("This game uses a texture pack. " +
                     "It is highly recommended to use the texture pack. The texture pack will be loaded at the game " +
-                    "start.");
+                    "start.", ExTextColor.WARNING));
         }
 
         // game user
@@ -58,7 +59,7 @@ public class UserManager implements Listener {
             }
         }
 
-        user.sendPluginMessage(Plugin.LOUNGE, ChatColor.WARNING + "You didn't joined the lounge!");
+        user.sendPluginMessage(Plugin.LOUNGE, Component.text("You didn't joined the lounge!", ExTextColor.WARNING));
         user.asSender(Plugin.LOUNGE).sendMessageCommandHelp("Use", "service");
         user.getInventory().clear();
     }
