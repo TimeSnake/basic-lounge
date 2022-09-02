@@ -47,7 +47,7 @@ public class TmpGameServer implements ChannelListener {
         this.mergeTeams = server.isTeamMerging();
         this.discord = server.isDiscordEnabled();
 
-        Server.getChannel().addListener(this, () -> Collections.singleton(this.getPort()));
+        Server.getChannel().addListener(this, () -> Collections.singleton(this.getName()));
     }
 
     public DbTmpGameServer getDatabase() {
@@ -111,7 +111,7 @@ public class TmpGameServer implements ChannelListener {
         }
 
         this.state = State.STARTING;
-        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getChannel().getProxyPort(),
+        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getNetwork().getName(),
                 MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
         Server.printText(Plugin.LOUNGE, "Starting game server");
         this.checkIfStarted();

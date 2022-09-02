@@ -190,7 +190,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     public void startGame() {
         this.setState(State.PRE_GAME);
-        Server.getChannel().sendMessage(new ChannelServerMessage<>(this.getPort(), MessageType.Server.CUSTOM,
+        Server.getChannel().sendMessage(new ChannelServerMessage<>(this.getName(), MessageType.Server.CUSTOM,
                 "estimatedPlayers:" + this.getGameUsers().size()));
         Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
