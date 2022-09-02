@@ -33,6 +33,7 @@ dependencies {
     compileOnly 'de.timesnake:library-basic:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:database-bukkit:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:database-api:1.0-SNAPSHOT'
+    compileOnly 'de.timesnake:library-network:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-packets:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-reflection:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-entities:1.0-SNAPSHOT'
