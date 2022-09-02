@@ -1,13 +1,14 @@
 package de.timesnake.basic.lounge.kit;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.Kit;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 
 public class KitManager {
@@ -23,7 +24,7 @@ public class KitManager {
             return;
         }
 
-        for (User user : Server.getGameNotServiceUsers()) {
+        for (User user : Server.getPreGameUsers()) {
 
             Kit kit = ((LoungeUser) user).getSelectedKit();
 
@@ -34,7 +35,8 @@ public class KitManager {
                 ((LoungeUser) user).setSelectedKit(kit);
             }
             user.sendPluginMessage(Plugin.LOUNGE,
-                    ChatColor.PERSONAL + "You will get the kit " + ((LoungeUser) user).getSelectedKit().getName());
+                    Component.text("You will get the kit ", ExTextColor.PERSONAL)
+                            .append(Component.text(((LoungeUser) user).getSelectedKit().getName(), ExTextColor.VALUE)));
         }
     }
 

@@ -40,7 +40,7 @@ public class Scheduler {
 
     public void checkCountdown() {
         if (this.wait) {
-            LoungeServer.broadcastLoungeMessage("Waiting...");
+            LoungeServer.broadcastLoungeMessage(Component.text("Waiting...", ExTextColor.PUBLIC));
             return;
         }
 

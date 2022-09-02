@@ -148,6 +148,10 @@ public class StatsManager implements Listener, ChannelListener {
 
             StatDisplay display = LoungeServer.getCurrentMap().getGlobalStatsDisplayLocation(displayIndex);
 
+            if (display == null) {
+                return;
+            }
+
             int width = 3;
             int height = 5;
 
