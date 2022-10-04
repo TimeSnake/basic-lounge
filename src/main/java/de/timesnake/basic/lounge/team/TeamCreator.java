@@ -9,7 +9,6 @@ import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.chat.ExTextColor;
-import de.timesnake.library.extension.util.chat.Chat;
 import net.kyori.adventure.text.Component;
 
 import java.util.*;
@@ -163,8 +162,7 @@ public class TeamCreator {
             }
 
             if (user.getTeam() == null) {
-                user.getPlayer().kick(Component.text("Error: Please contact an admin ", ExTextColor.WARNING)
-                        .append(Chat.getMessageCode("E", 1700, Plugin.LOUNGE))
+                user.getPlayer().kick(Component.text("Error: Please contact an admin (team creation failed)", ExTextColor.WARNING)
                         .append(Component.newline())
                         .append(Component.text("You can rejoin in a few seconds", ExTextColor.PUBLIC))
                         .append(Component.newline())
