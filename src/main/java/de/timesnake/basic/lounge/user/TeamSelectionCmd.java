@@ -5,6 +5,8 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -13,9 +15,11 @@ import java.util.List;
 
 public class TeamSelectionCmd implements CommandListener {
 
+    private Code.Permission teamSelectionPerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> exCommand, Arguments<Argument> args) {
-        if (!sender.hasPermission("lounge.teamselection", 1508)) {
+        if (!sender.hasPermission(this.teamSelectionPerm)) {
             return;
         }
 
@@ -51,5 +55,10 @@ public class TeamSelectionCmd implements CommandListener {
             return List.of("toggle", "toggle_silent");
         }
         return List.of();
+    }
+
+    @Override
+    public void loadCodes(Plugin plugin) {
+        this.teamSelectionPerm = plugin.createPermssionCode("lts", "lounge.teamselection");
     }
 }
