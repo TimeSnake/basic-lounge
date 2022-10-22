@@ -40,7 +40,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -52,25 +51,25 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
 
     private final ExInventory inventory;
     private final ExItemStack item;
-    private final HashMap<Integer, Map> mapsByItemId = new HashMap<>();
+    private final HashMap<ExItemStack, Map> mapsByItemId = new HashMap<>();
 
     public MapSelection(Collection<Map> maps) {
-        this.item = new ExItemStack(Material.MAP, 1, "§r§6Map-Voting", Collections.emptyList());
+        this.item = new ExItemStack(Material.MAP).setDisplayName("§r§6Map-Voting");
 
-        int invSize = (int) (9 * Math.ceil((((double) GameServer.getGame().getMaps().size() / 7))));
+        int invSize = 9 * (GameServer.getGame().getMaps().size() + 6) / 7;
         this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Map-Voting", this);
 
-        ExItemStack randomMapItem = new ExItemStack(Material.GRAY_WOOL, "§fRandom");
-        randomMapItem.setLore(ChatColor.GRAY + "Vote for a random map");
+        ExItemStack randomMapItem = new ExItemStack(Material.GRAY_WOOL).setDisplayName("§fRandom")
+                .setLore(ChatColor.GRAY + "Vote for a random map");
+
         this.inventory.setItemStack(0, randomMapItem);
 
-        int i = 2;
+        int slot = 2;
         for (Map map : maps) {
             // first and second inventory column empty (for random selection)
-            if (i % 9 == 0) i += 2;
+            if (slot % 9 == 0) slot += 2;
 
-            ExItemStack item = map.getItem();
-            item.setDisplayName(NAME_COLOR + map.getDisplayName());
+            ExItemStack item = map.getItem().cloneWithId().setDisplayName(NAME_COLOR + map.getDisplayName());
 
             LinkedList<String> lore = new LinkedList<>();
             lore.addLast("");
@@ -88,9 +87,9 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
             }
             item.setLore(lore);
 
-            this.inventory.setItemStack(i, item);
-            this.mapsByItemId.put(item.getId(), map);
-            i++;
+            this.inventory.setItemStack(slot, item);
+            this.mapsByItemId.put(item, map);
+            slot++;
         }
 
         if (this.mapsByItemId.isEmpty()) {
@@ -116,7 +115,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
             return;
         }
 
-        Map map = this.mapsByItemId.get(clickedItem.getId());
+        Map map = this.mapsByItemId.get(clickedItem);
         if (map != null) {
             user.setSelectedMap(map);
             sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)

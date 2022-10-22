@@ -22,8 +22,8 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.StartServerCmd;
+import de.timesnake.basic.lounge.team.TeamSelectionCmd;
 import de.timesnake.basic.lounge.user.GameCmd;
-import de.timesnake.basic.lounge.user.TeamSelectionCmd;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
