@@ -46,7 +46,7 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
 
     private final ExInventory inventory;
     private final ExItemStack item;
-    private final HashMap<Integer, Kit> kits = new HashMap<>();
+    private final HashMap<ExItemStack, Kit> kits = new HashMap<>();
 
     public KitSelection() {
         this.item = new ExItemStack(Material.CRAFTING_TABLE);
@@ -62,20 +62,20 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
             return;
         }
 
-        this.inventory =
-                Server.createExInventory((int) (9 * Math.ceil((((double) GameServer.getGame().getKits().size()) / 7))), "Kitselection", this);
+        this.inventory = Server.createExInventory(9 * (GameServer.getGame().getKits().size() + 6) / 7,
+                "Kitselection", this);
 
         ExItemStack item = this.createKitItem(Kit.RANDOM);
 
         this.inventory.setItemStack(0, item);
-        this.kits.put(item.getId(), Kit.RANDOM);
+        this.kits.put(item, Kit.RANDOM);
 
         int i = 2;
         for (Kit kit : GameServer.getGame().getKits()) {
             while (i % 9 == 0) i += 2;
             item = this.createKitItem(kit);
             this.inventory.setItemStack(i, item);
-            this.kits.put(item.getId(), kit);
+            this.kits.put(item, kit);
             i++;
         }
 
@@ -84,15 +84,10 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
     }
 
     private ExItemStack createKitItem(Kit kit) {
-        ExItemStack item = new ExItemStack(kit.getMaterial());
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(kit.getName());
-        meta.setLore(new ArrayList<>(kit.getDescription()));
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-        meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        item.setItemMeta(meta);
+        ExItemStack item = new ExItemStack(kit.getMaterial())
+                .setDisplayName(kit.getName())
+                .setExLore(new ArrayList<>(kit.getDescription()));
+        item.addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
         return item;
     }
 
@@ -101,7 +96,8 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
         LoungeUser user = ((LoungeUser) e.getUser());
         ExItemStack clickedItem = e.getClickedItem();
         Sender sender = user.asSender(Plugin.LOUNGE);
-        Kit kit = this.kits.get(clickedItem.getId());
+
+        Kit kit = this.kits.get(clickedItem);
 
         if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
             user.sendPluginMessage(Plugin.LOUNGE, Component.text("The kit selection is closed", ExTextColor.WARNING));

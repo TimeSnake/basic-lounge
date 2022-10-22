@@ -44,21 +44,22 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
 
     private final ExItemStack invItem;
     private final ExInventory inventory;
-    private final HashMap<Integer, LoungeTeam> teams = new HashMap<>();
+    private final HashMap<ExItemStack, LoungeTeam> teams = new HashMap<>();
 
     private boolean blocked = false;
     private boolean silentBlocked = false;
 
     public TeamSelection() {
-        this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK).hideAll();
+        this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK)
+                .hideAll();
 
         int invSize = (int) (9 * Math.ceil((((double) LoungeServer.getGameServer().getTeamAmount()) / 7)));
         this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Teamselection", this);
 
         // random team
         ExItemStack randomTeamItem =
-                ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§fRandom", Color.GRAY).setLore(ChatColor.GRAY + "Join " +
-                        "Random team").hideAll();
+                ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§fRandom", Color.GRAY)
+                        .setLore(ChatColor.GRAY + "Join Random team").hideAll();
 
         this.inventory.setItemStack(0, randomTeamItem);
 
@@ -96,7 +97,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
             // create item
             ExItemStack item = ((LoungeTeam) team).createTeamItem(i);
             // team adds item
-            this.teams.put(item.getId(), ((LoungeTeam) team));
+            this.teams.put(item, ((LoungeTeam) team));
             i++;
         }
     }
@@ -113,7 +114,7 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
             return;
         }
 
-        LoungeTeam team = this.teams.get(clickedItem.getId());
+        LoungeTeam team = this.teams.get(clickedItem);
         if (team != null) {
             if (this.blocked && !this.silentBlocked) {
                 sender.sendPluginMessage(Component.text("Team selection is forbidden", ExTextColor.WARNING));
