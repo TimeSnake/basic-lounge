@@ -59,13 +59,13 @@ public class LoungeMap {
             return;
         }
 
-        this.world.allowEntityExplode(false);
-        this.world.allowPlayerDamage(true);
-        this.world.allowFoodChange(false);
-        this.world.allowBlockBurnUp(false);
-        this.world.allowEntityBlockBreak(false);
-        this.world.allowDropPickItem(false);
-        this.world.allowBlockBreak(false);
+        this.world.restrict(ExWorld.Restriction.ENTITY_EXPLODE, true);
+        this.world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, false);
+        this.world.restrict(ExWorld.Restriction.FOOD_CHANGE, true);
+        this.world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
+        this.world.restrict(ExWorld.Restriction.ENTITY_BLOCK_BREAK, true);
+        this.world.restrict(ExWorld.Restriction.DROP_PICK_ITEM, true);
+        this.world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
         this.world.setExceptService(true);
         this.world.setPVP(true);
         this.world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
