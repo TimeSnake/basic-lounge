@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * timesnake.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -21,10 +21,9 @@ package de.timesnake.basic.lounge.scoreboard;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.DisplayGroup;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Status;
@@ -47,23 +46,24 @@ public class ScoreboardManager {
         this.gameTeam = new GameTeam("0", "game", "", ChatColor.WHITE, ChatColor.WHITE);
         this.spectatorTeam = new GameTeam("0", "spec", "", ChatColor.WHITE, ChatColor.GRAY);
 
-        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
-                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), DisplayGroup.MAIN_TABLIST_GROUPS,
-                this.spectatorTeam, DisplayGroup.MAIN_TABLIST_GROUPS,
-                (e, tablist) -> {
-                    User user = e.getUser();
-                    String task = user.getTask();
-
-                    if (task == null) {
-                        ((TeamTablist) tablist).addRemainEntry(e.getUser());
-                    } else if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
-                        if (e.getUser().getStatus().equals(Status.User.PRE_GAME) || e.getUser().getStatus().equals(Status.User.IN_GAME)) {
-                            tablist.addEntry(e.getUser());
-                        } else {
-                            ((TeamTablist) tablist).addRemainEntry(e.getUser());
-                        }
-                    }
-                }, (e, tablist) -> tablist.removeEntry(e.getUser()));
+        this.tablist = Server.getScoreboardManager().registerTeamTablist(
+                new TeamTablistBuilder("lounge_side")
+                        .colorType(TeamTablist.ColorType.WHITE)
+                        .teams(List.of(this.gameTeam))
+                        .teamType(this.gameTeam.getTeamType())
+                        .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
+                        .remainTeam(this.spectatorTeam)
+                        .userJoin((e, tablist) -> {
+                            if (e.getUser().getTask() != null
+                                    && e.getUser().getTask().equalsIgnoreCase(LoungeServer.getGame().getName())
+                                    && (e.getUser().getStatus().equals(Status.User.PRE_GAME)
+                                    || e.getUser().getStatus().equals(Status.User.IN_GAME))) {
+                                tablist.addEntry(e.getUser());
+                            } else {
+                                ((TeamTablist) tablist).addRemainEntry(e.getUser());
+                            }
+                        })
+                        .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
 
         if (LoungeServer.getGameServer().areKitsEnabled()) {
             this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName() + " §bKits");
@@ -79,10 +79,10 @@ public class ScoreboardManager {
 
         // sideboard
 
-        this.sideboard = Server.getScoreboardManager().registerNewSideboard("lounge",
+        this.sideboard = Server.getScoreboardManager().registerSideboard("lounge",
                 "§6§l" + LoungeServer.getGame().getDisplayName());
 
-        this.spectatorSideboard = Server.getScoreboardManager().registerNewSideboard("lounge_spectator",
+        this.spectatorSideboard = Server.getScoreboardManager().registerSideboard("lounge_spectator",
                 "§6§l" + LoungeServer.getGame().getDisplayName());
 
         if (LoungeServer.getGameServer().areKitsEnabled()) {
