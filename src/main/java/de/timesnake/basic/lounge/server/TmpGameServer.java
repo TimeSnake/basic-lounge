@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -119,7 +119,7 @@ public class TmpGameServer implements ChannelListener {
 
     public void start() {
         if (this.database.getTwinServerPort() == null || !this.database.getTwinServerPort().equals(Server.getPort())) {
-            Server.printError(Plugin.LOUNGE, "Twin server not found, shutdown");
+            Server.printWarning(Plugin.LOUNGE, "Twin server not found, shutdown");
             Bukkit.shutdown();
             return;
         }
@@ -129,7 +129,7 @@ public class TmpGameServer implements ChannelListener {
         }
 
         this.state = State.STARTING;
-        Server.getChannel().sendMessageToProxy(new ChannelServerMessage<>(Server.getNetwork().getName(),
+        Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getName(),
                 MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
         Server.printText(Plugin.LOUNGE, "Starting game server");
         this.checkIfStarted();
