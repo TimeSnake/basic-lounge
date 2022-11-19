@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -94,7 +94,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
 
         if (this.mapsByItemId.isEmpty()) {
             if (LoungeServer.getGameServer().areMapsEnabled()) {
-                Server.printError(Plugin.LOUNGE, "No map for player amount found");
+                Server.printWarning(Plugin.LOUNGE, "No map for player amount found");
                 Bukkit.shutdown();
             }
         }

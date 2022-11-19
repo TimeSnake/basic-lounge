@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -57,7 +57,7 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
         if (GameServer.getGame().getKits().size() == 0 || GameServer.getGame().getKits().size() > 42) {
             this.inventory = null;
             if (LoungeServer.getGameServer().areKitsEnabled()) {
-                Server.printError(Plugin.LOUNGE, "Too few/many kits for the inventory", "Kit");
+                Server.printWarning(Plugin.LOUNGE, "Too few/many kits for the inventory", "Kit");
             }
             return;
         }
