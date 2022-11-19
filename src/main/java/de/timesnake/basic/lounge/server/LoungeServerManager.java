@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -87,7 +87,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
         DbTmpGameServer gameDbServer = ((DbLoungeServer) Server.getDatabase()).getTwinServer();
 
         if (gameDbServer == null || !gameDbServer.exists()) {
-            Server.printError(Plugin.LOUNGE, "Game server not defined");
+            Server.printWarning(Plugin.LOUNGE, "Game server not defined");
             Bukkit.shutdown();
         }
 
@@ -120,14 +120,14 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
         }
 
         if (this.loungeMaps.isEmpty()) {
-            Server.printError(Plugin.LOUNGE, "No lounge-map found", "Map");
+            Server.printWarning(Plugin.LOUNGE, "No lounge-map found", "Map");
             Bukkit.shutdown();
         }
 
         this.loadRandomLoungeMap();
 
         if (Server.getTask() == null) {
-            Server.printError(Plugin.LOUNGE, "Task is null");
+            Server.printWarning(Plugin.LOUNGE, "Task is null");
             Bukkit.shutdown();
         }
 
