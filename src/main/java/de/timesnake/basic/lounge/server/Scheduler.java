@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -24,6 +24,8 @@ import de.timesnake.basic.game.util.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.channel.util.message.ChannelServerMessage;
+import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
@@ -134,6 +136,8 @@ public class Scheduler {
                         if (LoungeServer.getGameServer().areMapsEnabled()) {
                             Map map = LoungeServer.getMapManager().getVotedMap();
                             LoungeServer.getGameServer().getDatabase().setMapName(map.getName());
+                            Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
+                                    MessageType.Server.MAP, map.getName()));
                             LoungeServer.broadcastLoungeMessage(Component.text("Map: ", ExTextColor.WARNING)
                                     .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
                             LoungeServer.getMapManager().resetMapVotes();
