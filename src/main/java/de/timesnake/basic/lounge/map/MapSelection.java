@@ -54,10 +54,10 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
     private final HashMap<ExItemStack, Map> mapsByItemId = new HashMap<>();
 
     public MapSelection(Collection<Map> maps) {
-        this.item = new ExItemStack(Material.MAP).setDisplayName("§r§6Map-Voting");
+        this.item = new ExItemStack(Material.MAP).setDisplayName("§6Maps");
 
-        int invSize = 9 * (GameServer.getGame().getMaps().size() + 6) / 7;
-        this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Map-Voting", this);
+        int invSize = (int) (9 * Math.ceil(GameServer.getGame().getMaps().size() / 7.0));
+        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Map-Voting"), this);
 
         ExItemStack randomMapItem = new ExItemStack(Material.GRAY_WOOL).setDisplayName("§fRandom")
                 .setLore(ChatColor.GRAY + "Vote for a random map");

@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -53,8 +53,8 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK)
                 .hideAll();
 
-        int invSize = (int) (9 * Math.ceil((((double) LoungeServer.getGameServer().getTeamAmount()) / 7)));
-        this.inventory = Server.createExInventory(invSize > 0 ? invSize : 9, "Teamselection", this);
+        int invSize = (int) (9 * Math.ceil(LoungeServer.getGameServer().getTeamAmount() / 7.0));
+        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Teamselection"), this);
 
         // random team
         ExItemStack randomTeamItem =
