@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -96,7 +96,8 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             this.gameDescriptionItem.setItemMeta(meta);
         }
 
-        this.settingsInv = Server.createExInventory(9, "Settings", this, QUICK_START, WAIT, START_SERVER, DISCORD);
+        this.settingsInv = new ExInventory(9, Component.text("Settings"), this,
+                QUICK_START, WAIT, START_SERVER, DISCORD);
 
         Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM,
                 START_SERVER);

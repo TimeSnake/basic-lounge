@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -69,8 +69,8 @@ public class TeamManager {
         for (User user : Server.getUsers()) {
             ((TeamUser) user).setTeam(null);
         }
-        Server.runTaskSynchrony(() -> Server.getUsersWithOpenInventory("Teamselection").forEach(User::closeInventory)
-                , BasicLounge.getPlugin());
+        Server.runTaskSynchrony(() -> Server.getUsersWithOpenInventory("Teamselection")
+                .forEach(User::closeInventory), BasicLounge.getPlugin());
         new TeamCreator().createTeams();
     }
 

@@ -37,7 +37,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,10 +48,7 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
     private final HashMap<ExItemStack, Kit> kits = new HashMap<>();
 
     public KitSelection() {
-        this.item = new ExItemStack(Material.CRAFTING_TABLE);
-        ItemMeta ksMeta = this.item.getItemMeta();
-        ksMeta.setDisplayName("§6Kitselection");
-        this.item.setItemMeta(ksMeta);
+        this.item = new ExItemStack(Material.CRAFTING_TABLE).setDisplayName("§6Kits");
 
         if (GameServer.getGame().getKits().size() == 0 || GameServer.getGame().getKits().size() > 42) {
             this.inventory = null;
@@ -62,8 +58,8 @@ public class KitSelection implements UserInventoryInteractListener, UserInventor
             return;
         }
 
-        this.inventory = Server.createExInventory(9 * (GameServer.getGame().getKits().size() + 6) / 7,
-                "Kitselection", this);
+        this.inventory = new ExInventory((int) (9 * Math.ceil(GameServer.getGame().getKits().size() / 7.0)),
+                Component.text("Kitselection"), this);
 
         ExItemStack item = this.createKitItem(Kit.RANDOM);
 
