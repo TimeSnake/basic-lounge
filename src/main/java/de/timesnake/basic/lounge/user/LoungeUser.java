@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -19,10 +19,10 @@
 package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.game.util.Kit;
-import de.timesnake.basic.game.util.Map;
-import de.timesnake.basic.game.util.StatUser;
-import de.timesnake.basic.game.util.TablistGroupType;
+import de.timesnake.basic.game.util.game.Kit;
+import de.timesnake.basic.game.util.game.Map;
+import de.timesnake.basic.game.util.game.TablistGroupType;
+import de.timesnake.basic.game.util.user.StatUser;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.team.LoungeTeam;
 import de.timesnake.library.basic.util.Status;

@@ -20,7 +20,7 @@ package de.timesnake.basic.lounge.server;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.game.util.Map;
+import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.user.LoungeUser;
