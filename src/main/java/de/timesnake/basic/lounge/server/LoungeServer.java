@@ -1,5 +1,5 @@
 /*
- * basic-lounge.main
+ * workspace.basic-lounge.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
 
 package de.timesnake.basic.lounge.server;
 
-import de.timesnake.basic.game.util.GameServer;
-import de.timesnake.basic.game.util.TmpGame;
+import de.timesnake.basic.game.util.game.TmpGame;
+import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.map.LoungeMap;
 import de.timesnake.basic.lounge.map.MapManager;
