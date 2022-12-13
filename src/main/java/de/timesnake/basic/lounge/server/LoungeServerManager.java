@@ -20,14 +20,19 @@ package de.timesnake.basic.lounge.server;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
+import de.timesnake.basic.bukkit.util.chat.Chat;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
+import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Kit;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServerManager;
+import de.timesnake.basic.game.util.user.SpectatorManager;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.main.BasicLounge;
@@ -54,6 +59,8 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,6 +188,41 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             @Override
             public Kit loadKit(DbKit kit) {
                 return new Kit(kit);
+            }
+        };
+    }
+
+    @Override
+    protected SpectatorManager loadSpectatorManager() {
+        return new SpectatorManager() {
+            @Override
+            public @NotNull Tablist getGameTablist() {
+                return LoungeServerManager.this.getLoungeScoreboardManager().getTablist();
+            }
+
+            @Override
+            public @Nullable Sideboard getGameSideboard() {
+                return LoungeServerManager.this.getLoungeScoreboardManager().getSideboard();
+            }
+
+            @Override
+            public @Nullable Sideboard getSpectatorSideboard() {
+                return LoungeServerManager.this.getLoungeScoreboardManager().getSpectatorSideboard();
+            }
+
+            @Override
+            public @Nullable Chat getSpectatorChat() {
+                return null;
+            }
+
+            @Override
+            public ExLocation getSpectatorSpawn() {
+                return null;
+            }
+
+            @Override
+            public boolean loadTools() {
+                return false;
             }
         };
     }
