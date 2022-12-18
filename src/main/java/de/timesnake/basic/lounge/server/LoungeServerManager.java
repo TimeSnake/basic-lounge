@@ -96,6 +96,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
         if (gameDbServer == null || !gameDbServer.exists()) {
             Server.printWarning(Plugin.LOUNGE, "Game server not defined");
             Bukkit.shutdown();
+            return;
         }
 
         this.tmpGameServer = new TmpGameServer(gameDbServer);
@@ -108,8 +109,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             try {
                 loungeMap = new LoungeMap(map);
             } catch (WorldNotExistException e) {
-                Server.printWarning(Plugin.LOUNGE, "Map " + map.getName() + " could not loaded, world not exists",
-                        "lounge", "Map");
+                Server.printWarning(Plugin.LOUNGE, "Map '" + map.getName() + "' could not loaded, world '" +
+                                                   e.getWorldName() + "' not exists", "lounge", "Map");
                 continue;
             }
             loungeMap.getWorld().setExceptService(true);
@@ -163,7 +164,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     public final void onLoungeDisable() {
         this.discordManager.cleanup();
-        this.tmpGameServer.getDatabase().setTwinServerPort(null);
+        this.tmpGameServer.getDatabase().setTwinServerName(null);
         ((DbLoungeServer) Server.getDatabase()).setTask(null);
     }
 

@@ -46,24 +46,24 @@ public class TmpGameServer implements ChannelListener {
     private State state;
     private boolean discord;
 
-    public TmpGameServer(DbTmpGameServer server) {
-        this.database = server;
+    public TmpGameServer(DbTmpGameServer database) {
+        this.database = database;
         this.port = database.getPort();
         this.name = database.getName();
-        if (server.getStatus().equals(Status.Server.ONLINE)) {
+        if (database.getStatus().equals(Status.Server.ONLINE)) {
             this.state = State.READY;
         } else {
             this.state = State.OFFLINE;
         }
 
-        this.maxPlayers = server.getMaxPlayers();
-        this.kitsEnabled = server.areKitsEnabled();
-        this.mapsEnabled = server.areMapsEnabled();
-        this.maxPlayersPerTeam = server.getMaxPlayersPerTeam();
-        Integer teamAmount = server.getTeamAmount();
+        this.maxPlayers = database.getMaxPlayers();
+        this.kitsEnabled = database.areKitsEnabled();
+        this.mapsEnabled = database.areMapsEnabled();
+        this.maxPlayersPerTeam = database.getMaxPlayersPerTeam();
+        Integer teamAmount = database.getTeamAmount();
         this.teamAmount = teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
-        this.mergeTeams = server.isTeamMerging();
-        this.discord = server.isDiscordEnabled();
+        this.mergeTeams = database.isTeamMerging();
+        this.discord = database.isDiscordEnabled();
 
         Server.getChannel().addListener(this, () -> Collections.singleton(this.getName()));
     }
@@ -118,7 +118,7 @@ public class TmpGameServer implements ChannelListener {
     }
 
     public void start() {
-        if (this.database.getTwinServerPort() == null || !this.database.getTwinServerPort().equals(Server.getPort())) {
+        if (this.database.getTwinServerName() == null || !this.database.getTwinServerName().equals(Server.getName())) {
             Server.printWarning(Plugin.LOUNGE, "Twin server not found, shutdown");
             Bukkit.shutdown();
             return;

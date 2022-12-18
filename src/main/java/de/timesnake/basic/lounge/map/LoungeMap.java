@@ -55,7 +55,7 @@ public class LoungeMap {
 
         if (this.world == null) {
             Server.printWarning(Plugin.LOUNGE, "Map-World " + this.world.getName() + " of map " + this.name +
-                    " could not loaded, world not exists", "lounge", "Map");
+                                               " could not loaded, world not exists", "lounge", "Map");
             return;
         }
 
