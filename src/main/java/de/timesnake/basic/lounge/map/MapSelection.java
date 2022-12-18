@@ -51,7 +51,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
 
     private final ExInventory inventory;
     private final ExItemStack item;
-    private final HashMap<ExItemStack, Map> mapsByItemId = new HashMap<>();
+    private final HashMap<ExItemStack, Map> mapsByItem = new HashMap<>();
 
     public MapSelection(Collection<Map> maps) {
         this.item = new ExItemStack(Material.MAP).setDisplayName("§6Maps");
@@ -88,11 +88,11 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
             item.setLore(lore);
 
             this.inventory.setItemStack(slot, item);
-            this.mapsByItemId.put(item, map);
+            this.mapsByItem.put(item, map);
             slot++;
         }
 
-        if (this.mapsByItemId.isEmpty()) {
+        if (this.mapsByItem.isEmpty()) {
             if (LoungeServer.getGameServer().areMapsEnabled()) {
                 Server.printWarning(Plugin.LOUNGE, "No map for player amount found");
                 Bukkit.shutdown();
@@ -115,7 +115,7 @@ public class MapSelection implements UserInventoryClickListener, UserInventoryIn
             return;
         }
 
-        Map map = this.mapsByItemId.get(clickedItem);
+        Map map = this.mapsByItem.get(clickedItem);
         if (map != null) {
             user.setSelectedMap(map);
             sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)
