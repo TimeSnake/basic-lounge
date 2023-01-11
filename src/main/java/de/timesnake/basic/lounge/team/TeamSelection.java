@@ -18,15 +18,15 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import java.util.HashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.HashMap;
-
-public class TeamSelection implements UserInventoryClickListener, UserInventoryInteractListener, InventoryHolder {
+public class TeamSelection implements UserInventoryClickListener, UserInventoryInteractListener,
+        InventoryHolder {
 
     private final ExItemStack invItem;
     private final ExInventory inventory;
@@ -36,11 +36,13 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
     private boolean silentBlocked = false;
 
     public TeamSelection() {
-        this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK)
+        this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection",
+                        Color.BLACK)
                 .hideAll();
 
         int invSize = (int) (9 * Math.ceil(LoungeServer.getGameServer().getTeamAmount() / 7.0));
-        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Teamselection"), this);
+        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Teamselection"),
+                this);
 
         // random team
         ExItemStack randomTeamItem =
@@ -75,10 +77,12 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
 
     protected void loadTeams() {
         int i = 2;
-        for (Team team :
-                LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values()) {
+        for (Team team : LoungeServer.getGame()
+                .getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount())) {
             // first and second inventory column empty (for random selection)
-            if (i % 9 == 0) i += 2;
+            if (i % 9 == 0) {
+                i += 2;
+            }
 
             // create item
             ExItemStack item = ((LoungeTeam) team).createTeamItem(i);
@@ -94,7 +98,8 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         ExItemStack clickedItem = e.getClickedItem();
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(Component.text("Team selection is closed", ExTextColor.WARNING));
+            sender.sendPluginMessage(
+                    Component.text("Team selection is closed", ExTextColor.WARNING));
             user.closeInventory();
             e.setCancelled(true);
             return;
@@ -103,13 +108,15 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         LoungeTeam team = this.teams.get(clickedItem);
         if (team != null) {
             if (this.blocked && !this.silentBlocked) {
-                sender.sendPluginMessage(Component.text("Team selection is forbidden", ExTextColor.WARNING));
+                sender.sendPluginMessage(
+                        Component.text("Team selection is forbidden", ExTextColor.WARNING));
                 user.closeInventory();
                 e.setCancelled(true);
                 return;
             }
 
-            if (team.getMaxPlayers() != null && team.getUsersSelected().size() >= team.getMaxPlayers()) {
+            if (team.getMaxPlayers() != null
+                    && team.getUsersSelected().size() >= team.getMaxPlayers()) {
                 sender.sendPluginMessage(Component.text("Team ", ExTextColor.WARNING)
                         .append(Component.text(team.getDisplayName(), team.getTextColor()))
                         .append(Component.text(" is full", ExTextColor.WARNING)));
@@ -121,7 +128,8 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
             user.setSelectedTeam(team);
             sender.sendPluginMessage(Component.text("You selected team ", ExTextColor.PERSONAL)
                     .append(Component.text(team.getDisplayName(), team.getTextColor())));
-            Server.printText(Plugin.LOUNGE, user.getName() + " selected team " + team.getName(), "Team");
+            Server.printText(Plugin.LOUNGE, user.getName() + " selected team " + team.getName(),
+                    "Team");
         } else {
             user.setSelectedTeam(null);
             sender.sendPluginMessage(Component.text("You selected team ", ExTextColor.PERSONAL)
@@ -138,7 +146,8 @@ public class TeamSelection implements UserInventoryClickListener, UserInventoryI
         LoungeUser user = ((LoungeUser) e.getUser());
         Sender sender = user.asSender(Plugin.LOUNGE);
         if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(Component.text("The team selection is closed", ExTextColor.WARNING));
+            sender.sendPluginMessage(
+                    Component.text("The team selection is closed", ExTextColor.WARNING));
             e.setCancelled(true);
             return;
         }
