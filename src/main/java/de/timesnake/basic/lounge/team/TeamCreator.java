@@ -13,9 +13,13 @@ import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
-
-import java.util.*;
 
 public class TeamCreator {
 
@@ -28,7 +32,8 @@ public class TeamCreator {
         this.usersWithRandomTeam = new ArrayList<>();
         this.playerAmount = Server.getPreGameUsers().size();
         this.teams =
-                new LinkedList(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()).values());
+                new LinkedList(LoungeServer.getGame()
+                        .getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()));
         this.teams.sort(Comparator.comparingInt(Team::getRank));
     }
 
@@ -140,7 +145,8 @@ public class TeamCreator {
         for (User user : users) {
             LoungeTeam selectedTeam = ((LoungeUser) user).getSelectedTeam();
 
-            if (selectedTeam != null && selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
+            if (selectedTeam != null
+                    && selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
                 ((LoungeUser) user).setTeam(selectedTeam);
                 ((LoungeUser) user).setSelectedTeam(selectedTeam);
 
@@ -166,9 +172,12 @@ public class TeamCreator {
             }
 
             if (user.getTeam() == null) {
-                user.getPlayer().kick(Component.text("Error: Please contact an admin (team creation failed)", ExTextColor.WARNING)
+                user.getPlayer().kick(Component.text(
+                                "Error: Please contact an admin (team creation failed)",
+                                ExTextColor.WARNING)
                         .append(Component.newline())
-                        .append(Component.text("You can rejoin in a few seconds", ExTextColor.PUBLIC))
+                        .append(Component.text("You can rejoin in a few seconds",
+                                ExTextColor.PUBLIC))
                         .append(Component.newline())
                         .append(Component.text("USE /support", ExTextColor.VALUE)));
             }
@@ -190,8 +199,9 @@ public class TeamCreator {
     }
 
     private void sendJoinedTeamMessage(User user, Team team) {
-        user.sendPluginMessage(Plugin.LOUNGE, Component.text("You joined team ", ExTextColor.PERSONAL)
-                .append(Component.text(team.getDisplayName(), team.getTextColor())));
+        user.sendPluginMessage(Plugin.LOUNGE,
+                Component.text("You joined team ", ExTextColor.PERSONAL)
+                        .append(Component.text(team.getDisplayName(), team.getTextColor())));
         Server.printText(Plugin.LOUNGE, "User " + user.getName() + " joined team " + team.getName(),
                 "Team");
     }
