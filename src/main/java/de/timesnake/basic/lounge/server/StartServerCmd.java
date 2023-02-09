@@ -12,16 +12,16 @@ import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-
 import java.util.List;
+import net.kyori.adventure.text.Component;
 
 public class StartServerCmd implements CommandListener {
 
-    private Code.Permission startServerPerm;
+    private Code startServerPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (!sender.hasPermission(this.startServerPerm)) {
             return;
         }
@@ -31,12 +31,13 @@ public class StartServerCmd implements CommandListener {
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         return null;
     }
 
     @Override
     public void loadCodes(Plugin plugin) {
-        this.startServerPerm = plugin.createPermssionCode("ssc", "lounge.start.server");
+        this.startServerPerm = plugin.createPermssionCode("lounge.start.server");
     }
 }
