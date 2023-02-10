@@ -4,18 +4,22 @@
 
 package de.timesnake.basic.lounge.team;
 
+import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
+import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
+import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.database.util.game.DbTeam;
-import org.bukkit.Material;
-
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 
 public class LoungeTeam extends Team {
 
@@ -26,21 +30,66 @@ public class LoungeTeam extends Team {
     private ExItemStack item;
 
 
-    public LoungeTeam(DbTeam dbTeam) throws UnsupportedGroupRankException {
+    public LoungeTeam(DbTeam dbTeam)
+            throws UnsupportedGroupRankException {
         super(dbTeam);
     }
 
-    public ExItemStack createTeamItem(int slot) {
-        this.item = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, this.getChatColor() + this.getDisplayName(),
-                this.getColor()).setSlot(slot).hideAll();
+    public ExItemStack createTeamItem(TeamSelection teamSelection, int slot) {
+        this.item = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
+                        this.getChatColor() + this.getDisplayName(), this.getColor())
+                .setSlot(slot)
+                .hideAll()
+                .onClick(event -> {
+                    LoungeUser user = ((LoungeUser) event.getUser());
+                    Sender sender = user.asSender(Plugin.LOUNGE);
+                    if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
+                        sender.sendPluginMessage(
+                                Component.text("Team selection is closed", ExTextColor.WARNING));
+                        user.closeInventory();
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    if (teamSelection.isBlocked() && !teamSelection.isSilentBlocked()) {
+                        sender.sendPluginMessage(
+                                Component.text("Team selection is forbidden", ExTextColor.WARNING));
+                        user.closeInventory();
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    if (this.getMaxPlayers() != null
+                            && this.getUsersSelected().size() >= this.getMaxPlayers()) {
+                        sender.sendPluginMessage(Component.text("Team ", ExTextColor.WARNING)
+                                .append(Component.text(this.getDisplayName(), this.getTextColor()))
+                                .append(Component.text(" is full", ExTextColor.WARNING)));
+                        user.closeInventory();
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    user.setSelectedTeam(this);
+                    sender.sendPluginMessage(
+                            Component.text("You selected team ", ExTextColor.PERSONAL)
+                                    .append(Component.text(this.getDisplayName(),
+                                            this.getTextColor())));
+                    Server.printText(Plugin.LOUNGE, user.getName() + " selected team "
+                            + this.getName(), "Team");
+                    user.closeInventory();
+
+                    event.setCancelled(true);
+                });
         this.updateItem();
         return item;
     }
 
     private void updateItem() {
         if (this.maxPlayersDisplay != null) {
-            item.setExLore(List.of("§f" + this.usersSelected.size() + " §7/ §f" + this.maxPlayersDisplay, "",
-                    ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
+            item.setExLore(
+                    List.of("§f" + this.usersSelected.size() + " §7/ §f" + this.maxPlayersDisplay,
+                            "",
+                            ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
         } else {
             item.setExLore(List.of(ChatColor.GRAY + "Join " + this.getDisplayName() + " team"));
         }
