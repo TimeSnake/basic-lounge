@@ -14,7 +14,7 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;

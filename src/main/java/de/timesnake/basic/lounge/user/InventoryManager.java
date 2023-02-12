@@ -19,7 +19,7 @@ import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.TmpGameServer;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.MessageType;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;

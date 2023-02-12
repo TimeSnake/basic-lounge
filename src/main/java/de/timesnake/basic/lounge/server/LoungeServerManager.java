@@ -34,11 +34,18 @@ import de.timesnake.channel.util.listener.ChannelListener;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
-import de.timesnake.database.util.game.*;
+import de.timesnake.database.util.game.DbGame;
+import de.timesnake.database.util.game.DbKit;
+import de.timesnake.database.util.game.DbLoungeMap;
+import de.timesnake.database.util.game.DbMap;
+import de.timesnake.database.util.game.DbTeam;
+import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -48,10 +55,8 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LoungeServerManager extends GameServerManager<TmpGame> implements Listener, ChannelListener {
+public class LoungeServerManager extends GameServerManager<TmpGame> implements Listener,
+        ChannelListener {
 
     public static LoungeServerManager getInstance() {
         return (LoungeServerManager) ServerManager.getInstance();
@@ -95,8 +100,9 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             try {
                 loungeMap = new LoungeMap(map);
             } catch (WorldNotExistException e) {
-                Server.printWarning(Plugin.LOUNGE, "Map '" + map.getName() + "' could not loaded, world '" +
-                                                   e.getWorldName() + "' not exists", "lounge", "Map");
+                Server.printWarning(Plugin.LOUNGE,
+                        "Map '" + map.getName() + "' could not loaded, world '" +
+                                e.getWorldName() + "' not exists", "lounge", "Map");
                 continue;
             }
             loungeMap.getWorld().setExceptService(true);
@@ -110,7 +116,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             loungeMap.getWorld().restrict(ExWorld.Restriction.PLACE_IN_BLOCK, true);
             loungeMap.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             this.loungeMaps.add(loungeMap);
-            Server.printText(Plugin.LOUNGE, "Loaded map " + loungeMap.getName() + " successfully", "Map");
+            Server.printText(Plugin.LOUNGE, "Loaded map " + loungeMap.getName() + " successfully",
+                    "Map");
         }
 
         if (this.loungeMaps.isEmpty()) {
@@ -194,7 +201,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
             @Override
             public @Nullable Sideboard getSpectatorSideboard() {
-                return LoungeServerManager.this.getLoungeScoreboardManager().getSpectatorSideboard();
+                return LoungeServerManager.this.getLoungeScoreboardManager()
+                        .getSpectatorSideboard();
             }
 
             @Override
@@ -238,12 +246,14 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     public void startGame() {
         this.setState(State.PRE_GAME);
-        Server.getChannel().sendMessage(new ChannelServerMessage<>(this.getName(), MessageType.Server.CUSTOM,
-                "estimatedPlayers:" + this.getGameUsers().size()));
+        Server.getChannel()
+                .sendMessage(new ChannelServerMessage<>(this.getName(), MessageType.Server.CUSTOM,
+                        "estimatedPlayers:" + this.getGameUsers().size()));
         Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
 
-        Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(), Server.getGameUsers(),
+        Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(),
+                Server.getGameUsers(),
                 BasicLounge.getPlugin());
 
         Server.runTaskLaterSynchrony(() -> {
@@ -258,7 +268,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     @Deprecated
     public void broadcastLoungeMessage(String msg) {
-        Server.broadcastMessage(Plugin.LOUNGE, msg);
+        Server.broadcastTDMessage(Plugin.LOUNGE, msg);
     }
 
 
