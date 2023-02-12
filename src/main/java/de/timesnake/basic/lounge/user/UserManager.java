@@ -14,7 +14,7 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
@@ -33,13 +33,15 @@ public class UserManager implements Listener {
         // spectator
         if (user.getStatus().equals(Status.User.SPECTATOR)) {
             ((LoungeUser) user).joinSpectator();
-            user.sendPluginMessage(Plugin.LOUNGE, Component.text("You can join the game in a few moments", ExTextColor.WARNING));
+            user.sendPluginMessage(Plugin.LOUNGE,
+                    Component.text("You can join the game in a few moments", ExTextColor.WARNING));
             return;
         }
 
         if (LoungeServer.getGame().hasTexturePack()) {
             user.sendPluginMessage(Plugin.LOUNGE, Component.text("This game uses a texture pack. " +
-                    "It is highly recommended to use the texture pack. The texture pack will be loaded at the game " +
+                    "It is highly recommended to use the texture pack. The texture pack will be loaded at the game "
+                    +
                     "start.", ExTextColor.WARNING));
         }
 
@@ -52,7 +54,8 @@ public class UserManager implements Listener {
 
                 if (Server.getGameNotServiceUsers().size() == 1) {
                     if (user.getLastServer() != null) {
-                        if (user.getLastServer().getPort().equals(LoungeServer.getGameServer().getPort())) {
+                        if (user.getLastServer().getPort()
+                                .equals(LoungeServer.getGameServer().getPort())) {
                             LoungeServer.setState(LoungeServerManager.State.WAITING);
                         }
                     }
@@ -63,8 +66,9 @@ public class UserManager implements Listener {
             }
         }
 
-        user.sendPluginMessage(Plugin.LOUNGE, Component.text("You didn't joined the lounge!", ExTextColor.WARNING));
-        user.asSender(Plugin.LOUNGE).sendMessageCommandHelp("Use", "service");
+        user.sendPluginMessage(Plugin.LOUNGE,
+                Component.text("You didn't joined the lounge!", ExTextColor.WARNING));
+        user.asSender(Plugin.LOUNGE).sendTDMessageCommandHelp("Use", "service");
         user.getInventory().clear();
     }
 
@@ -77,9 +81,9 @@ public class UserManager implements Listener {
                 int size = Server.getPreGameUsers().size();
                 LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(size);
 
-
                 if (size <= LoungeServer.getGame().getAutoStartPlayerNumber()
-                        || (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0)) {
+                        || (LoungeServer.getGame().isEqualTimeSizeRequired()
+                        && size % LoungeServer.getGame().getTeams().size() != 0)) {
                     LoungeServer.resetGameCountdown();
                 }
 

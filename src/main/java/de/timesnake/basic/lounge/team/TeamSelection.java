@@ -13,7 +13,7 @@ import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import java.util.HashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
