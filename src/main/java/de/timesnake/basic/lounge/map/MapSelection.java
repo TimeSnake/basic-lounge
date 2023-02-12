@@ -36,7 +36,7 @@ public class MapSelection {
     public MapSelection(Collection<Map> maps) {
         this.item = new ExItemStack(Material.MAP)
                 .setDisplayName("§6Maps")
-                .onClick(event -> {
+                .onInteract(event -> {
                     LoungeUser user = ((LoungeUser) event.getUser());
                     Sender sender = user.asSender(Plugin.LOUNGE);
                     if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
