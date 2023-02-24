@@ -8,12 +8,12 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.group.DisplayGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Status;
-
 import java.util.List;
 
 public class ScoreboardManager {
@@ -41,7 +41,8 @@ public class ScoreboardManager {
                         .remainTeam(this.spectatorTeam)
                         .userJoin((e, tablist) -> {
                             if (e.getUser().getTask() != null
-                                    && e.getUser().getTask().equalsIgnoreCase(LoungeServer.getGame().getName())
+                                    && e.getUser().getTask()
+                                    .equalsIgnoreCase(LoungeServer.getGame().getName())
                                     && (e.getUser().getStatus().equals(Status.User.PRE_GAME)
                                     || e.getUser().getStatus().equals(Status.User.IN_GAME))) {
                                 tablist.addEntry(e.getUser());
@@ -57,19 +58,22 @@ public class ScoreboardManager {
             this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName());
         }
 
-        this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n" + Server.SUPPORT_EMAIL);
+        this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n"
+                + Server.SUPPORT_EMAIL);
 
         Server.getScoreboardManager().setActiveTablist(this.tablist);
         Server.printText(Plugin.LOUNGE, "Lounge tablist loaded");
 
-
         // sideboard
 
-        this.sideboard = Server.getScoreboardManager().registerSideboard("lounge",
-                "§6§l" + LoungeServer.getGame().getDisplayName());
+        this.sideboard = Server.getScoreboardManager().registerSideboard(new SideboardBuilder()
+                .name("lounge")
+                .title("§6§l" + LoungeServer.getGame().getDisplayName()));
 
-        this.spectatorSideboard = Server.getScoreboardManager().registerSideboard("lounge_spectator",
-                "§6§l" + LoungeServer.getGame().getDisplayName());
+        this.spectatorSideboard = Server.getScoreboardManager()
+                .registerSideboard(new SideboardBuilder()
+                        .name("lounge_spectator")
+                        .title("§6§l" + LoungeServer.getGame().getDisplayName()));
 
         if (LoungeServer.getGameServer().areKitsEnabled()) {
             this.sideboard.setScore(4, "§lKit");
@@ -130,11 +134,11 @@ public class ScoreboardManager {
         this.spectatorSideboard.setScore(4, online + "§7/§f" + max);
         if (needMore > 0) {
             if (needMore == 1) {
-                this.sideboard.setScore(line - 1, "§7" + needMore + " more is needed");
-                this.spectatorSideboard.setScore(3, "§7" + needMore + " more is needed");
+                this.sideboard.setScore(line - 1, "§7" + needMore + " more needed");
+                this.spectatorSideboard.setScore(3, "§7" + needMore + " more needed");
             } else {
-                this.sideboard.setScore(line - 1, "§7" + needMore + " more are needed");
-                this.spectatorSideboard.setScore(3, "§7" + needMore + " more are needed");
+                this.sideboard.setScore(line - 1, "§7" + needMore + " more needed");
+                this.spectatorSideboard.setScore(3, "§7" + needMore + " more needed");
             }
         } else {
             this.sideboard.setScore(line - 1, "");

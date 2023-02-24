@@ -31,8 +31,6 @@ import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
-import de.timesnake.channel.util.message.ChannelServerMessage;
-import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.database.util.game.DbKit;
@@ -52,7 +50,6 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LoungeServerManager extends GameServerManager<TmpGame> implements Listener,
@@ -167,6 +164,16 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     }
 
     @Override
+    public Sideboard getGameSideboard() {
+        return LoungeServerManager.this.getLoungeScoreboardManager().getSideboard();
+    }
+
+    @Override
+    public Tablist getGameTablist() {
+        return LoungeServerManager.this.getLoungeScoreboardManager().getTablist();
+    }
+
+    @Override
     protected TmpGame loadGame(DbGame dbGame, boolean loadWorlds) {
         return new TmpGame((DbTmpGame) dbGame, false) {
             @Override
@@ -189,15 +196,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     @Override
     protected SpectatorManager loadSpectatorManager() {
         return new SpectatorManager() {
-            @Override
-            public @NotNull Tablist getGameTablist() {
-                return LoungeServerManager.this.getLoungeScoreboardManager().getTablist();
-            }
-
-            @Override
-            public @Nullable Sideboard getGameSideboard() {
-                return LoungeServerManager.this.getLoungeScoreboardManager().getSideboard();
-            }
 
             @Override
             public @Nullable Sideboard getSpectatorSideboard() {
@@ -246,10 +244,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     public void startGame() {
         this.setState(State.PRE_GAME);
-        Server.getChannel()
-                .sendMessage(new ChannelServerMessage<>(this.getName(), MessageType.Server.CUSTOM,
-                        "estimatedPlayers:" + this.getGameUsers().size()));
-        Server.printText(Plugin.LOUNGE, "Estimated Players: " + this.getGameUsers().size());
         Server.getChat().broadcastJoinQuit(false);
 
         Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(),

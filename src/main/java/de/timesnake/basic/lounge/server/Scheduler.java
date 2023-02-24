@@ -14,6 +14,7 @@ import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
@@ -21,8 +22,6 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.time.Duration;
 
 public class Scheduler {
 
@@ -55,14 +54,18 @@ public class Scheduler {
         TmpGameServer.State state = LoungeServer.getGameServer().getState();
 
         if (size >= autoStartSize) {
-            if (LoungeServer.getGame().isEqualTimeSizeRequired() && size % LoungeServer.getGame().getTeams().size() != 0) {
-                LoungeServer.broadcastLoungeMessage(Component.text("Waiting for players to create equal teams.", ExTextColor.PUBLIC));
+            if (LoungeServer.getGame().isEqualTimeSizeRequired()
+                    && size % LoungeServer.getGame().getTeams().size() != 0) {
+                LoungeServer.broadcastLoungeMessage(
+                        Component.text("Waiting for players to create equal teams.",
+                                ExTextColor.PUBLIC));
                 this.resetGameCountdown();
             } else if (state.equals(TmpGameServer.State.READY)) {
                 Server.getSpectatorUsers().forEach(user -> {
                     ((LoungeUser) user).loadSpectatorInventory();
                     user.showTitle(Component.empty(),
-                            Component.text("Click the helmet to join the game", ExTextColor.WARNING),
+                            Component.text("Click the helmet to join the game",
+                                    ExTextColor.WARNING),
                             Duration.ofSeconds(5));
                 });
                 this.startGameCountdown();
@@ -76,7 +79,8 @@ public class Scheduler {
                 Server.getSpectatorUsers().forEach(user -> {
                     ((LoungeUser) user).loadSpectatorInventory();
                     user.showTitle(Component.empty(),
-                            Component.text("Click the helmet to join the game", ExTextColor.WARNING),
+                            Component.text("Click the helmet to join the game",
+                                    ExTextColor.WARNING),
                             Duration.ofSeconds(5));
                 });
             }
@@ -122,10 +126,13 @@ public class Scheduler {
                         if (LoungeServer.getGameServer().areMapsEnabled()) {
                             Map map = LoungeServer.getMapManager().getVotedMap();
                             LoungeServer.getGameServer().getDatabase().setMapName(map.getName());
-                            Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
-                                    MessageType.Server.MAP, map.getName()));
-                            LoungeServer.broadcastLoungeMessage(Component.text("Map: ", ExTextColor.WARNING)
-                                    .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
+                            Server.getChannel()
+                                    .sendMessage(new ChannelServerMessage<>(Server.getName(),
+                                            MessageType.Server.MAP, map.getName()));
+                            LoungeServer.broadcastLoungeMessage(
+                                    Component.text("Map: ", ExTextColor.WARNING)
+                                            .append(Component.text(map.getDisplayName(),
+                                                    ExTextColor.VALUE)));
                             LoungeServer.getMapManager().resetMapVotes();
                         }
                     }
@@ -140,6 +147,13 @@ public class Scheduler {
                                     Component.text("Loading texture pack...", ExTextColor.WARNING),
                                     Duration.ofSeconds(3));
                         }
+
+                        Server.getChannel()
+                                .sendMessage(new ChannelServerMessage<>(Server.getName(),
+                                        MessageType.Server.CUSTOM,
+                                        "estimatedPlayers:" + Server.getGameUsers().size()));
+                        Server.printText(Plugin.LOUNGE,
+                                "Estimated Players: " + Server.getGameUsers().size());
                     }
                     case 8 -> {
                         LoungeServer.startGame();
