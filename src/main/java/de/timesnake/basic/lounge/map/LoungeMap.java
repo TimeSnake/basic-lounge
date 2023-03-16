@@ -11,10 +11,9 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.database.util.game.DbLoungeMap;
 import de.timesnake.database.util.game.DbLoungeMapDisplay;
+import java.util.HashMap;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
-
-import java.util.HashMap;
 
 public class LoungeMap {
 
@@ -32,21 +31,24 @@ public class LoungeMap {
         this.world = this.spawn.getExWorld();
 
         for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
-            this.personalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+            this.personalStatsDisplayLocationByIndex.put(display.getIndex(),
+                    new StatDisplay(this.world, display));
         }
 
         for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
-            this.globalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+            this.globalStatsDisplayLocationByIndex.put(display.getIndex(),
+                    new StatDisplay(this.world, display));
         }
 
         if (this.world == null) {
-            Server.printWarning(Plugin.LOUNGE, "Map-World " + this.world.getName() + " of map " + this.name +
-                                               " could not loaded, world not exists", "lounge", "Map");
+            Server.printWarning(Plugin.LOUNGE,
+                    "Map-World " + this.world.getName() + " of map " + this.name +
+                            " could not loaded, world not exists", "lounge", "Map");
             return;
         }
 
         this.world.restrict(ExWorld.Restriction.ENTITY_EXPLODE, true);
-        this.world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, false);
+        this.world.restrict(ExWorld.Restriction.NO_PLAYER_DAMAGE, false);
         this.world.restrict(ExWorld.Restriction.FOOD_CHANGE, true);
         this.world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
         this.world.restrict(ExWorld.Restriction.ENTITY_BLOCK_BREAK, true);
@@ -56,6 +58,7 @@ public class LoungeMap {
         this.world.setPVP(true);
         this.world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         this.world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        this.world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
     }
 
