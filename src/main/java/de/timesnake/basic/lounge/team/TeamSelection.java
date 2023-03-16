@@ -49,8 +49,7 @@ public class TeamSelection {
                 });
 
         int invSize = (int) (9 * Math.ceil(LoungeServer.getGameServer().getTeamAmount() / 7.0));
-        this.inventory = new ExInventory(invSize > 0 ? invSize : 9,
-                Component.text("Teamselection"));
+        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, "Teamselection");
 
         ExItemStack randomTeamItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
                         "§fRandom", Color.GRAY)

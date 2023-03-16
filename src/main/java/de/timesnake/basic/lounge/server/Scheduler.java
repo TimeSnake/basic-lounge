@@ -37,12 +37,6 @@ public class Scheduler {
         this.infoBar = Server.createBossBar(WAITING_BAR_TEXT, BarColor.WHITE, BarStyle.SOLID);
     }
 
-    public void startWaitTask() {
-        this.infoBar.setTitle(WAITING_BAR_TEXT);
-        this.infoBar.setProgress(1);
-        this.infoBar.setColor(BarColor.WHITE);
-    }
-
     public void checkCountdown() {
         if (this.wait) {
             LoungeServer.broadcastLoungeMessage(Component.text("Waiting...", ExTextColor.PUBLIC));
