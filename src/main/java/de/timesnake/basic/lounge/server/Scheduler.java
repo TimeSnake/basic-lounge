@@ -7,11 +7,11 @@ package de.timesnake.basic.lounge.server;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import java.time.Duration;
@@ -83,7 +83,7 @@ public class Scheduler {
 
     public void startGameCountdown() {
         if (this.wait) {
-            Server.printText(Plugin.LOUNGE, "Waiting...");
+            Loggers.LOUNGE.info("Waiting...");
             return;
         }
 
@@ -146,8 +146,7 @@ public class Scheduler {
                                 .sendMessage(new ChannelServerMessage<>(Server.getName(),
                                         MessageType.Server.CUSTOM,
                                         "estimatedPlayers:" + Server.getGameUsers().size()));
-                        Server.printText(Plugin.LOUNGE,
-                                "Estimated Players: " + Server.getGameUsers().size());
+                        Loggers.LOUNGE.info("Estimated Players: " + Server.getGameUsers().size());
                     }
                     case 8 -> {
                         LoungeServer.startGame();

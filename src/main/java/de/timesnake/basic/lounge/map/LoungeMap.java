@@ -8,9 +8,9 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.database.util.game.DbLoungeMap;
 import de.timesnake.database.util.game.DbLoungeMapDisplay;
+import de.timesnake.library.basic.util.Loggers;
 import java.util.HashMap;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -41,9 +41,8 @@ public class LoungeMap {
         }
 
         if (this.world == null) {
-            Server.printWarning(Plugin.LOUNGE,
-                    "Map-World " + this.world.getName() + " of map " + this.name +
-                            " could not loaded, world not exists", "lounge", "Map");
+            Loggers.LOUNGE.warning("Map-World " + this.world.getName() + " of map " + this.name +
+                    " could not loaded, world not exists");
             return;
         }
 

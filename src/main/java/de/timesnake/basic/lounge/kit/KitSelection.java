@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.lounge.kit;
 
-import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Kit;
@@ -12,6 +11,7 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
 import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
@@ -41,7 +41,7 @@ public class KitSelection {
                 || GameServer.getGame().getKits().size() > 42) {
             this.inventory = null;
             if (LoungeServer.getGameServer().areKitsEnabled()) {
-                Server.printWarning(Plugin.LOUNGE, "Too few/many kits for the inventory", "Kit");
+                Loggers.LOUNGE.warning("Too few/many kits for the inventory");
             }
             return;
         }
@@ -83,9 +83,7 @@ public class KitSelection {
                     user.sendPluginMessage(Plugin.LOUNGE,
                             Component.text("You selected kit ", ExTextColor.PERSONAL)
                                     .append(Component.text(kit.getName(), ExTextColor.VALUE)));
-                    Server.printText(Plugin.LOUNGE,
-                            user.getName() + " selected kit " + kit.getName(),
-                            "Kit");
+                    Loggers.LOUNGE.info(user.getName() + " selected kit " + kit.getName());
 
                     user.closeInventory();
                     event.setCancelled(true);
