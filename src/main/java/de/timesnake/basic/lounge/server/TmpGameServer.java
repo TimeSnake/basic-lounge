@@ -5,7 +5,6 @@
 package de.timesnake.basic.lounge.server;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.channel.util.listener.ChannelHandler;
 import de.timesnake.channel.util.listener.ChannelListener;
@@ -13,10 +12,10 @@ import de.timesnake.channel.util.listener.ListenerType;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.server.DbTmpGameServer;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
-import org.bukkit.Bukkit;
-
 import java.util.Collections;
+import org.bukkit.Bukkit;
 
 public class TmpGameServer implements ChannelListener {
 
@@ -47,7 +46,8 @@ public class TmpGameServer implements ChannelListener {
         this.mapsEnabled = database.areMapsEnabled();
         this.maxPlayersPerTeam = database.getMaxPlayersPerTeam();
         Integer teamAmount = database.getTeamAmount();
-        this.teamAmount = teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
+        this.teamAmount =
+                teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
         this.mergeTeams = database.isTeamMerging();
         this.discord = database.isDiscordEnabled();
 
@@ -104,8 +104,9 @@ public class TmpGameServer implements ChannelListener {
     }
 
     public void start() {
-        if (this.database.getTwinServerName() == null || !this.database.getTwinServerName().equals(Server.getName())) {
-            Server.printWarning(Plugin.LOUNGE, "Twin server not found, shutdown");
+        if (this.database.getTwinServerName() == null || !this.database.getTwinServerName()
+                .equals(Server.getName())) {
+            Loggers.LOUNGE.warning("Twin server not found, shutdown");
             Bukkit.shutdown();
             return;
         }
@@ -116,15 +117,16 @@ public class TmpGameServer implements ChannelListener {
 
         this.state = State.STARTING;
         Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getName(),
-                MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
-        Server.printText(Plugin.LOUNGE, "Starting game server");
+                MessageType.Server.COMMAND,
+                "start server " + database.getName() + " " + this.maxPlayers));
+        Loggers.LOUNGE.info("Starting game server");
         this.checkIfStarted();
     }
 
     private void checkIfStarted() {
         Server.runTaskLaterAsynchrony(() -> {
             if (this.state.equals(State.OFFLINE)) {
-                Server.printText(Plugin.LOUNGE, "Game server offline, try a restart");
+                Loggers.LOUNGE.info("Game server offline, try a restart");
                 this.start();
             }
         }, 20 * 130, BasicLounge.getPlugin());
@@ -136,7 +138,7 @@ public class TmpGameServer implements ChannelListener {
             if (msg.getValue().equals(ChannelServerMessage.State.READY)) {
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 this.setState(State.READY);
-                Server.printText(Plugin.LOUNGE, "Game-Server is ready");
+                Loggers.LOUNGE.info("Game-Server is ready");
                 LoungeServer.getTimeManager().checkCountdown();
             }
         }
@@ -149,7 +151,8 @@ public class TmpGameServer implements ChannelListener {
                 this.setState(State.OFFLINE);
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 LoungeServer.getTimeManager().resetGameCountdown();
-            } else if (Status.Server.LAUNCHING.equals(status) || Status.Server.LOADING.equals(status)) {
+            } else if (Status.Server.LAUNCHING.equals(status) || Status.Server.LOADING.equals(
+                    status)) {
                 this.setState(State.STARTING);
                 LoungeServer.setState(LoungeServerManager.State.WAITING);
                 LoungeServer.getTimeManager().resetGameCountdown();

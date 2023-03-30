@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.lounge.map;
 
-import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
@@ -14,6 +13,7 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
 import java.util.Collection;
 import java.util.HashMap;
@@ -91,7 +91,7 @@ public class MapSelection {
 
         if (this.mapsByItem.isEmpty()) {
             if (LoungeServer.getGameServer().areMapsEnabled()) {
-                Server.printWarning(Plugin.LOUNGE, "No map for player amount found");
+                Loggers.LOUNGE.warning("No map for player amount found");
                 Bukkit.shutdown();
             }
         }

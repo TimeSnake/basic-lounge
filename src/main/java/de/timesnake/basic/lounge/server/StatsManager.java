@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.entity.MapDisplay;
 import de.timesnake.basic.bukkit.util.world.entity.MapDisplayBuilder;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.map.StatDisplay;
 import de.timesnake.basic.lounge.user.LoungeUser;
@@ -19,19 +18,20 @@ import de.timesnake.channel.util.listener.ListenerType;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.user.DbUser;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Triple;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
-import org.bukkit.block.BlockFace;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.bukkit.block.BlockFace;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class StatsManager implements Listener, ChannelListener {
 
@@ -50,8 +50,8 @@ public class StatsManager implements Listener, ChannelListener {
 
         LoungeUser user = ((LoungeUser) e.getUser());
 
-
-        HashMap<Integer, MapDisplay> displays = this.displayByUser.computeIfAbsent(user, u -> new HashMap<>());
+        HashMap<Integer, MapDisplay> displays = this.displayByUser.computeIfAbsent(user,
+                u -> new HashMap<>());
 
         for (Map.Entry<Integer, HashMap<Integer, StatType<?>>> displayEntry :
                 LoungeServer.getGame().getStatByLineByDisplay().entrySet()) {
@@ -63,7 +63,8 @@ public class StatsManager implements Listener, ChannelListener {
                 continue;
             }
 
-            StatDisplay display = LoungeServer.getCurrentMap().getPersonalStatsDisplayLocation(displayIndex);
+            StatDisplay display = LoungeServer.getCurrentMap()
+                    .getPersonalStatsDisplayLocation(displayIndex);
 
             if (display == null) {
                 continue;
@@ -87,7 +88,8 @@ public class StatsManager implements Listener, ChannelListener {
             Color firstColor = display.getStatFirstColor();
 
             displayBuilder.drawText(width * 128 / 2, 18,
-                    new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8), titleColor,
+                    new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8),
+                    titleColor,
                     "Personal Stats", background, MapDisplayBuilder.Align.CENTER);
 
             for (int line = 0; line < maxLine; ++line) {
@@ -96,7 +98,8 @@ public class StatsManager implements Listener, ChannelListener {
                 if (stat != null && value != null) {
                     int y = yOffset + line * (FONT_SIZE + lineOffset);
                     displayBuilder.drawText(xOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE), nameColor,
+                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                            nameColor,
                             stat.getDisplayName(), background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
@@ -154,7 +157,8 @@ public class StatsManager implements Listener, ChannelListener {
                 continue;
             }
 
-            StatDisplay display = LoungeServer.getCurrentMap().getGlobalStatsDisplayLocation(displayIndex);
+            StatDisplay display = LoungeServer.getCurrentMap()
+                    .getGlobalStatsDisplayLocation(displayIndex);
 
             if (display == null) {
                 return;
@@ -180,7 +184,8 @@ public class StatsManager implements Listener, ChannelListener {
             Color thirdColor = display.getStatThirdColor();
 
             displayBuilder.drawText(width * 128 / 2, 18,
-                    new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8), titleColor,
+                    new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8),
+                    titleColor,
                     "Global Stats", background, MapDisplayBuilder.Align.CENTER);
 
             for (int line = 0; line < maxLine; ++line) {
@@ -191,35 +196,43 @@ public class StatsManager implements Listener, ChannelListener {
 
                     int y = yOffset + 4 * line * (FONT_SIZE + lineOffset) + line * 32;
                     displayBuilder.drawText(width * 128 / 2, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE), nameColor,
+                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE),
+                            nameColor,
                             stat.getDisplayName(), background, MapDisplayBuilder.Align.CENTER);
 
                     y += FONT_SIZE + lineOffset;
 
                     displayBuilder.drawText(xOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE), firstColor,
-                            places.getA().getA() + ". " + places.getA().getB(), background, MapDisplayBuilder.Align.LEFT);
+                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                            firstColor,
+                            places.getA().getA() + ". " + places.getA().getB(), background,
+                            MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            firstColor, places.getA().getC(), background, MapDisplayBuilder.Align.RIGHT);
+                            firstColor, places.getA().getC(), background,
+                            MapDisplayBuilder.Align.RIGHT);
 
                     y += FONT_SIZE + lineOffset;
 
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, places.getB().getA() + ". " + places.getB().getB(), background, MapDisplayBuilder.Align.LEFT);
+                            secondColor, places.getB().getA() + ". " + places.getB().getB(),
+                            background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, places.getB().getC(), background, MapDisplayBuilder.Align.RIGHT);
+                            secondColor, places.getB().getC(), background,
+                            MapDisplayBuilder.Align.RIGHT);
 
                     y += FONT_SIZE + lineOffset;
 
                     displayBuilder.drawText(xOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, places.getC().getA() + ". " + places.getC().getB(), background, MapDisplayBuilder.Align.LEFT);
+                            thirdColor, places.getC().getA() + ". " + places.getC().getB(),
+                            background, MapDisplayBuilder.Align.LEFT);
                     displayBuilder.drawText(xSoreOffset, y,
                             new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, places.getC().getC(), background, MapDisplayBuilder.Align.RIGHT);
+                            thirdColor, places.getC().getC(), background,
+                            MapDisplayBuilder.Align.RIGHT);
                 }
             }
 
@@ -231,13 +244,17 @@ public class StatsManager implements Listener, ChannelListener {
         }
     }
 
-    private <Value> Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> getGlobalLine(StatType<Value> stat) {
+    private <Value> Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> getGlobalLine(
+            StatType<Value> stat) {
         Triple<Integer, UUID, Value> first = new Triple<>(1, null, stat.getDefaultValue());
         Triple<Integer, UUID, Value> second = new Triple<>(2, null, stat.getDefaultValue());
         Triple<Integer, UUID, Value> third = new Triple<>(3, null, stat.getDefaultValue());
 
-        for (Map.Entry<UUID, Value> userStat : LoungeServer.getGame().getDatabase().getStatOfUsers(StatPeriod.QUARTER, stat).entrySet()) {
-            if (userStat.getValue() == null) continue;
+        for (Map.Entry<UUID, Value> userStat : LoungeServer.getGame().getDatabase()
+                .getStatOfUsers(StatPeriod.QUARTER, stat).entrySet()) {
+            if (userStat.getValue() == null) {
+                continue;
+            }
             if (stat.compare(userStat.getValue(), first.getC()) > 0) {
                 third = second;
                 third.setA(third.getA() + 1);
@@ -270,15 +287,18 @@ public class StatsManager implements Listener, ChannelListener {
         Triple<String, String, String> thirdPlace = new Triple<>("-", "-", "-");
 
         if (first.getA() != null && firstUser != null && firstUser.exists()) {
-            firstPlace = new Triple<>(first.getA().toString(), firstUser.getName(), stat.valueToDisplay(first.getC()));
+            firstPlace = new Triple<>(first.getA().toString(), firstUser.getName(),
+                    stat.valueToDisplay(first.getC()));
         }
 
         if (second.getA() != null && secondUser != null && secondUser.exists()) {
-            secondPlace = new Triple<>(second.getA().toString(), secondUser.getName(), stat.valueToDisplay(second.getC()));
+            secondPlace = new Triple<>(second.getA().toString(), secondUser.getName(),
+                    stat.valueToDisplay(second.getC()));
         }
 
         if (third.getA() != null && thirdUser != null && thirdUser.exists()) {
-            thirdPlace = new Triple<>(third.getA().toString(), thirdUser.getName(), stat.valueToDisplay(third.getC()));
+            thirdPlace = new Triple<>(third.getA().toString(), thirdUser.getName(),
+                    stat.valueToDisplay(third.getC()));
         }
 
         return new Triple<>(firstPlace, secondPlace, thirdPlace);
@@ -288,7 +308,7 @@ public class StatsManager implements Listener, ChannelListener {
     public void onChannelMessage(ChannelServerMessage<String> msg) {
         if (msg.getValue().equals(LoungeServer.getGame().getName())) {
             this.updateGlobalDisplays();
-            Server.printText(Plugin.LOUNGE, "Updated global stats");
+            Loggers.LOUNGE.info("Updated global stats");
         }
     }
 

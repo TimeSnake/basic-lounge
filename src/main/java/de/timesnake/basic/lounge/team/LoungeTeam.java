@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.lounge.team;
 
-import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
@@ -14,6 +13,7 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.database.util.game.DbTeam;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +53,8 @@ public class LoungeTeam extends Team {
 
                     if (teamSelection.isBlocked() && !teamSelection.isSilentBlocked()) {
                         sender.sendPluginMessage(
-                                Component.text("Team selection is forbidden", ExTextColor.WARNING));
+                                Component.text("Selecting teams is forbidden",
+                                        ExTextColor.WARNING));
                         user.closeInventory();
                         event.setCancelled(true);
                         return;
@@ -74,8 +75,7 @@ public class LoungeTeam extends Team {
                             Component.text("You selected team ", ExTextColor.PERSONAL)
                                     .append(Component.text(this.getDisplayName(),
                                             this.getTextColor())));
-                    Server.printText(Plugin.LOUNGE, user.getName() + " selected team "
-                            + this.getName(), "Team");
+                    Loggers.LOUNGE.info(user.getName() + " selected team " + this.getName());
                     user.closeInventory();
 
                     event.setCancelled(true);
