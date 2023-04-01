@@ -193,7 +193,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     }
 
     @Override
-    protected SpectatorManager loadSpectatorManager() {
+    protected SpectatorManager initSpectatorManager() {
         return new SpectatorManager() {
 
             @Override
