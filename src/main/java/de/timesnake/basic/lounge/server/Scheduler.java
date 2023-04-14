@@ -122,7 +122,7 @@ public class Scheduler {
                             LoungeServer.getGameServer().getDatabase().setMapName(map.getName());
                             Server.getChannel()
                                     .sendMessage(new ChannelServerMessage<>(Server.getName(),
-                                            MessageType.Server.MAP, map.getName()));
+                                            MessageType.Server.GAME_MAP, map.getName()));
                             LoungeServer.broadcastLoungeMessage(
                                     Component.text("Map: ", ExTextColor.WARNING)
                                             .append(Component.text(map.getDisplayName(),
