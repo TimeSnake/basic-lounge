@@ -14,7 +14,6 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.basic.game.util.game.Kit;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServerManager;
@@ -33,7 +32,6 @@ import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
-import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbLoungeMap;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.game.DbTeam;
@@ -183,11 +181,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             @Override
             public Map loadMap(DbMap dbMap, boolean loadWorld) {
                 return new Map(dbMap, loadWorld);
-            }
-
-            @Override
-            public Kit loadKit(DbKit kit) {
-                return new Kit(kit);
             }
         };
     }
