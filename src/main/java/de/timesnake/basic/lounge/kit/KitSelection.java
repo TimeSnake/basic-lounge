@@ -77,7 +77,7 @@ public class KitSelection {
             user.sendPluginMessage(de.timesnake.basic.game.util.user.Plugin.LOUNGE,
                     Component.text("You selected kit ", ExTextColor.PERSONAL)
                             .append(Component.text(Kit.RANDOM.getName(), ExTextColor.VALUE)));
-            Loggers.LOUNGE.info(user.getName() + " selected kit " + Kit.RANDOM.getName());
+            Loggers.LOUNGE.info(user.getName() + " selected kit " + kit.getName());
 
             user.closeInventory();
             event.setCancelled(true);
