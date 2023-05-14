@@ -5,9 +5,9 @@
 package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.Server;
+import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
@@ -18,8 +18,13 @@ import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.TmpGameServer;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
+import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.library.chat.ExTextColor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -31,31 +36,34 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener,
+        InventoryHolder {
 
-public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener, InventoryHolder {
-
-    public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL, "§cLeave (hold right)",
+    public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL,
+            "§cLeave (hold right)",
             Collections.emptyList());
-    public static final ExItemStack JOIN_LOUNGE_ITEM = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
+    public static final ExItemStack JOIN_LOUNGE_ITEM = ExItemStack.getLeatherArmor(
+            Material.LEATHER_HELMET,
             "§6Join", Color.GRAY).setSlot(0);
     public static final ExItemStack SETTINGS_ITEM = new ExItemStack(Material.CLOCK, "§6Settings",
             Collections.emptyList());
-    public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR, "§6Quick Start", List.of(
+    public static final ExItemStack QUICK_START = new ExItemStack(0, Material.NETHER_STAR,
+            "§6Quick Start", List.of(
             "§fClick to start the game in 30s"));
-    public static final ExItemStack WAIT = new ExItemStack(1, Material.CLOCK, "§6Wait", List.of("§fClick to toggle " +
-            "waiting"));
-    public static final ExItemStack START_SERVER = new ExItemStack(2, Material.BEACON, "§cGame Server", List.of(
+    public static final ExItemStack WAIT = new ExItemStack(1, Material.CLOCK, "§6Wait",
+            List.of("§fClick to toggle " +
+                    "waiting"));
+    public static final ExItemStack START_SERVER = new ExItemStack(2, Material.BEACON,
+            "§cGame Server", List.of(
             "§fClick to force the game server to start", "§fUse only if the game is not starting"));
-    public static final ExItemStack DISCORD = new ExItemStack(3, Material.NOTE_BLOCK, "§9Discord", List.of("§fClick " +
-            "to toggle the discord bot"));
+    public static final ExItemStack DISCORD = new ExItemStack(3, Material.NOTE_BLOCK, "§9Discord",
+            List.of("§fClick " +
+                    "to toggle the discord bot"));
     private static final Integer LEAVE_TIME = 1200;
     private final ExInventory settingsInv;
 
-    private final ExItemStack gameDescriptionItem = new ExItemStack(Material.WRITTEN_BOOK, "§6Game Description");
+    private final ExItemStack gameDescriptionItem = new ExItemStack(Material.WRITTEN_BOOK,
+            "§6Game Description");
 
     private final HashMap<User, ItemHoldClick> clickedLeaveUsers = new HashMap<>();
 
@@ -85,8 +93,9 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
         this.settingsInv = new ExInventory(9, Component.text("Settings"), this,
                 QUICK_START, WAIT, START_SERVER, DISCORD);
 
-        Server.getInventoryEventManager().addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM,
-                START_SERVER);
+        Server.getInventoryEventManager()
+                .addInteractListener(this, LEAVE_ITEM, SETTINGS_ITEM, JOIN_LOUNGE_ITEM,
+                        START_SERVER);
         Server.getInventoryEventManager().addClickListener(this, this);
     }
 
@@ -100,34 +109,42 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
                 if (LoungeServer.getTimeManager().isGameCountdownRunning()) {
                     if (LoungeServer.getGameCountdown() <= 30) {
-                        user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is already starting", ExTextColor.WARNING));
+                        user.sendPluginMessage(Plugin.LOUNGE,
+                                Component.text("The game is already starting",
+                                        ExTextColor.WARNING));
                         user.closeInventory();
                         return;
                     }
                     LoungeServer.setState(LoungeServerManager.State.STARTING);
                     LoungeServer.getTimeManager().setGameCountdown(30);
-                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("Forced quick start", ExTextColor.PERSONAL));
+                    user.sendPluginMessage(Plugin.LOUNGE,
+                            Component.text("Forced quick start", ExTextColor.PERSONAL));
                 } else {
-                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("The countdown must running to " +
-                            "force a quick-start", ExTextColor.WARNING));
+                    user.sendPluginMessage(Plugin.LOUNGE,
+                            Component.text("The countdown must running to " +
+                                    "force a quick-start", ExTextColor.WARNING));
                 }
             } else {
-                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game server is not ready", ExTextColor.WARNING));
+                user.sendPluginMessage(Plugin.LOUNGE,
+                        Component.text("The game server is not ready", ExTextColor.WARNING));
             }
             user.closeInventory();
             e.setCancelled(true);
         } else if (item.equals(WAIT)) {
             if (LoungeServer.getTimeManager().getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
-                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is already starting", ExTextColor.WARNING));
+                user.sendPluginMessage(Plugin.LOUNGE,
+                        Component.text("The game is already starting", ExTextColor.WARNING));
                 user.clearInventory();
                 return;
             }
             LoungeServer.getTimeManager().setWait(!LoungeServer.getTimeManager().isWait());
 
             if (LoungeServer.getTimeManager().isWait()) {
-                this.settingsInv.setItemStack(1, WAIT.enchant().setExLore(List.of("", "§2Enabled")));
+                this.settingsInv.setItemStack(1,
+                        WAIT.enchant().setExLore(List.of("", "§2Enabled")));
             } else {
-                this.settingsInv.setItemStack(1, WAIT.disenchant().setExLore(List.of("", "§cDisabled")));
+                this.settingsInv.setItemStack(1,
+                        WAIT.disenchant().setExLore(List.of("", "§cDisabled")));
             }
             user.updateInventory();
         } else if (item.equals(START_SERVER)) {
@@ -136,20 +153,29 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
         } else if (item.equals(DISCORD)) {
             if (LoungeServer.getGameServer().getTeamAmount() > 1) {
                 if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
-                    LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
+                    LoungeServer.getGameServer()
+                            .setDiscord(!LoungeServer.getGameServer().isDiscord());
+                    Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
+                            MessageType.Server.DISCORD, LoungeServer.getGameServer().isDiscord()));
                     if (LoungeServer.getGameServer().isDiscord()) {
-                        this.settingsInv.setItemStack(3, DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
+                        this.settingsInv.setItemStack(3,
+                                DISCORD.enchant().setExLore(List.of("", "§2Enabled")));
                     } else {
-                        this.settingsInv.setItemStack(3, DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
-                        Server.getChannel().sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(), MessageType.Discord.DESTROY_CHANNELS, List.of()));
+                        this.settingsInv.setItemStack(3,
+                                DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
+                        Server.getChannel().sendMessage(
+                                new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
+                                        MessageType.Discord.DESTROY_CHANNELS, List.of()));
                     }
                     user.updateInventory();
                 } else {
-                    user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game server is not ready", ExTextColor.WARNING));
+                    user.sendPluginMessage(Plugin.LOUNGE,
+                            Component.text("The game server is not ready", ExTextColor.WARNING));
                 }
             } else {
                 user.closeInventory();
-                user.sendPluginMessage(Plugin.LOUNGE, Component.text("Too few teams to enable discord", ExTextColor.WARNING));
+                user.sendPluginMessage(Plugin.LOUNGE,
+                        Component.text("Too few teams to enable discord", ExTextColor.WARNING));
             }
         }
     }
@@ -160,7 +186,8 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
         ExItemStack item = e.getClickedItem();
 
         if (item.equals(LEAVE_ITEM)) {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK
+                    || e.getAction() == Action.RIGHT_CLICK_AIR) {
                 if (!this.clickedLeaveUsers.containsKey(user)) {
                     this.clickedLeaveUsers.put(user, new ItemHoldClick(LEAVE_TIME));
                 } else {
@@ -178,12 +205,14 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
             e.setCancelled(true);
         } else if (item.equals(JOIN_LOUNGE_ITEM)) {
             if (Server.getGameNotServiceUsers().size() >= LoungeServer.getGame().getMaxPlayers()) {
-                user.sendPluginMessage(Plugin.LOUNGE, Component.text("The game is full", ExTextColor.WARNING));
+                user.sendPluginMessage(Plugin.LOUNGE,
+                        Component.text("The game is full", ExTextColor.WARNING));
                 e.setCancelled(true);
             }
             ((LoungeUser) user).joinLounge();
             LoungeServer.getLoungeScoreboardManager().getTablist().addEntry(user);
-            user.sendPluginMessage(Plugin.LOUNGE, Component.text("Joined the game", ExTextColor.PERSONAL));
+            user.sendPluginMessage(Plugin.LOUNGE,
+                    Component.text("Joined the game", ExTextColor.PERSONAL));
             LoungeServer.getTimeManager().checkCountdown();
             e.setCancelled(true);
         }

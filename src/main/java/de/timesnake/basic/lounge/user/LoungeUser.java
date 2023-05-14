@@ -16,8 +16,6 @@ import org.bukkit.entity.Player;
 
 public class LoungeUser extends StatUser {
 
-    public static final String SPECTATOR_TABLIST_PREFIX = "§7";
-
     private boolean isLeaving;
     private Kit selectedKit;
     private Map selectedMap;
@@ -35,7 +33,8 @@ public class LoungeUser extends StatUser {
     }
 
     @Override
-    public TablistableGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
+    public TablistableGroup getTablistGroup(
+            de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
         if (type.equals(TablistGroupType.DUMMY)) {
             return LoungeServer.getLoungeScoreboardManager().getGameTeam();
         }
@@ -201,7 +200,6 @@ public class LoungeUser extends StatUser {
         if (this.selectedTeam != null) {
             this.selectedTeam.addUserSelected(this);
         }
-
 
         if (LoungeServer.getGame().getTeams().size() > 1) {
             if (this.getSelectedTeam() != null) {
