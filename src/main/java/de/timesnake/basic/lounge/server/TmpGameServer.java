@@ -46,8 +46,7 @@ public class TmpGameServer implements ChannelListener {
         this.mapsEnabled = database.areMapsEnabled();
         this.maxPlayersPerTeam = database.getMaxPlayersPerTeam();
         Integer teamAmount = database.getTeamAmount();
-        this.teamAmount =
-                teamAmount != null ? teamAmount : LoungeServer.getGame().getTeams().size();
+        this.teamAmount = teamAmount != null ? teamAmount : 0;
         this.mergeTeams = database.isTeamMerging();
         this.discord = database.isDiscordEnabled();
 

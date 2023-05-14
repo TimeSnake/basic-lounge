@@ -190,50 +190,52 @@ public class StatsManager implements Listener, ChannelListener {
 
             for (int line = 0; line < maxLine; ++line) {
                 StatType<?> stat = statsByLine.get(line + 1);
-                if (stat != null) {
-                    Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> places =
-                            this.getGlobalLine(stat);
-
-                    int y = yOffset + 4 * line * (FONT_SIZE + lineOffset) + line * 32;
-                    displayBuilder.drawText(width * 128 / 2, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE),
-                            nameColor,
-                            stat.getDisplayName(), background, MapDisplayBuilder.Align.CENTER);
-
-                    y += FONT_SIZE + lineOffset;
-
-                    displayBuilder.drawText(xOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            firstColor,
-                            places.getA().getA() + ". " + places.getA().getB(), background,
-                            MapDisplayBuilder.Align.LEFT);
-                    displayBuilder.drawText(xSoreOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            firstColor, places.getA().getC(), background,
-                            MapDisplayBuilder.Align.RIGHT);
-
-                    y += FONT_SIZE + lineOffset;
-
-                    displayBuilder.drawText(xOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, places.getB().getA() + ". " + places.getB().getB(),
-                            background, MapDisplayBuilder.Align.LEFT);
-                    displayBuilder.drawText(xSoreOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            secondColor, places.getB().getC(), background,
-                            MapDisplayBuilder.Align.RIGHT);
-
-                    y += FONT_SIZE + lineOffset;
-
-                    displayBuilder.drawText(xOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, places.getC().getA() + ". " + places.getC().getB(),
-                            background, MapDisplayBuilder.Align.LEFT);
-                    displayBuilder.drawText(xSoreOffset, y,
-                            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-                            thirdColor, places.getC().getC(), background,
-                            MapDisplayBuilder.Align.RIGHT);
+                if (stat == null) {
+                    continue;
                 }
+
+                Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> places =
+                        this.getGlobalLine(stat);
+
+                int y = yOffset + 4 * line * (FONT_SIZE + lineOffset) + line * 32;
+                displayBuilder.drawText(width * 128 / 2, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE),
+                        nameColor,
+                        stat.getDisplayName(), background, MapDisplayBuilder.Align.CENTER);
+
+                y += FONT_SIZE + lineOffset;
+
+                displayBuilder.drawText(xOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        firstColor,
+                        places.getA().getA() + ". " + places.getA().getB(), background,
+                        MapDisplayBuilder.Align.LEFT);
+                displayBuilder.drawText(xSoreOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        firstColor, places.getA().getC(), background,
+                        MapDisplayBuilder.Align.RIGHT);
+
+                y += FONT_SIZE + lineOffset;
+
+                displayBuilder.drawText(xOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        secondColor, places.getB().getA() + ". " + places.getB().getB(),
+                        background, MapDisplayBuilder.Align.LEFT);
+                displayBuilder.drawText(xSoreOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        secondColor, places.getB().getC(), background,
+                        MapDisplayBuilder.Align.RIGHT);
+
+                y += FONT_SIZE + lineOffset;
+
+                displayBuilder.drawText(xOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        thirdColor, places.getC().getA() + ". " + places.getC().getB(),
+                        background, MapDisplayBuilder.Align.LEFT);
+                displayBuilder.drawText(xSoreOffset, y,
+                        new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
+                        thirdColor, places.getC().getC(), background,
+                        MapDisplayBuilder.Align.RIGHT);
             }
 
             MapDisplay mapDisplay = displayBuilder.onBlock(display.getBlock(),

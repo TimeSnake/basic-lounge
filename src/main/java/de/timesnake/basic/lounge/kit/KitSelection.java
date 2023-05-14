@@ -57,8 +57,8 @@ public class KitSelection {
             while (i % 9 == 0) {
                 i += 2;
             }
-            item = kit.createDisplayItem(this.getKitClickListener(kit));
-            this.inventory.setItemStack(i, item);
+
+            this.inventory.setItemStack(i, kit.createDisplayItem(this.getKitClickListener(kit)));
             i++;
         }
     }
@@ -73,10 +73,10 @@ public class KitSelection {
                 return;
             }
 
-            user.setSelectedKit(Kit.RANDOM);
+            user.setSelectedKit(kit);
             user.sendPluginMessage(de.timesnake.basic.game.util.user.Plugin.LOUNGE,
                     Component.text("You selected kit ", ExTextColor.PERSONAL)
-                            .append(Component.text(Kit.RANDOM.getName(), ExTextColor.VALUE)));
+                            .append(Component.text(kit.getName(), ExTextColor.VALUE)));
             Loggers.LOUNGE.info(user.getName() + " selected kit " + kit.getName());
 
             user.closeInventory();

@@ -11,6 +11,7 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbLoungeMap;
 import de.timesnake.database.util.game.DbLoungeMapDisplay;
 import de.timesnake.library.basic.util.Loggers;
+import java.util.Collection;
 import java.util.HashMap;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -30,14 +31,22 @@ public class LoungeMap {
         this.spawn = Server.getExLocationFromDbLocation(dbMap.getLocation());
         this.world = this.spawn.getExWorld();
 
-        for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
+        Collection<DbLoungeMapDisplay> displays = dbMap.getCachedMapDisplays();
+
+        for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() >= 10)
+                .toList()) {
             this.personalStatsDisplayLocationByIndex.put(display.getIndex(),
                     new StatDisplay(this.world, display));
+            Loggers.LOUNGE.info("Loaded private statistic display '" + display.getIndex()
+                    + "' for map '" + this.name + "'");
         }
 
-        for (DbLoungeMapDisplay display : dbMap.getCachedMapDisplays()) {
+        for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() < 10)
+                .toList()) {
             this.globalStatsDisplayLocationByIndex.put(display.getIndex(),
                     new StatDisplay(this.world, display));
+            Loggers.LOUNGE.info("Loaded public statistic display " + display.getIndex()
+                    + "' for map '" + this.name + "'");
         }
 
         if (this.world == null) {

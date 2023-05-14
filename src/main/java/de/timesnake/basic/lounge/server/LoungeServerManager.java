@@ -107,7 +107,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
             loungeMap.getWorld().restrict(ExWorld.Restriction.BLOCK_BREAK, true);
             loungeMap.getWorld().restrict(ExWorld.Restriction.BLOCK_PLACE, true);
             loungeMap.getWorld().restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
-            loungeMap.getWorld().restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+            loungeMap.getWorld().restrict(ExWorld.Restriction.FIRE_SPREAD_SPEED, 0f);
             loungeMap.getWorld().restrict(ExWorld.Restriction.PLACE_IN_BLOCK, true);
             loungeMap.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             this.loungeMaps.add(loungeMap);
