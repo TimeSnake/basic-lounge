@@ -16,27 +16,27 @@ import java.util.List;
 
 public class GameCmd implements CommandListener {
 
-    private Code gameStartPerm;
+  private Code gameStartPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
 
-        if (!sender.hasPermission(this.gameStartPerm)) {
-            return;
-        }
-
-        LoungeServer.getTimeManager().startGameCountdown();
+    if (!sender.hasPermission(this.gameStartPerm)) {
+      return;
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        return null;
-    }
+    LoungeServer.getTimeManager().startGameCountdown();
+  }
 
-    @Override
-    public void loadCodes(Plugin plugin) {
-        this.gameStartPerm = plugin.createPermssionCode("lounge.game.start");
-    }
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    return null;
+  }
+
+  @Override
+  public void loadCodes(Plugin plugin) {
+    this.gameStartPerm = plugin.createPermssionCode("lounge.game.start");
+  }
 }

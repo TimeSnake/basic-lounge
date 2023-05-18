@@ -16,36 +16,36 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BasicLounge extends JavaPlugin {
 
-    public static Plugin getPlugin() {
-        return plugin;
-    }
+  public static Plugin getPlugin() {
+    return plugin;
+  }
 
-    public static BasicLounge plugin;
+  public static BasicLounge plugin;
 
-    @Override
-    public void onLoad() {
-        ServerManager.setInstance(new LoungeServerManager());
-    }
+  @Override
+  public void onLoad() {
+    ServerManager.setInstance(new LoungeServerManager());
+  }
 
-    @Override
-    public void onEnable() {
+  @Override
+  public void onEnable() {
 
-        BasicLounge.plugin = this;
+    BasicLounge.plugin = this;
 
-        Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(),
-                de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
-        Server.getCommandManager().addCommand(this, "startgame", new GameCmd(),
-                de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
-        Server.getCommandManager().addCommand(this, "teamselection", new TeamSelectionCmd(),
-                de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+    Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(),
+        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+    Server.getCommandManager().addCommand(this, "startgame", new GameCmd(),
+        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+    Server.getCommandManager().addCommand(this, "teamselection", new TeamSelectionCmd(),
+        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
 
-        LoungeServerManager.getInstance().onLoungeEnable();
+    LoungeServerManager.getInstance().onLoungeEnable();
 
-    }
+  }
 
-    @Override
-    public void onDisable() {
-        LoungeServerManager.getInstance().onLoungeDisable();
-    }
+  @Override
+  public void onDisable() {
+    LoungeServerManager.getInstance().onLoungeDisable();
+  }
 
 }
