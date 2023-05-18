@@ -1,5 +1,11 @@
+group = project.group
+version = '1.0-SNAPSHOT'
+archivesBaseName = 'basic-lounge'
+var projectId = 48
+
 repositories {
   mavenLocal()
+  mavenCentral()
   maven {
     url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
   }
@@ -39,10 +45,6 @@ dependencies {
   compileOnly project.spigot
 }
 
-group = project.group
-version = '1.0-SNAPSHOT'
-archivesBaseName = 'basic-lounge'
-
 task buildFatJar(type: Jar) {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   classifier = "all"
@@ -66,3 +68,24 @@ jar.finalizedBy(buildFatJar)
 copyJarToPlugins.dependsOn(buildFatJar)
 copyJarToPlugins.dependsOn(deleteOldPluginJar)
 jar.finalizedBy(copyJarToPlugins)
+
+publishing {
+  publications {
+    mavenJavaAll(MavenPublication) {
+      version version + '-all'
+      artifact {
+        file "build/libs/" + archivesBaseName + "-" + version + ".jar"
+      }
+    }
+  }
+
+  repositories {
+    maven {
+      url getDeployUrl(projectId)
+      credentials {
+        username = deploy_token_name
+        password = deploy_token_key
+      }
+    }
+  }
+}
