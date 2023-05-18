@@ -25,123 +25,123 @@ import org.bukkit.inventory.Inventory;
 
 public class MapSelection {
 
-    private static final org.bukkit.ChatColor NAME_COLOR = ChatColor.GOLD;
-    private static final org.bukkit.ChatColor DESCRIPTION_COLOR = ChatColor.WHITE;
-    private static final org.bukkit.ChatColor AUTHORS_COLOR = ChatColor.BLUE;
+  private static final org.bukkit.ChatColor NAME_COLOR = ChatColor.GOLD;
+  private static final org.bukkit.ChatColor DESCRIPTION_COLOR = ChatColor.WHITE;
+  private static final org.bukkit.ChatColor AUTHORS_COLOR = ChatColor.BLUE;
 
-    private final ExInventory inventory;
-    private final ExItemStack item;
-    private final HashMap<ExItemStack, Map> mapsByItem = new HashMap<>();
+  private final ExInventory inventory;
+  private final ExItemStack item;
+  private final HashMap<ExItemStack, Map> mapsByItem = new HashMap<>();
 
-    public MapSelection(Collection<Map> maps) {
-        this.item = new ExItemStack(Material.MAP)
-                .setDisplayName("§6Maps")
-                .onInteract(event -> {
-                    LoungeUser user = ((LoungeUser) event.getUser());
-                    Sender sender = user.asSender(Plugin.LOUNGE);
-                    if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-                        sender.sendPluginMessage(
-                                Component.text("The map voting is closed", ExTextColor.WARNING));
-                        event.setCancelled(true);
-                        return;
-                    }
-                    user.openInventoryMapSelection();
-                    event.setCancelled(true);
-                });
+  public MapSelection(Collection<Map> maps) {
+    this.item = new ExItemStack(Material.MAP)
+        .setDisplayName("§6Maps")
+        .onInteract(event -> {
+          LoungeUser user = ((LoungeUser) event.getUser());
+          Sender sender = user.asSender(Plugin.LOUNGE);
+          if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
+            sender.sendPluginMessage(
+                Component.text("The map voting is closed", ExTextColor.WARNING));
+            event.setCancelled(true);
+            return;
+          }
+          user.openInventoryMapSelection();
+          event.setCancelled(true);
+        });
 
-        int invSize = (int) (9 * Math.ceil(GameServer.getGame().getMaps().size() / 7.0));
-        this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Map-Voting"));
+    int invSize = (int) (9 * Math.ceil(GameServer.getGame().getMaps().size() / 7.0));
+    this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Map-Voting"));
 
-        ExItemStack randomMapItem = new ExItemStack(Material.GRAY_WOOL)
-                .setDisplayName("§fRandom")
-                .setLore(ChatColor.GRAY + "Vote for a random map")
-                .onClick(event -> {
-                    LoungeUser user = ((LoungeUser) event.getUser());
-                    Sender sender = user.asSender(Plugin.LOUNGE);
+    ExItemStack randomMapItem = new ExItemStack(Material.GRAY_WOOL)
+        .setDisplayName("§fRandom")
+        .setLore(ChatColor.GRAY + "Vote for a random map")
+        .onClick(event -> {
+          LoungeUser user = ((LoungeUser) event.getUser());
+          Sender sender = user.asSender(Plugin.LOUNGE);
 
-                    if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-                        sender.sendPluginMessage(
-                                Component.text("The map voting is closed", ExTextColor.WARNING));
-                        event.setCancelled(true);
-                        return;
-                    }
+          if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
+            sender.sendPluginMessage(
+                Component.text("The map voting is closed", ExTextColor.WARNING));
+            event.setCancelled(true);
+            return;
+          }
 
-                    user.setSelectedMap(null);
-                    sender.sendPluginMessage(
-                            Component.text("Voted for a random map", ExTextColor.PERSONAL));
-                    user.closeInventory();
-                    event.setCancelled(true);
-                });
+          user.setSelectedMap(null);
+          sender.sendPluginMessage(
+              Component.text("Voted for a random map", ExTextColor.PERSONAL));
+          user.closeInventory();
+          event.setCancelled(true);
+        });
 
-        this.inventory.setItemStack(0, randomMapItem);
+    this.inventory.setItemStack(0, randomMapItem);
 
-        int slot = 2;
-        for (Map map : maps) {
-            // first and second inventory column empty (for random selection)
-            if (slot % 9 == 0) {
-                slot += 2;
-            }
+    int slot = 2;
+    for (Map map : maps) {
+      // first and second inventory column empty (for random selection)
+      if (slot % 9 == 0) {
+        slot += 2;
+      }
 
-            ExItemStack item = this.createMapItem(map);
+      ExItemStack item = this.createMapItem(map);
 
-            this.inventory.setItemStack(slot, item);
-            this.mapsByItem.put(item, map);
-            slot++;
-        }
-
-        if (this.mapsByItem.isEmpty()) {
-            if (LoungeServer.getGameServer().areMapsEnabled()) {
-                Loggers.LOUNGE.warning("No map for player amount found");
-                Bukkit.shutdown();
-            }
-        }
+      this.inventory.setItemStack(slot, item);
+      this.mapsByItem.put(item, map);
+      slot++;
     }
 
-    private ExItemStack createMapItem(Map map) {
-        ExItemStack item = map.getItem()
-                .cloneWithId()
-                .setDisplayName(NAME_COLOR + map.getDisplayName())
-                .onClick(event -> {
-                    LoungeUser user = ((LoungeUser) event.getUser());
-                    Sender sender = user.asSender(Plugin.LOUNGE);
+    if (this.mapsByItem.isEmpty()) {
+      if (LoungeServer.getGameServer().areMapsEnabled()) {
+        Loggers.LOUNGE.warning("No map for player amount found");
+        Bukkit.shutdown();
+      }
+    }
+  }
 
-                    if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-                        sender.sendPluginMessage(
-                                Component.text("The map voting is closed", ExTextColor.WARNING));
-                        event.setCancelled(true);
-                        return;
-                    }
+  private ExItemStack createMapItem(Map map) {
+    ExItemStack item = map.getItem()
+        .cloneWithId()
+        .setDisplayName(NAME_COLOR + map.getDisplayName())
+        .onClick(event -> {
+          LoungeUser user = ((LoungeUser) event.getUser());
+          Sender sender = user.asSender(Plugin.LOUNGE);
 
-                    user.setSelectedMap(map);
-                    sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)
-                            .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
-                    user.closeInventory();
-                    event.setCancelled(true);
-                });
+          if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
+            sender.sendPluginMessage(
+                Component.text("The map voting is closed", ExTextColor.WARNING));
+            event.setCancelled(true);
+            return;
+          }
 
-        LinkedList<String> lore = new LinkedList<>();
-        lore.addLast("");
+          user.setSelectedMap(map);
+          sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)
+              .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
+          user.closeInventory();
+          event.setCancelled(true);
+        });
 
-        for (String descriptionLine : map.getDescription()) {
-            lore.add("§f" + descriptionLine);
-        }
+    LinkedList<String> lore = new LinkedList<>();
+    lore.addLast("");
 
-        if (map.getAuthors() != null) {
-            lore.add("");
-            lore.add(DESCRIPTION_COLOR + "by ");
-            for (String authors : map.getAuthors(20)) {
-                lore.addLast(AUTHORS_COLOR + authors);
-            }
-        }
-        item.setLore(lore);
-        return item;
+    for (String descriptionLine : map.getDescription()) {
+      lore.add("§f" + descriptionLine);
     }
 
-    public Inventory getInventory() {
-        return inventory.getInventory();
+    if (map.getAuthors() != null) {
+      lore.add("");
+      lore.add(DESCRIPTION_COLOR + "by ");
+      for (String authors : map.getAuthors(20)) {
+        lore.addLast(AUTHORS_COLOR + authors);
+      }
     }
+    item.setLore(lore);
+    return item;
+  }
 
-    public ExItemStack getItem() {
-        return item;
-    }
+  public Inventory getInventory() {
+    return inventory.getInventory();
+  }
+
+  public ExItemStack getItem() {
+    return item;
+  }
 }

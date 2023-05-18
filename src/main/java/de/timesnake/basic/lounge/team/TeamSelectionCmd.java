@@ -18,56 +18,56 @@ import net.kyori.adventure.text.Component;
 
 public class TeamSelectionCmd implements CommandListener {
 
-    private Code teamSelectionPerm;
+  private Code teamSelectionPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> exCommand,
-            Arguments<Argument> args) {
-        if (!sender.hasPermission(this.teamSelectionPerm)) {
-            return;
-        }
-
-        if (!args.isLengthEquals(1, true)) {
-            return;
-        }
-
-        switch (args.getString(0).toLowerCase()) {
-            case "toggle" -> {
-                if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
-                    LoungeServer.getTeamManager().getTeamSelection().block(false);
-                    sender.sendPluginMessage(
-                            Component.text("Allowed team selection", ExTextColor.PERSONAL));
-                } else {
-                    LoungeServer.getTeamManager().getTeamSelection().block(true);
-                    sender.sendPluginMessage(
-                            Component.text("Forbade team selection", ExTextColor.PERSONAL));
-                }
-            }
-            case "toggle_silent" -> {
-                if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
-                    LoungeServer.getTeamManager().getTeamSelection().blockSilent(false);
-                    sender.sendPluginMessage(
-                            Component.text("Allowed team selection", ExTextColor.PERSONAL));
-                } else {
-                    LoungeServer.getTeamManager().getTeamSelection().blockSilent(true);
-                    sender.sendPluginMessage(Component.text("Forbade team selection silently",
-                            ExTextColor.PERSONAL));
-                }
-            }
-        }
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> exCommand,
+      Arguments<Argument> args) {
+    if (!sender.hasPermission(this.teamSelectionPerm)) {
+      return;
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> exCommand,
-            Arguments<Argument> args) {
-        if (args.length() == 1) {
-            return List.of("toggle", "toggle_silent");
-        }
-        return List.of();
+    if (!args.isLengthEquals(1, true)) {
+      return;
     }
 
-    @Override
-    public void loadCodes(Plugin plugin) {
-        this.teamSelectionPerm = plugin.createPermssionCode("lounge.teamselection");
+    switch (args.getString(0).toLowerCase()) {
+      case "toggle" -> {
+        if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
+          LoungeServer.getTeamManager().getTeamSelection().block(false);
+          sender.sendPluginMessage(
+              Component.text("Allowed team selection", ExTextColor.PERSONAL));
+        } else {
+          LoungeServer.getTeamManager().getTeamSelection().block(true);
+          sender.sendPluginMessage(
+              Component.text("Forbade team selection", ExTextColor.PERSONAL));
+        }
+      }
+      case "toggle_silent" -> {
+        if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
+          LoungeServer.getTeamManager().getTeamSelection().blockSilent(false);
+          sender.sendPluginMessage(
+              Component.text("Allowed team selection", ExTextColor.PERSONAL));
+        } else {
+          LoungeServer.getTeamManager().getTeamSelection().blockSilent(true);
+          sender.sendPluginMessage(Component.text("Forbade team selection silently",
+              ExTextColor.PERSONAL));
+        }
+      }
     }
+  }
+
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> exCommand,
+      Arguments<Argument> args) {
+    if (args.length() == 1) {
+      return List.of("toggle", "toggle_silent");
+    }
+    return List.of();
+  }
+
+  @Override
+  public void loadCodes(Plugin plugin) {
+    this.teamSelectionPerm = plugin.createPermssionCode("lounge.teamselection");
+  }
 }

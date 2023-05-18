@@ -18,96 +18,96 @@ import org.bukkit.Location;
 
 public class LoungeServer extends GameServer {
 
-    public static final Integer MAP_SELECTION_CLOSED = 20;
-    public static final Integer JOINING_CLOSED = 15;
-    public static final Integer KIT_SELECTION_CLOSED = 14;
-    public static final Integer TEAM_SELECTION_CLOSED = 14;
+  public static final Integer MAP_SELECTION_CLOSED = 20;
+  public static final Integer JOINING_CLOSED = 15;
+  public static final Integer KIT_SELECTION_CLOSED = 14;
+  public static final Integer TEAM_SELECTION_CLOSED = 14;
 
-    public static TmpGame getGame() {
-        return (TmpGame) server.getGame();
-    }
+  public static TmpGame getGame() {
+    return (TmpGame) server.getGame();
+  }
 
-    public static InventoryManager getInventoryManager() {
-        return server.getInventoryManager();
-    }
+  public static InventoryManager getInventoryManager() {
+    return server.getInventoryManager();
+  }
 
-    public static int getGameCountdown() {
-        return server.getGameCountdown();
-    }
+  public static int getGameCountdown() {
+    return server.getGameCountdown();
+  }
 
-    public static void prepareLounge() {
-        server.prepareLounge();
-    }
+  public static void prepareLounge() {
+    server.prepareLounge();
+  }
 
-    public static void startGame() {
-        server.startGame();
-    }
+  public static void startGame() {
+    server.startGame();
+  }
 
-    public static Location getSpawn() {
-        return server.getSpawn();
-    }
+  public static Location getSpawn() {
+    return server.getSpawn();
+  }
 
-    @Deprecated
-    public static void broadcastLoungeMessage(String msg) {
-        server.broadcastLoungeMessage(msg);
-    }
+  @Deprecated
+  public static void broadcastLoungeMessage(String msg) {
+    server.broadcastLoungeMessage(msg);
+  }
 
-    public static void broadcastLoungeMessage(Component msg) {
-        server.broadcastLoungeMessage(msg);
-    }
+  public static void broadcastLoungeMessage(Component msg) {
+    server.broadcastLoungeMessage(msg);
+  }
 
-    public static void broadcastCountdownCancelledMessage() {
-        server.broadcastCountdownCancelledMessage();
-    }
+  public static void broadcastCountdownCancelledMessage() {
+    server.broadcastCountdownCancelledMessage();
+  }
 
-    public static ScoreboardManager getLoungeScoreboardManager() {
-        return server.getLoungeScoreboardManager();
-    }
+  public static ScoreboardManager getLoungeScoreboardManager() {
+    return server.getLoungeScoreboardManager();
+  }
 
-    public static TmpGameServer getGameServer() {
-        return server.getGameServer();
-    }
+  public static TmpGameServer getGameServer() {
+    return server.getGameServer();
+  }
 
-    public static LoungeMap getCurrentMap() {
-        return server.getCurrentMap();
-    }
+  public static LoungeMap getCurrentMap() {
+    return server.getCurrentMap();
+  }
 
-    public static LoungeServerManager.State getState() {
-        return server.getState();
-    }
+  public static LoungeServerManager.State getState() {
+    return server.getState();
+  }
 
-    public static void setState(LoungeServerManager.State state) {
-        server.setState(state);
-    }
+  public static void setState(LoungeServerManager.State state) {
+    server.setState(state);
+  }
 
-    public static Scheduler getTimeManager() {
-        return server.getTimeManager();
-    }
+  public static Scheduler getTimeManager() {
+    return server.getTimeManager();
+  }
 
-    public static void resetGameCountdown() {
-        server.resetGameCountdown();
-    }
+  public static void resetGameCountdown() {
+    server.resetGameCountdown();
+  }
 
-    public static MapManager getMapManager() {
-        return server.getMapManager();
-    }
+  public static MapManager getMapManager() {
+    return server.getMapManager();
+  }
 
-    public static KitManager getKitManager() {
-        return server.getKitManager();
-    }
+  public static KitManager getKitManager() {
+    return server.getKitManager();
+  }
 
-    public static TeamManager getTeamManager() {
-        return server.getTeamManager();
-    }
+  public static TeamManager getTeamManager() {
+    return server.getTeamManager();
+  }
 
-    public static WaitingGameManager getWaitingGameManager() {
-        return server.getWaitingGameManager();
-    }
+  public static WaitingGameManager getWaitingGameManager() {
+    return server.getWaitingGameManager();
+  }
 
-    public static DiscordManager getDiscordManager() {
-        return server.getDiscordManager();
-    }
+  public static DiscordManager getDiscordManager() {
+    return server.getDiscordManager();
+  }
 
-    private static final LoungeServerManager server = LoungeServerManager.getInstance();
+  private static final LoungeServerManager server = LoungeServerManager.getInstance();
 
 }

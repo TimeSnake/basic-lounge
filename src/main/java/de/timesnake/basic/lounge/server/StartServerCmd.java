@@ -17,27 +17,27 @@ import net.kyori.adventure.text.Component;
 
 public class StartServerCmd implements CommandListener {
 
-    private Code startServerPerm;
+  private Code startServerPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (!sender.hasPermission(this.startServerPerm)) {
-            return;
-        }
-
-        LoungeServer.getGameServer().start();
-        sender.sendPluginMessage(Component.text("Game server started", ExTextColor.PERSONAL));
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (!sender.hasPermission(this.startServerPerm)) {
+      return;
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        return null;
-    }
+    LoungeServer.getGameServer().start();
+    sender.sendPluginMessage(Component.text("Game server started", ExTextColor.PERSONAL));
+  }
 
-    @Override
-    public void loadCodes(Plugin plugin) {
-        this.startServerPerm = plugin.createPermssionCode("lounge.start.server");
-    }
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    return null;
+  }
+
+  @Override
+  public void loadCodes(Plugin plugin) {
+    this.startServerPerm = plugin.createPermssionCode("lounge.start.server");
+  }
 }
