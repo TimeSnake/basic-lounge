@@ -115,7 +115,7 @@ public class TmpGameServer implements ChannelListener {
     }
 
     this.state = State.STARTING;
-    Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getName(),
+    Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getProxyName(),
         MessageType.Server.COMMAND,
         "start server " + database.getName() + " " + this.maxPlayers));
     Loggers.LOUNGE.info("Starting game server");
