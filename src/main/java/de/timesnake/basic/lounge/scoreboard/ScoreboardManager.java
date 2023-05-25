@@ -58,8 +58,8 @@ public class ScoreboardManager {
       this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName());
     }
 
-    this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n"
-        + Server.SUPPORT_EMAIL);
+    this.tablist.setFooter(
+        de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager.getDefaultFooter());
 
     Server.getScoreboardManager().setActiveTablist(this.tablist);
     Loggers.LOUNGE.info("Lounge tablist loaded");
