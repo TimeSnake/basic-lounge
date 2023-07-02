@@ -4,6 +4,8 @@
 
 package de.timesnake.basic.lounge.user;
 
+import de.timesnake.basic.bukkit.core.main.BasicBukkit;
+import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.Kit;
 import de.timesnake.basic.game.util.game.Map;
@@ -68,14 +70,19 @@ public class LoungeUser extends StatUser {
     if (LoungeServer.getGameServer().areMapsEnabled()) {
       this.addItemMapSelection();
     }
-    if (this.hasPermission("lounge.settings")) {
-      this.addItemSettings();
-    }
 
+    // TODO fix permission load
+    Server.runTaskLaterSynchrony(() -> {
+      if (this.hasPermission("lounge.settings")) {
+        this.addItemSettings();
+      }
+    }, 20 * 2, BasicBukkit.getPlugin());
+    
     this.addItemGameDescription();
     this.addItemLeave();
   }
 
+  @Override
   public void joinSpectator() {
     this.setDefault();
     this.setStatus(Status.User.SPECTATOR);

@@ -33,16 +33,14 @@ public class UserManager implements Listener {
     // spectator
     if (user.getStatus().equals(Status.User.SPECTATOR)) {
       ((LoungeUser) user).joinSpectator();
-      user.sendPluginMessage(Plugin.LOUNGE,
-          Component.text("You can join the game in a few moments", ExTextColor.WARNING));
+      user.sendPluginMessage(Plugin.LOUNGE, Component.text("You can join the game in a few moments", ExTextColor.WARNING));
       return;
     }
 
     if (LoungeServer.getGame().hasTexturePack()) {
-      user.sendPluginMessage(Plugin.LOUNGE, Component.text("This game uses a texture pack. " +
-          "It is highly recommended to use the texture pack. The texture pack will be loaded at the game "
-          +
-          "start.", ExTextColor.WARNING));
+      user.sendPluginMessage(Plugin.LOUNGE, Component.text("This game uses a texture pack. "
+              + "It is highly recommended to use the texture pack. The texture pack will be loaded at the game start.",
+          ExTextColor.WARNING));
     }
 
     // game user
