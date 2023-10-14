@@ -10,6 +10,7 @@ import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.object.Type;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,6 @@ public class DiscordManager {
   public void cleanup() {
     Server.getChannel()
         .sendMessage(new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
-            MessageType.Discord.DESTROY_CHANNELS, List.of()));
+            MessageType.Discord.DESTROY_CHANNELS, new LinkedList<>()));
   }
 }

@@ -6,12 +6,7 @@ package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.inventory.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
@@ -21,10 +16,6 @@ import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.library.chat.ExTextColor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -35,6 +26,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class InventoryManager implements UserInventoryClickListener, UserInventoryInteractListener,
     InventoryHolder {
@@ -165,7 +158,7 @@ public class InventoryManager implements UserInventoryClickListener, UserInvento
                 DISCORD.disenchant().setExLore(List.of("", "§cDisabled")));
             Server.getChannel().sendMessage(
                 new ChannelDiscordMessage<>(LoungeServer.getGameServer().getName(),
-                    MessageType.Discord.DESTROY_CHANNELS, List.of()));
+                    MessageType.Discord.DESTROY_CHANNELS, new LinkedList<>()));
           }
           user.updateInventory();
         } else {
