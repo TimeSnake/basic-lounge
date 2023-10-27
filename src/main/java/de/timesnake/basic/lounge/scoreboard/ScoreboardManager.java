@@ -14,6 +14,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
+
 import java.util.List;
 
 public class ScoreboardManager {
@@ -26,9 +27,6 @@ public class ScoreboardManager {
   private final Sideboard spectatorSideboard;
 
   public ScoreboardManager() {
-
-    // tablist
-
     this.gameTeam = new GameTeam("0", "game", "", ChatColor.WHITE, ChatColor.WHITE);
     this.spectatorTeam = new GameTeam("0", "spec", "", ChatColor.WHITE, ChatColor.GRAY);
 

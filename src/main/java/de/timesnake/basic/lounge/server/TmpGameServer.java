@@ -14,8 +14,9 @@ import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
-import java.util.Collections;
 import org.bukkit.Bukkit;
+
+import java.util.Collections;
 
 public class TmpGameServer implements ChannelListener {
 
@@ -103,8 +104,7 @@ public class TmpGameServer implements ChannelListener {
   }
 
   public void start() {
-    if (this.database.getTwinServerName() == null || !this.database.getTwinServerName()
-        .equals(Server.getName())) {
+    if (this.database.getTwinServerName() == null || !this.database.getTwinServerName().equals(Server.getName())) {
       Loggers.LOUNGE.warning("Twin server not found, shutdown");
       Bukkit.shutdown();
       return;
@@ -116,8 +116,7 @@ public class TmpGameServer implements ChannelListener {
 
     this.state = State.STARTING;
     Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getProxyName(),
-        MessageType.Server.COMMAND,
-        "start server " + database.getName() + " " + this.maxPlayers));
+        MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
     Loggers.LOUNGE.info("Starting game server");
     this.checkIfStarted();
   }
@@ -131,47 +130,49 @@ public class TmpGameServer implements ChannelListener {
     }, 20 * 130, BasicLounge.getPlugin());
   }
 
-  @ChannelHandler(type = {ListenerType.SERVER_STATUS, ListenerType.SERVER_STATE}, filtered = true)
-  public void onServerMessage(ChannelServerMessage<?> msg) {
-    if (msg.getMessageType().equals(MessageType.Server.STATE)) {
-      if (msg.getValue().equals(ChannelServerMessage.State.READY)) {
-        LoungeServer.setState(LoungeServerManager.State.WAITING);
-        this.setState(State.READY);
-        Loggers.LOUNGE.info("Game-Server is ready");
-        LoungeServer.getTimeManager().checkCountdown();
-      }
+  @ChannelHandler(type = ListenerType.SERVER_STATE, filtered = true)
+  public void onServerMessage(ChannelServerMessage<ChannelServerMessage.State> msg) {
+    if (ChannelServerMessage.State.READY.equals(msg.getValue())) {
+      LoungeServer.setState(LoungeServerManager.State.WAITING);
+      this.setState(State.READY);
+      Loggers.LOUNGE.info("Game-Server is ready");
+      LoungeServer.getTimeManager().checkCountdown();
+      Loggers.LOUNGE.info("Updated state to " + LoungeServer.getState().name().toLowerCase());
+    }
+  }
+
+  @ChannelHandler(type = ListenerType.SERVER_STATUS, filtered = true)
+  public void onStatusMessage(ChannelServerMessage<Status.Server> msg) {
+    Status.Server status = msg.getValue();
+
+    if (Status.Server.ONLINE.equals(status)) {
+      LoungeServer.setState(LoungeServerManager.State.WAITING);
+    } else if (Status.Server.OFFLINE.equals(status)) {
+      this.setState(State.OFFLINE);
+      LoungeServer.setState(LoungeServerManager.State.WAITING);
+      LoungeServer.getTimeManager().resetGameCountdown();
+    } else if (Status.Server.LAUNCHING.equals(status) || Status.Server.LOADING.equals(status)) {
+      this.setState(State.STARTING);
+      LoungeServer.setState(LoungeServerManager.State.WAITING);
+      LoungeServer.getTimeManager().resetGameCountdown();
+    } else if (Status.Server.PRE_GAME.equals(status)) {
+      this.setState(State.PREGAME);
+      LoungeServer.setState(LoungeServerManager.State.PRE_GAME);
+    } else if (Status.Server.IN_GAME.equals(status)) {
+      this.setState(State.IN_GAME);
+      LoungeServer.setState(LoungeServerManager.State.IN_GAME);
+      LoungeServer.prepareLounge();
+    } else if (Status.Server.POST_GAME.equals(status)) {
+      this.setState(State.POST_GAME);
+      LoungeServer.setState(LoungeServerManager.State.POST_GAME);
+    } else {
+      Loggers.LOUNGE.warning("Unknown status message from game server '" + status + "'");
+      LoungeServer.setState(LoungeServerManager.State.WAITING);
+      Server.setStatus(Status.Server.SERVICE);
+      LoungeServer.getTimeManager().resetGameCountdown();
     }
 
-    if (msg.getMessageType().equals(MessageType.Server.STATUS)) {
-      Status.Server status = this.getDatabase().getStatus();
-      if (Status.Server.ONLINE.equals(status)) {
-        LoungeServer.setState(LoungeServerManager.State.WAITING);
-      } else if (Status.Server.OFFLINE.equals(status)) {
-        this.setState(State.OFFLINE);
-        LoungeServer.setState(LoungeServerManager.State.WAITING);
-        LoungeServer.getTimeManager().resetGameCountdown();
-      } else if (Status.Server.LAUNCHING.equals(status) || Status.Server.LOADING.equals(
-          status)) {
-        this.setState(State.STARTING);
-        LoungeServer.setState(LoungeServerManager.State.WAITING);
-        LoungeServer.getTimeManager().resetGameCountdown();
-      } else if (Status.Server.PRE_GAME.equals(status)) {
-        this.setState(State.PREGAME);
-        LoungeServer.setState(LoungeServerManager.State.PRE_GAME);
-      } else if (Status.Server.IN_GAME.equals(status)) {
-        this.setState(State.INGAME);
-        LoungeServer.setState(LoungeServerManager.State.IN_GAME);
-        LoungeServer.prepareLounge();
-      } else if (Status.Server.POST_GAME.equals(status)) {
-        this.setState(State.POSTGAME);
-        LoungeServer.setState(LoungeServerManager.State.POST_GAME);
-      } else {
-        LoungeServer.setState(LoungeServerManager.State.WAITING);
-        Server.setStatus(Status.Server.SERVICE);
-        LoungeServer.getTimeManager().resetGameCountdown();
-      }
-    }
-
+    Loggers.LOUNGE.info("Updated state to " + LoungeServer.getState().name().toLowerCase());
   }
 
   public enum State {
@@ -179,8 +180,8 @@ public class TmpGameServer implements ChannelListener {
     STARTING,
     READY,
     PREGAME,
-    INGAME,
-    POSTGAME
+    IN_GAME,
+    POST_GAME
   }
 
 }
