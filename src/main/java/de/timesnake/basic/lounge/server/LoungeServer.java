@@ -19,12 +19,12 @@ import org.bukkit.Location;
 public class LoungeServer extends GameServer {
 
   public static final Integer MAP_SELECTION_CLOSED = 20;
-  public static final Integer JOINING_CLOSED = 15;
+  public static final Integer JOINING_CLOSED = 16;
   public static final Integer KIT_SELECTION_CLOSED = 14;
   public static final Integer TEAM_SELECTION_CLOSED = 14;
 
   public static TmpGame getGame() {
-    return (TmpGame) server.getGame();
+    return server.getGame();
   }
 
   public static InventoryManager getInventoryManager() {
@@ -47,13 +47,12 @@ public class LoungeServer extends GameServer {
     return server.getSpawn();
   }
 
-  @Deprecated
-  public static void broadcastLoungeMessage(String msg) {
+  public static void broadcastLoungeMessage(Component msg) {
     server.broadcastLoungeMessage(msg);
   }
 
-  public static void broadcastLoungeMessage(Component msg) {
-    server.broadcastLoungeMessage(msg);
+  public static void broadcastLoungeTDMessage(String msg) {
+    server.broadcastLoungeTDMessage(msg);
   }
 
   public static void broadcastCountdownCancelledMessage() {

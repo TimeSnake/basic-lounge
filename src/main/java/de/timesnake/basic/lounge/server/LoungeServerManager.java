@@ -7,7 +7,6 @@ package de.timesnake.basic.lounge.server;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.Chat;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
@@ -31,18 +30,12 @@ import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
 import de.timesnake.database.util.Database;
-import de.timesnake.database.util.game.DbGame;
-import de.timesnake.database.util.game.DbLoungeMap;
-import de.timesnake.database.util.game.DbMap;
-import de.timesnake.database.util.game.DbTeam;
-import de.timesnake.database.util.game.DbTmpGame;
+import de.timesnake.database.util.game.*;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.waitinggames.WaitingGameManager;
-import java.util.ArrayList;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -50,6 +43,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoungeServerManager extends GameServerManager<TmpGame> implements Listener,
     ChannelListener {
@@ -239,8 +235,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     Server.getChat().broadcastJoinQuit(false);
 
     Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(),
-        Server.getGameUsers(),
-        BasicLounge.getPlugin());
+        Server.getGameUsers(), BasicLounge.getPlugin());
 
     Server.runTaskLaterSynchrony(() -> {
       Server.getChat().broadcastJoinQuit(true);
@@ -252,20 +247,17 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     return this.currentMap.getSpawn();
   }
 
-  @Deprecated
-  public void broadcastLoungeMessage(String msg) {
-    Server.broadcastTDMessage(Plugin.LOUNGE, msg);
-  }
-
-
   public void broadcastLoungeMessage(Component msg) {
     Server.broadcastMessage(Plugin.LOUNGE, msg);
   }
 
+  public void broadcastLoungeTDMessage(String msg) {
+    Server.broadcastTDMessage(Plugin.LOUNGE, msg);
+  }
 
   public void broadcastCountdownCancelledMessage() {
     if (this.state.equals(State.STARTING)) {
-      this.broadcastLoungeMessage(ChatColor.WARNING + "Countdown canceled");
+      this.broadcastLoungeTDMessage("§wCountdown cancelled");
     }
   }
 
