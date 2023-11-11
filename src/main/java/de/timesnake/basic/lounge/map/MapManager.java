@@ -9,12 +9,9 @@ import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Loggers;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import org.bukkit.inventory.Inventory;
+
+import java.util.*;
 
 public class MapManager {
 
@@ -26,13 +23,15 @@ public class MapManager {
   public MapManager() {
     for (Map map : GameServer.getGame().getMaps()) {
 
-      // map to large
       if (map.getMaxPlayers() != null && map.getMinPlayers() > LoungeServer.getMaxPlayers()) {
         continue;
       }
 
-      // map to small
       if (map.getMaxPlayers() != null && map.getMaxPlayers() < LoungeServer.getMaxPlayers()) {
+        continue;
+      }
+
+      if (!map.getTeamAmounts().isEmpty() && !map.getTeamAmounts().contains(LoungeServer.getTeamAmount())) {
         continue;
       }
 
