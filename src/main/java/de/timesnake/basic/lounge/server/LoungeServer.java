@@ -63,6 +63,10 @@ public class LoungeServer extends GameServer {
     return server.getLoungeScoreboardManager();
   }
 
+  public static Integer getTeamAmount() {
+    return server.getTeamAmount();
+  }
+
   public static TmpGameServer getGameServer() {
     return server.getGameServer();
   }

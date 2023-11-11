@@ -13,7 +13,6 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
@@ -30,7 +29,10 @@ import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.basic.lounge.user.UserManager;
 import de.timesnake.channel.util.listener.ChannelListener;
 import de.timesnake.database.util.Database;
-import de.timesnake.database.util.game.*;
+import de.timesnake.database.util.game.DbGame;
+import de.timesnake.database.util.game.DbLoungeMap;
+import de.timesnake.database.util.game.DbTeam;
+import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Loggers;
@@ -173,11 +175,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       public LoungeTeam loadTeam(DbTeam team) throws UnsupportedGroupRankException {
         return new LoungeTeam(team);
       }
-
-      @Override
-      public Map loadMap(DbMap dbMap, boolean loadWorld) {
-        return new Map(dbMap, loadWorld);
-      }
     };
   }
 
@@ -316,6 +313,10 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   public ScoreboardManager getLoungeScoreboardManager() {
     return this.scoreboardManager;
+  }
+
+  public Integer getTeamAmount() {
+    return this.getGameServer().getTeamAmount();
   }
 
   public WaitingGameManager getWaitingGameManager() {

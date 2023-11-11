@@ -15,13 +15,14 @@ import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MapSelection {
 
@@ -31,7 +32,6 @@ public class MapSelection {
 
   private final ExInventory inventory;
   private final ExItemStack item;
-  private final HashMap<ExItemStack, Map> mapsByItem = new HashMap<>();
 
   public MapSelection(Collection<Map> maps) {
     this.item = new ExItemStack(Material.MAP)
@@ -76,6 +76,7 @@ public class MapSelection {
     this.inventory.setItemStack(0, randomMapItem);
 
     int slot = 2;
+    HashMap<ExItemStack, Map> mapsByItem = new HashMap<>();
     for (Map map : maps) {
       // first and second inventory column empty (for random selection)
       if (slot % 9 == 0) {
@@ -85,11 +86,11 @@ public class MapSelection {
       ExItemStack item = this.createMapItem(map);
 
       this.inventory.setItemStack(slot, item);
-      this.mapsByItem.put(item, map);
+      mapsByItem.put(item, map);
       slot++;
     }
 
-    if (this.mapsByItem.isEmpty()) {
+    if (mapsByItem.isEmpty()) {
       if (LoungeServer.getGameServer().areMapsEnabled()) {
         Loggers.LOUNGE.warning("No map for player amount found");
         Bukkit.shutdown();
