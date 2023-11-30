@@ -229,13 +229,13 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   public void startGame() {
     this.setState(State.PRE_GAME);
-    Server.getChat().broadcastJoinQuit(false);
+    Server.getChat().setBroadcastJoinQuit(false);
 
     Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(),
         Server.getGameUsers(), BasicLounge.getPlugin());
 
     Server.runTaskLaterSynchrony(() -> {
-      Server.getChat().broadcastJoinQuit(true);
+      Server.getChat().setBroadcastJoinQuit(true);
       this.prepareLounge();
     }, 5 * 20, BasicLounge.getPlugin());
   }
