@@ -37,6 +37,7 @@ import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.pets.PetManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -67,6 +68,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   private TeamManager teamManager;
   private Scheduler scheduler;
   private WaitingGameManager waitingGameManager;
+  private PetManager petManager;
   private StatsManager statsManager;
   private DiscordManager discordManager;
   private State state;
@@ -138,6 +140,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     this.scoreboardManager = new ScoreboardManager();
 
     this.waitingGameManager = new WaitingGameManager();
+    this.petManager = new PetManager(BasicLounge.getPlugin());
 
     this.statsManager = new StatsManager();
     this.discordManager = new DiscordManager();
