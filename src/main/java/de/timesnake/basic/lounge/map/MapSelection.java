@@ -5,7 +5,7 @@
 package de.timesnake.basic.lounge.map;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Map;

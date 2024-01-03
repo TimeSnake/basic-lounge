@@ -5,7 +5,7 @@
 package de.timesnake.basic.lounge.team;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
@@ -15,11 +15,12 @@ import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 
 public class LoungeTeam extends Team {
 

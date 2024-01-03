@@ -5,7 +5,7 @@
 package de.timesnake.basic.lounge.team;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
@@ -14,11 +14,12 @@ import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
-import java.util.HashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+
+import java.util.HashMap;
 
 public class TeamSelection {
 
