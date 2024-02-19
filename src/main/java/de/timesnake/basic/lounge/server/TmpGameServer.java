@@ -51,7 +51,7 @@ public class TmpGameServer implements ChannelListener {
     this.mergeTeams = database.isTeamMerging();
     this.discord = database.isDiscordEnabled();
 
-    Server.getChannel().addListener(this, () -> Collections.singleton(this.getName()));
+    Server.getChannel().addListener(this, Collections.singleton(this.getName()));
   }
 
   public DbTmpGameServer getDatabase() {
