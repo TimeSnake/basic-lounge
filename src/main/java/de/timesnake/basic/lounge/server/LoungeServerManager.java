@@ -36,7 +36,6 @@ import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.basic.util.Loggers;
-import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.pets.PetManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
@@ -58,20 +57,25 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   protected final List<LoungeMap> loungeMaps = new ArrayList<>();
-  private final UserManager userManager = new UserManager();
-  protected LoungeMap currentMap;
-  private TmpGameServer tmpGameServer;
+
   private InventoryManager inventoryManager;
   private de.timesnake.basic.lounge.scoreboard.ScoreboardManager scoreboardManager;
+
+  private StateManager stateManager;
+  private Scheduler scheduler;
+
   private MapManager mapManager;
   private KitManager kitManager;
   private TeamManager teamManager;
-  private Scheduler scheduler;
+
   private WaitingGameManager waitingGameManager;
-  private PetManager petManager;
   private StatsManager statsManager;
+  private PetManager petManager;
+
   private DiscordManager discordManager;
-  private State state;
+
+  protected LoungeMap currentMap;
+  private TmpGameServer tmpGameServer;
 
   public void onLoungeEnable() {
     super.onGameEnable();
@@ -88,16 +92,14 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     this.tmpGameServer = new TmpGameServer(gameDbServer);
 
-    Server.registerListener(this.userManager, BasicLounge.getPlugin());
-
     // lounge maps
     for (DbLoungeMap map : Database.getLounges().getCachedMaps()) {
       LoungeMap loungeMap;
       try {
         loungeMap = new LoungeMap(map);
       } catch (WorldNotExistException e) {
-        Loggers.LOUNGE.warning("Map '" + map.getName() + "' could not loaded, world '" +
-            e.getWorldName() + "' not exists");
+        Loggers.LOUNGE.warning("Map '" + map.getName() + "' could not loaded, world '" + e.getWorldName() + "' not " +
+            "exists");
         continue;
       }
       loungeMap.getWorld().setExceptService(true);
@@ -126,6 +128,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       Bukkit.shutdown();
     }
 
+    new UserManager();
+
     this.mapManager = new MapManager();
 
     this.kitManager = new KitManager();
@@ -145,15 +149,13 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     this.statsManager = new StatsManager();
     this.discordManager = new DiscordManager();
 
-    this.state = State.WAITING;
+    this.stateManager = new StateManager();
 
     Loggers.LOUNGE.info("Server loaded");
   }
 
   public final void onLoungeDisable() {
     this.discordManager.cleanup();
-    this.tmpGameServer.getDatabase().setTwinServerName(null);
-    ((DbLoungeServer) Server.getDatabase()).setTask(null);
   }
 
   @Override
@@ -187,8 +189,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
       @Override
       public @Nullable Sideboard getSpectatorSideboard() {
-        return LoungeServerManager.this.getLoungeScoreboardManager()
-            .getSpectatorSideboard();
+        return LoungeServerManager.this.getLoungeScoreboardManager().getSpectatorSideboard();
       }
 
       @Override
@@ -217,30 +218,21 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   public void prepareLounge() {
-    if (this.state == State.WAITING || this.state == State.PREPARING) {
-      return;
-    }
-
-    this.state = State.PREPARING;
-    Loggers.LOUNGE.info("Preparing lounge...");
+    this.stateManager.updateState(StateManager.State.PREPARING);
     this.scheduler.resetGameCountdown();
     this.loadRandomLoungeMap();
     this.teamManager.resetTeams();
     Loggers.LOUNGE.info("Prepared lounge");
-    this.state = State.WAITING;
+    this.stateManager.updateState(StateManager.State.WAITING_PLAYERS);
   }
 
   public void startGame() {
-    this.setState(State.PRE_GAME);
+    this.stateManager.updateState(StateManager.State.PRE_GAME);
     Server.getChat().setBroadcastJoinQuit(false);
 
-    Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(),
-        Server.getGameUsers(), BasicLounge.getPlugin());
-
-    Server.runTaskLaterSynchrony(() -> {
-      Server.getChat().setBroadcastJoinQuit(true);
-      this.prepareLounge();
-    }, 5 * 20, BasicLounge.getPlugin());
+    Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(), Server.getGameUsers(),
+        BasicLounge.getPlugin());
+    Server.runTaskLaterSynchrony(() -> Server.getChat().setBroadcastJoinQuit(true), 5 * 20, BasicLounge.getPlugin());
   }
 
   public Location getSpawn() {
@@ -256,7 +248,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   public void broadcastCountdownCancelledMessage() {
-    if (this.state.equals(State.STARTING)) {
+    if (this.stateManager.getState().equals(StateManager.State.STARTING)) {
       this.broadcastLoungeTDMessage("§wCountdown cancelled");
     }
   }
@@ -266,10 +258,10 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       int index = (int) (Math.random() * this.loungeMaps.size());
       this.currentMap = this.loungeMaps.get(index);
       this.currentMap.getWorld().loadChunk(this.currentMap.getSpawn().getChunk());
+      this.currentMap.getWorld().setTime(0);
       this.statsManager.updateGlobalDisplays();
       Loggers.LOUNGE.info("Loaded map " + this.currentMap.getName());
     }, BasicLounge.getPlugin());
-
   }
 
   public TmpGameServer getGameServer() {
@@ -282,24 +274,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   public Scheduler getTimeManager() {
     return scheduler;
-  }
-
-  public State getState() {
-    return this.state;
-  }
-
-  public void setState(State state) {
-    this.state = state;
-    switch (state) {
-      case PREPARING, PRE_GAME -> Server.setStatus(Status.Server.PRE_GAME);
-      case IN_GAME -> Server.setStatus(Status.Server.IN_GAME);
-      case POST_GAME -> Server.setStatus(Status.Server.POST_GAME);
-      case WAITING, STARTING -> Server.setStatus(Status.Server.ONLINE);
-    }
-  }
-
-  public void resetGameCountdown() {
-    this.scheduler.resetGameCountdown();
   }
 
   public KitManager getKitManager() {
@@ -330,12 +304,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     return discordManager;
   }
 
-  public enum State {
-    PREPARING,
-    WAITING,
-    STARTING,
-    PRE_GAME,
-    IN_GAME,
-    POST_GAME;
+  public StateManager getStateManager() {
+    return stateManager;
   }
+
 }

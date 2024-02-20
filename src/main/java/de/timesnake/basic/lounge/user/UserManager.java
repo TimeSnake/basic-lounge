@@ -11,12 +11,10 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.lounge.chat.Plugin;
+import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.waitinggames.WaitingGameManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -24,6 +22,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class UserManager implements Listener {
+
+  public UserManager() {
+    Server.registerListener(this, BasicLounge.getPlugin());
+  }
 
   @EventHandler
   public void onUserJoin(UserJoinEvent e) {
@@ -33,39 +35,25 @@ public class UserManager implements Listener {
     // spectator
     if (user.getStatus().equals(Status.User.SPECTATOR)) {
       ((LoungeUser) user).joinSpectator();
-      user.sendPluginMessage(Plugin.LOUNGE, Component.text("You can join the game in a few moments", ExTextColor.WARNING));
+      user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou can join the game in a few moments");
       return;
     }
 
     if (LoungeServer.getGame().hasTexturePack()) {
-      user.sendPluginMessage(Plugin.LOUNGE, Component.text("This game uses a texture pack. "
-              + "It is highly recommended to use the texture pack. The texture pack will be loaded at the game start.",
-          ExTextColor.WARNING));
+      user.sendPluginTDMessage(Plugin.LOUNGE, "§wThis game uses a texture pack. "
+          + "It is highly recommended to use the texture pack. The texture pack will be loaded at the game start.");
     }
 
     // game user
     if (task != null) {
       if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
         ((LoungeUser) user).joinLounge();
-        LoungeServer.getTimeManager().checkCountdown();
-        LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber();
-
-        if (Server.getGameNotServiceUsers().size() == 1) {
-          if (user.getLastServer() != null) {
-            if (user.getLastServer().getPort()
-                .equals(LoungeServer.getGameServer().getPort())) {
-              LoungeServer.setState(LoungeServerManager.State.WAITING);
-            }
-          }
-          LoungeServer.getCurrentMap().getWorld().setTime(0);
-          LoungeServer.getGameServer().start();
-        }
+        LoungeServer.getStateManager().onPlayerUpdate();
         return;
       }
     }
 
-    user.sendPluginMessage(Plugin.LOUNGE,
-        Component.text("You didn't joined the lounge!", ExTextColor.WARNING));
+    user.sendPluginTDMessage(Plugin.LOUNGE, "§wYou didn't joined the lounge!");
     user.asSender(Plugin.LOUNGE).sendTDMessageCommandHelp("Use", "service");
     user.getInventory().clear();
   }
@@ -73,22 +61,10 @@ public class UserManager implements Listener {
   @EventHandler
   public void onUserQuit(UserQuitEvent e) {
     User user = e.getUser();
-    String task = user.getTask();
-    if (task != null) {
-      if (task.equalsIgnoreCase(LoungeServer.getGame().getName())) {
-        int size = Server.getPreGameUsers().size();
-        LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(size);
+    ((LoungeUser) user).setSelectedMap(null);
+    ((LoungeUser) user).setSelectedTeam(null);
 
-        if (size <= LoungeServer.getGame().getAutoStartPlayerNumber()
-            || (LoungeServer.getGame().isEqualTimeSizeRequired()
-            && size % LoungeServer.getGame().getTeams().size() != 0)) {
-          LoungeServer.resetGameCountdown();
-        }
-
-        ((LoungeUser) user).setSelectedMap(null);
-        ((LoungeUser) user).setSelectedTeam(null);
-      }
-    }
+    LoungeServer.getStateManager().onPlayerUpdate();
   }
 
   @EventHandler

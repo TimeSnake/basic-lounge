@@ -16,7 +16,6 @@ import de.timesnake.library.commands.simple.Arguments;
 public class StartServerCmd implements CommandListener {
 
   private final Code perm = Plugin.LOUNGE.createPermssionCode("lounge.start.server");
-  ;
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {

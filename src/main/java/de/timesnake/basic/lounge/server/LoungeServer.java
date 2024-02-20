@@ -18,10 +18,14 @@ import org.bukkit.Location;
 
 public class LoungeServer extends GameServer {
 
-  public static final Integer MAP_SELECTION_CLOSED = 20;
-  public static final Integer JOINING_CLOSED = 16;
-  public static final Integer KIT_SELECTION_CLOSED = 14;
-  public static final Integer TEAM_SELECTION_CLOSED = 14;
+  public static final int MAP_SELECTION_CLOSED = 20;
+  public static final int JOINING_CLOSED = 16;
+  public static final int KIT_SELECTION_CLOSED = 14;
+  public static final int TEAM_SELECTION_CLOSED = 14;
+
+  public static final int MAP_SELECTION = 16;
+  public static final int TEAM_CREATION = 14;
+  public static final int KIT_LOADING = 14;
 
   public static TmpGame getGame() {
     return server.getGame();
@@ -75,20 +79,8 @@ public class LoungeServer extends GameServer {
     return server.getCurrentMap();
   }
 
-  public static LoungeServerManager.State getState() {
-    return server.getState();
-  }
-
-  public static void setState(LoungeServerManager.State state) {
-    server.setState(state);
-  }
-
   public static Scheduler getTimeManager() {
     return server.getTimeManager();
-  }
-
-  public static void resetGameCountdown() {
-    server.resetGameCountdown();
   }
 
   public static MapManager getMapManager() {
@@ -109,6 +101,10 @@ public class LoungeServer extends GameServer {
 
   public static DiscordManager getDiscordManager() {
     return server.getDiscordManager();
+  }
+
+  public static StateManager getStateManager() {
+    return server.getStateManager();
   }
 
   private static final LoungeServerManager server = LoungeServerManager.getInstance();
