@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.lounge.user;
 
-import de.timesnake.basic.bukkit.core.main.BasicBukkit;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.Kit;
@@ -31,12 +30,11 @@ public class LoungeUser extends StatUser {
   @Override
   public void setStatus(Status.User status) {
     super.setStatus(status);
-    LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber();
+    LoungeServer.getLoungeScoreboardManager().updateScoreboardPlayerNumber(Server.getPreGameUsers().size());
   }
 
   @Override
-  public TablistableGroup getTablistGroup(
-      de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
+  public TablistableGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
     if (type.equals(TablistGroupType.DUMMY)) {
       return LoungeServer.getLoungeScoreboardManager().getGameTeam();
     }
@@ -71,12 +69,9 @@ public class LoungeUser extends StatUser {
       this.addItemMapSelection();
     }
 
-    // TODO fix permission load
-    Server.runTaskLaterSynchrony(() -> {
-      if (this.hasPermission("lounge.settings")) {
-        this.addItemSettings();
-      }
-    }, 20 * 2, BasicBukkit.getPlugin());
+    if (this.hasPermission("lounge.settings")) {
+      this.addItemSettings();
+    }
     
     this.addItemGameDescription();
     this.addItemLeave();
@@ -174,7 +169,7 @@ public class LoungeUser extends StatUser {
   }
 
   public void switchToGameServer() {
-    super.switchToServer(LoungeServer.getGameServer().getPort());
+    super.switchToServer(LoungeServer.getGameServer().getName());
   }
 
   public Map getSelectedMap() {

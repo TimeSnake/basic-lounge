@@ -160,10 +160,6 @@ public class ScoreboardManager {
     }
   }
 
-  public void updateScoreboardPlayerNumber() {
-    this.updateScoreboardPlayerNumber(Server.getPreGameUsers().size());
-  }
-
   public TeamTablist getTablist() {
     return tablist;
   }
