@@ -13,7 +13,6 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.database.util.game.DbTeam;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -48,7 +47,6 @@ public class LoungeTeam extends Team {
             sender.sendPluginMessage(
                 Component.text("Team selection is closed", ExTextColor.WARNING));
             user.closeInventory();
-            event.setCancelled(true);
             return;
           }
 
@@ -57,30 +55,20 @@ public class LoungeTeam extends Team {
                 Component.text("Selecting teams is forbidden",
                     ExTextColor.WARNING));
             user.closeInventory();
-            event.setCancelled(true);
             return;
           }
 
           if (this.getMaxPlayers() != null
               && this.getUsersSelected().size() >= this.getMaxPlayers()) {
-            sender.sendPluginMessage(Component.text("Team ", ExTextColor.WARNING)
-                .append(Component.text(this.getDisplayName(), this.getTextColor()))
-                .append(Component.text(" is full", ExTextColor.WARNING)));
+            sender.sendPluginTDMessage("§wTeam " + this.getTDColor() + this.getDisplayName() + "§w is full");
             user.closeInventory();
-            event.setCancelled(true);
             return;
           }
 
           user.setSelectedTeam(this);
-          sender.sendPluginMessage(
-              Component.text("You selected team ", ExTextColor.PERSONAL)
-                  .append(Component.text(this.getDisplayName(),
-                      this.getTextColor())));
-          Loggers.LOUNGE.info(user.getName() + " selected team " + this.getName());
+          sender.sendPluginTDMessage("§sYou selected team " + this.getTDColor() + this.getDisplayName());
           user.closeInventory();
-
-          event.setCancelled(true);
-        });
+        }, true);
     this.updateItem();
     return item;
   }

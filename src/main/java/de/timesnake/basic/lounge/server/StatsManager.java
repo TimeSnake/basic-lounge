@@ -18,24 +18,27 @@ import de.timesnake.channel.util.listener.ListenerType;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.user.DbUser;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Triple;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
-import java.awt.Color;
-import java.awt.Font;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.awt.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class StatsManager implements Listener, ChannelListener {
 
   private static final int FONT_SIZE = 24;
+
+  private final Logger logger = LogManager.getLogger("lounge.stats.manager");
 
   private final Map<LoungeUser, HashMap<Integer, MapDisplay>> displayByUser = new HashMap<>();
   private final Map<Integer, MapDisplay> globalDisplayByIndex = new HashMap<>();
@@ -310,7 +313,7 @@ public class StatsManager implements Listener, ChannelListener {
   public void onChannelMessage(ChannelServerMessage<String> msg) {
     if (msg.getValue().equals(LoungeServer.getGame().getName())) {
       this.updateGlobalDisplays();
-      Loggers.LOUNGE.info("Updated global stats");
+      this.logger.info("Updated global stats");
     }
   }
 

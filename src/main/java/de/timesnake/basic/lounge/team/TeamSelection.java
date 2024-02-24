@@ -12,9 +12,8 @@ import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.Loggers;
-import de.timesnake.library.chat.ExTextColor;
-import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -22,6 +21,8 @@ import org.bukkit.inventory.Inventory;
 import java.util.HashMap;
 
 public class TeamSelection {
+
+  private final Logger logger = LogManager.getLogger("lounge.team.selection");
 
   private final ExItemStack invItem;
   private final ExInventory inventory;
@@ -31,17 +32,14 @@ public class TeamSelection {
   private boolean silentBlocked = false;
 
   public TeamSelection() {
-    this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection",
-            Color.BLACK)
+    this.invItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§6Teamselection", Color.BLACK)
         .hideAll()
         .immutable()
         .onInteract(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
           Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(
-                Component.text("The team selection is closed",
-                    ExTextColor.WARNING));
+            sender.sendPluginTDMessage("§wThe team selection is closed");
             event.setCancelled(true);
             return;
           }
@@ -52,8 +50,7 @@ public class TeamSelection {
     int invSize = (int) (9 * Math.ceil(LoungeServer.getGameServer().getTeamAmount() / 7.0));
     this.inventory = new ExInventory(invSize > 0 ? invSize : 9, "Teamselection");
 
-    ExItemStack randomTeamItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
-            "§fRandom", Color.GRAY)
+    ExItemStack randomTeamItem = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, "§fRandom", Color.GRAY)
         .setLore(ChatColor.GRAY + "Join Random team")
         .hideAll()
         .immutable()
@@ -61,18 +58,15 @@ public class TeamSelection {
           LoungeUser user = ((LoungeUser) event.getUser());
           Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginMessage(
-                Component.text("Team selection is closed", ExTextColor.WARNING));
+            sender.sendPluginTDMessage("§wTeam selection is closed");
             user.closeInventory();
             event.setCancelled(true);
             return;
           }
 
           user.setSelectedTeam(null);
-          sender.sendPluginMessage(
-              Component.text("You selected team ", ExTextColor.PERSONAL)
-                  .append(Component.text("Random", ExTextColor.GRAY)));
-          Loggers.LOUNGE.info(user.getName() + " selected team random");
+          sender.sendPluginTDMessage("§sYou selected team §vRandom");
+          this.logger.info("'{}' selected team random", user.getName());
 
           user.closeInventory();
           event.setCancelled(true);

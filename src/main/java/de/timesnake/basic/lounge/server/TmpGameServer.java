@@ -12,13 +12,16 @@ import de.timesnake.channel.util.listener.ListenerType;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
 import de.timesnake.database.util.server.DbTmpGameServer;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 
 import java.util.Set;
 
 public class TmpGameServer implements ChannelListener {
+
+  private final Logger logger = LogManager.getLogger("lounge.game-server");
 
   private final DbTmpGameServer database;
   private final String name;
@@ -95,7 +98,7 @@ public class TmpGameServer implements ChannelListener {
 
   public void start() {
     if (this.database.getTwinServerName() == null || !this.database.getTwinServerName().equals(Server.getName())) {
-      Loggers.LOUNGE.warning("Twin server not found, shutdown");
+      this.logger.error("Twin server not found, shutdown");
       Bukkit.shutdown();
       return;
     }
@@ -107,14 +110,14 @@ public class TmpGameServer implements ChannelListener {
     this.state = State.STARTING;
     Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getNetwork().getProxyName(),
         MessageType.Server.COMMAND, "start server " + database.getName() + " " + this.maxPlayers));
-    Loggers.LOUNGE.info("Starting game server");
+    this.logger.info("Starting game server");
     this.checkIfStarted();
   }
 
   private void checkIfStarted() {
     Server.runTaskLaterAsynchrony(() -> {
       if (this.state.equals(State.OFFLINE)) {
-        Loggers.LOUNGE.info("Game server offline, trying a restart");
+        this.logger.info("Game server offline, trying a restart");
         this.start();
       }
     }, 20 * 130, BasicLounge.getPlugin());
@@ -124,7 +127,7 @@ public class TmpGameServer implements ChannelListener {
   public void onServerMessage(ChannelServerMessage<ChannelServerMessage.State> msg) {
     if (ChannelServerMessage.State.READY.equals(msg.getValue())) {
       this.state = State.READY;
-      Loggers.LOUNGE.info("Game-Server is ready");
+      this.logger.info("Game-Server is ready");
       LoungeServer.getStateManager().onServerUpdate(this.state);
     }
   }
@@ -147,6 +150,7 @@ public class TmpGameServer implements ChannelListener {
       this.state = State.POST_GAME;
     }
 
+    this.logger.info("Updated state of game server to " + this.state);
     LoungeServer.getStateManager().onServerUpdate(this.state);
   }
 

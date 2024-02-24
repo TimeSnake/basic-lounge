@@ -12,17 +12,16 @@ import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.chat.ExTextColor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 public class TeamCreator {
+
+  private final Logger logger = LogManager.getLogger("lounge.team.creation");
 
   private final List<User> usersWithRandomTeam;
   private final int playerAmount;
@@ -39,13 +38,13 @@ public class TeamCreator {
 
   public void createTeams() {
 
-    Loggers.LOUNGE.info("Team-selection closed");
+    this.logger.info("Team-selection closed");
 
     if (LoungeServer.getGameServer().getTeamAmount() == 0) {
       return;
     }
 
-    Loggers.LOUNGE.info("Team-creation:");
+    this.logger.info("Team-creation:");
 
     if (LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
       for (Team team : LoungeServer.getGame().getTeams()) {
@@ -80,7 +79,7 @@ public class TeamCreator {
     }
 
     for (LoungeTeam team : this.teams) {
-      Loggers.LOUNGE.info(team.getName() + ": " + team.getMaxPlayers());
+      this.logger.info("{}: {}", team.getName(), team.getMaxPlayers());
     }
   }
 
@@ -196,7 +195,7 @@ public class TeamCreator {
         }
       }
     } else {
-      Loggers.LOUNGE.info("Random teams due to blocked selection");
+      this.logger.info("Random teams due to blocked selection");
       usersWithRandomTeam.addAll(users);
     }
 
@@ -225,7 +224,7 @@ public class TeamCreator {
       }
     }
 
-    Loggers.LOUNGE.info("Finished team creation");
+    this.logger.info("Finished team creation");
 
     LoungeServer.getDiscordManager().init();
   }
@@ -244,7 +243,7 @@ public class TeamCreator {
     user.sendPluginMessage(Plugin.LOUNGE,
         Component.text("You joined team ", ExTextColor.PERSONAL)
             .append(Component.text(team.getDisplayName(), team.getTextColor())));
-    Loggers.LOUNGE.info("User " + user.getName() + " joined team " + team.getName());
+    this.logger.info("User '{}' joined team '{}'", user.getName(), team.getName());
   }
 
 }

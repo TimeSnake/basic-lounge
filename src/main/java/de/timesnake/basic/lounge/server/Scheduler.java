@@ -10,7 +10,6 @@ import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
-import de.timesnake.library.basic.util.Loggers;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.boss.BarColor;
@@ -80,7 +79,6 @@ public class Scheduler {
           case 11 -> {
             Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
                 MessageType.Server.GAME_PLAYERS, Server.getGameUsers().size()));
-            Loggers.LOUNGE.info("Estimated Players: " + Server.getGameUsers().size());
           }
           case 9 -> {
             if (LoungeServer.getGame().hasTexturePack()) {
