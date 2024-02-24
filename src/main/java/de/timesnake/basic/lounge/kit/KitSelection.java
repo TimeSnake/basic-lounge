@@ -12,13 +12,15 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.Loggers;
-import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 
 public class KitSelection {
+
+  private final Logger logger = LogManager.getLogger("lounge.kit.selection");
 
   private final ExInventory inventory;
   private final ExItemStack item;
@@ -28,25 +30,22 @@ public class KitSelection {
     this.item.onInteract(event -> {
       LoungeUser user = (LoungeUser) event.getUser();
       if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-        user.sendPluginMessage(Plugin.LOUNGE,
-            Component.text("The kit selection is closed", ExTextColor.WARNING));
+        user.sendPluginTDMessage(Plugin.LOUNGE, "§wThe kit selection is closed");
         return;
       }
       user.openInventory(this.getInventory());
       event.setCancelled(true);
     });
 
-    if (GameServer.getGame().getKits().size() == 0
-        || GameServer.getGame().getKits().size() > 42) {
+    if (GameServer.getGame().getKits().isEmpty() || GameServer.getGame().getKits().size() > 42) {
       this.inventory = null;
       if (LoungeServer.getGameServer().areKitsEnabled()) {
-        Loggers.LOUNGE.warning("Too few/many kits for the inventory");
+        this.logger.warn("Too few/many kits for the inventory");
       }
       return;
     }
 
-    this.inventory = new ExInventory(
-        (int) (9 * Math.ceil(GameServer.getGame().getKits().size() / 7.0)),
+    this.inventory = new ExInventory((int) (9 * Math.ceil(GameServer.getGame().getKits().size() / 7.0)),
         Component.text("Kitselection"));
 
     ExItemStack item = Kit.RANDOM.createDisplayItem(this.getKitClickListener(Kit.RANDOM));
@@ -68,16 +67,13 @@ public class KitSelection {
       LoungeUser user = ((LoungeUser) event.getUser());
 
       if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-        user.sendPluginMessage(de.timesnake.basic.game.util.user.Plugin.LOUNGE,
-            Component.text("The kit selection is closed", ExTextColor.WARNING));
+        user.sendPluginTDMessage(Plugin.LOUNGE, "§wKit selection is closed");
         return;
       }
 
       user.setSelectedKit(kit);
-      user.sendPluginMessage(de.timesnake.basic.game.util.user.Plugin.LOUNGE,
-          Component.text("You selected kit ", ExTextColor.PERSONAL)
-              .append(Component.text(kit.getName(), ExTextColor.VALUE)));
-      Loggers.LOUNGE.info(user.getName() + " selected kit " + kit.getName());
+      user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou selected kit §v" + kit.getName());
+      this.logger.info(user.getName() + " selected kit " + kit.getName());
 
       user.closeInventory();
       event.setCancelled(true);

@@ -13,9 +13,13 @@ import de.timesnake.basic.game.util.user.StatUser;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.team.LoungeTeam;
 import de.timesnake.library.basic.util.Status;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.entity.Player;
 
 public class LoungeUser extends StatUser {
+
+  private final Logger logger = LogManager.getLogger("lounge.user");
 
   private boolean isLeaving;
   private Kit selectedKit;
@@ -72,7 +76,7 @@ public class LoungeUser extends StatUser {
     if (this.hasPermission("lounge.settings")) {
       this.addItemSettings();
     }
-    
+
     this.addItemGameDescription();
     this.addItemLeave();
   }
@@ -218,6 +222,8 @@ public class LoungeUser extends StatUser {
         }
       }
     }
+
+    this.logger.info("{} selected team {}", this.getName(), this.getName());
   }
 
 

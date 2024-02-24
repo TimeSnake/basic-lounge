@@ -13,9 +13,9 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
-import de.timesnake.library.basic.util.Loggers;
-import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -30,6 +30,8 @@ public class MapSelection {
   private static final org.bukkit.ChatColor DESCRIPTION_COLOR = ChatColor.WHITE;
   private static final org.bukkit.ChatColor AUTHORS_COLOR = ChatColor.BLUE;
 
+  private final Logger logger = LogManager.getLogger("lounge.map.selection");
+
   private final ExInventory inventory;
   private final ExItemStack item;
 
@@ -40,8 +42,7 @@ public class MapSelection {
           LoungeUser user = ((LoungeUser) event.getUser());
           Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginMessage(
-                Component.text("The map voting is closed", ExTextColor.WARNING));
+            sender.sendPluginTDMessage("§wMap voting is closed");
             event.setCancelled(true);
             return;
           }
@@ -60,15 +61,13 @@ public class MapSelection {
           Sender sender = user.asSender(Plugin.LOUNGE);
 
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginMessage(
-                Component.text("The map voting is closed", ExTextColor.WARNING));
+            sender.sendPluginTDMessage("§wMap voting is closed");
             event.setCancelled(true);
             return;
           }
 
           user.setSelectedMap(null);
-          sender.sendPluginMessage(
-              Component.text("Voted for a random map", ExTextColor.PERSONAL));
+          sender.sendPluginTDMessage("§sVoted for a random map");
           user.closeInventory();
           event.setCancelled(true);
         });
@@ -92,7 +91,7 @@ public class MapSelection {
 
     if (mapsByItem.isEmpty()) {
       if (LoungeServer.getGameServer().areMapsEnabled()) {
-        Loggers.LOUNGE.warning("No map for player amount found");
+        this.logger.warn("No map for player amount found");
         Bukkit.shutdown();
       }
     }
@@ -107,15 +106,13 @@ public class MapSelection {
           Sender sender = user.asSender(Plugin.LOUNGE);
 
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginMessage(
-                Component.text("The map voting is closed", ExTextColor.WARNING));
+            sender.sendPluginTDMessage("§wMap voting is closed");
             event.setCancelled(true);
             return;
           }
 
           user.setSelectedMap(map);
-          sender.sendPluginMessage(Component.text("Voted for map ", ExTextColor.PERSONAL)
-              .append(Component.text(map.getDisplayName(), ExTextColor.VALUE)));
+          sender.sendPluginTDMessage("§sVoted for map §v" + map.getDisplayName());
           user.closeInventory();
           event.setCancelled(true);
         });

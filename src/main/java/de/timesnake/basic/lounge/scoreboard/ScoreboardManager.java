@@ -12,7 +12,6 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 
 import java.util.List;
@@ -60,7 +59,6 @@ public class ScoreboardManager {
         de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager.getDefaultFooter());
 
     Server.getScoreboardManager().setActiveTablist(this.tablist);
-    Loggers.LOUNGE.info("Lounge tablist loaded");
 
     // sideboard
 
@@ -107,14 +105,12 @@ public class ScoreboardManager {
     this.sideboard.setScore(2, Sideboard.SPACER);
     this.sideboard.setScore(1, "§7§lServer");
     this.sideboard.setScore(0, "§7" + Server.getName());
-    Loggers.LOUNGE.info("Scoreboard loaded");
 
     this.spectatorSideboard.setScore(5, "§l§9Players");
     // player amount
     this.spectatorSideboard.setScore(2, Sideboard.SPACER);
     this.spectatorSideboard.setScore(1, "§7§lServer");
     this.spectatorSideboard.setScore(0, "§7" + Server.getName());
-    Loggers.LOUNGE.info("Spectator scoreboard loaded");
   }
 
   public Sideboard getSideboard() {

@@ -35,10 +35,11 @@ import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.pets.PetManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -55,6 +56,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   public static LoungeServerManager getInstance() {
     return (LoungeServerManager) ServerManager.getInstance();
   }
+
+  private final Logger logger = LogManager.getLogger("lounge.server");
 
   protected final List<LoungeMap> loungeMaps = new ArrayList<>();
 
@@ -85,7 +88,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     DbTmpGameServer gameDbServer = ((DbLoungeServer) Server.getDatabase()).getTwinServer();
 
     if (gameDbServer == null || !gameDbServer.exists()) {
-      Loggers.LOUNGE.warning("Game server not defined");
+      this.logger.error("Game server not defined");
       Bukkit.shutdown();
       return;
     }
@@ -98,8 +101,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       try {
         loungeMap = new LoungeMap(map);
       } catch (WorldNotExistException e) {
-        Loggers.LOUNGE.warning("Map '" + map.getName() + "' could not loaded, world '" + e.getWorldName() + "' not " +
-            "exists");
+        this.logger.warn("Map '{}' could not loaded, world '{}' not exists", map.getName(), e.getWorldName());
         continue;
       }
       loungeMap.getWorld().setExceptService(true);
@@ -113,18 +115,18 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       loungeMap.getWorld().restrict(ExWorld.Restriction.PLACE_IN_BLOCK, true);
       loungeMap.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
       this.loungeMaps.add(loungeMap);
-      Loggers.LOUNGE.info("Loaded map " + loungeMap.getName() + " successfully");
+      this.logger.info("Loaded map '{}'", loungeMap.getName());
     }
 
     if (this.loungeMaps.isEmpty()) {
-      Loggers.LOUNGE.warning("No lounge-map found");
+      this.logger.error("No lounge-map found");
       Bukkit.shutdown();
     }
 
     this.loadRandomLoungeMap();
 
     if (Server.getTask() == null) {
-      Loggers.LOUNGE.warning("Task is null");
+      this.logger.error("Task is null");
       Bukkit.shutdown();
     }
 
@@ -151,7 +153,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     this.stateManager = new StateManager();
 
-    Loggers.LOUNGE.info("Server loaded");
+    this.logger.info("Server loaded");
   }
 
   public final void onLoungeDisable() {
@@ -222,7 +224,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     this.scheduler.resetGameCountdown();
     this.loadRandomLoungeMap();
     this.teamManager.resetTeams();
-    Loggers.LOUNGE.info("Prepared lounge");
+    this.logger.info("Prepared lounge");
     this.stateManager.updateState(StateManager.State.WAITING_PLAYERS);
   }
 
@@ -260,7 +262,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       this.currentMap.getWorld().loadChunk(this.currentMap.getSpawn().getChunk());
       this.currentMap.getWorld().setTime(0);
       this.statsManager.updateGlobalDisplays();
-      Loggers.LOUNGE.info("Loaded map " + this.currentMap.getName());
+      this.logger.info("Loaded map " + this.currentMap.getName());
     }, BasicLounge.getPlugin());
   }
 

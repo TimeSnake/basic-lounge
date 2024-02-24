@@ -8,12 +8,15 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.library.basic.util.Loggers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
 
 public class MapManager {
+
+  private final Logger logger = LogManager.getLogger("lounge.map.manager");
 
   private final Collection<Map> availableMaps = new ArrayList<>();
   private final MapSelection mapSelection;
@@ -37,7 +40,7 @@ public class MapManager {
 
       this.availableMaps.add(map);
 
-      Loggers.LOUNGE.info("Loaded game map: " + map.getName());
+      this.logger.info("Loaded game map: {}", map.getName());
     }
 
     this.mapSelection = new MapSelection(this.availableMaps);
@@ -48,7 +51,7 @@ public class MapManager {
       return null;
     }
 
-    Loggers.LOUNGE.info("---- MAP VOTING ----");
+    this.logger.info("---- MAP VOTING ----");
 
     List<String> output = new ArrayList<>();
 
@@ -62,9 +65,9 @@ public class MapManager {
       } else if (map.getVotes() == votes) {
         votedMaps.add(map);
       }
-      Loggers.LOUNGE.info(map.getName() + ": " + map.getVotes());
+      this.logger.info("{}: {}", map.getName(), map.getVotes());
     }
-    Loggers.LOUNGE.info("---- MAP VOTING ----");
+    this.logger.info("---- MAP VOTING ----");
 
     Collections.shuffle(votedMaps);
 

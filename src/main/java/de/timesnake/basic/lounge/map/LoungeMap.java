@@ -10,13 +10,17 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbLoungeMap;
 import de.timesnake.database.util.game.DbLoungeMapDisplay;
-import de.timesnake.library.basic.util.Loggers;
-import java.util.Collection;
-import java.util.HashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 public class LoungeMap {
+
+  private final Logger logger = LogManager.getLogger("lounge.map.map");
 
   private final String name;
   private final ExWorld world;
@@ -33,25 +37,18 @@ public class LoungeMap {
 
     Collection<DbLoungeMapDisplay> displays = dbMap.getCachedMapDisplays();
 
-    for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() >= 10)
-        .toList()) {
-      this.personalStatsDisplayLocationByIndex.put(display.getIndex(),
-          new StatDisplay(this.world, display));
-      Loggers.LOUNGE.info("Loaded private statistic display '" + display.getIndex()
-          + "' for map '" + this.name + "'");
+    for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() >= 10).toList()) {
+      this.personalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+      this.logger.info("Loaded private statistic display '{}' for map '{}'", display.getIndex(), this.name);
     }
 
-    for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() < 10)
-        .toList()) {
-      this.globalStatsDisplayLocationByIndex.put(display.getIndex(),
-          new StatDisplay(this.world, display));
-      Loggers.LOUNGE.info("Loaded public statistic display " + display.getIndex()
-          + "' for map '" + this.name + "'");
+    for (DbLoungeMapDisplay display : displays.stream().filter(d -> d.getIndex() < 10).toList()) {
+      this.globalStatsDisplayLocationByIndex.put(display.getIndex(), new StatDisplay(this.world, display));
+      this.logger.info("Loaded public statistic display '{}' for map '{}'", display.getIndex(), this.name);
     }
 
     if (this.world == null) {
-      Loggers.LOUNGE.warning("Map-World " + this.world.getName() + " of map " + this.name +
-          " could not loaded, world not exists");
+      this.logger.warn("Map-World '{}' of map '{}' could not loaded, world not exists", this.world.getName(), this.name);
       return;
     }
 
