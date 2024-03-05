@@ -223,7 +223,9 @@ public class LoungeUser extends StatUser {
       }
     }
 
-    this.logger.info("{} selected team {}", this.getName(), this.getName());
+    if (this.getSelectedTeam() != null) {
+      this.logger.info("{} selected team {}", this.getName(), this.getSelectedTeam().getName());
+    }
   }
 
 

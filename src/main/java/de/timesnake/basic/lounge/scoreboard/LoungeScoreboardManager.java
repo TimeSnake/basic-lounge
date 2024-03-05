@@ -7,25 +7,22 @@ package de.timesnake.basic.lounge.scoreboard;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.group.DisplayGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
+import de.timesnake.basic.bukkit.util.user.scoreboard.*;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Status;
 
 import java.util.List;
 
-public class ScoreboardManager {
+public class LoungeScoreboardManager {
 
-  private final TeamTablist tablist;
+  private final Tablist tablist;
   private final GameTeam gameTeam;
   private final GameTeam spectatorTeam;
 
   private final Sideboard sideboard;
   private final Sideboard spectatorSideboard;
 
-  public ScoreboardManager() {
+  public LoungeScoreboardManager() {
     this.gameTeam = new GameTeam("0", "game", "", ChatColor.WHITE, ChatColor.WHITE);
     this.spectatorTeam = new GameTeam("0", "spec", "", ChatColor.WHITE, ChatColor.GRAY);
 
@@ -38,8 +35,7 @@ public class ScoreboardManager {
             .remainTeam(this.spectatorTeam)
             .userJoin((e, tablist) -> {
               if (e.getUser().getTask() != null
-                  && e.getUser().getTask()
-                  .equalsIgnoreCase(LoungeServer.getGame().getName())
+                  && e.getUser().getTask().equalsIgnoreCase(LoungeServer.getGame().getName())
                   && (e.getUser().getStatus().equals(Status.User.PRE_GAME)
                   || e.getUser().getStatus().equals(Status.User.IN_GAME))) {
                 tablist.addEntry(e.getUser());
@@ -55,8 +51,7 @@ public class ScoreboardManager {
       this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName());
     }
 
-    this.tablist.setFooter(
-        de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager.getDefaultFooter());
+    this.tablist.setFooter(ScoreboardManager.getDefaultFooter());
 
     Server.getScoreboardManager().setActiveTablist(this.tablist);
 
@@ -127,13 +122,8 @@ public class ScoreboardManager {
     this.sideboard.setScore(line, online + "§7/§f" + max);
     this.spectatorSideboard.setScore(4, online + "§7/§f" + max);
     if (needMore > 0) {
-      if (needMore == 1) {
-        this.sideboard.setScore(line - 1, "§7" + needMore + " more needed");
-        this.spectatorSideboard.setScore(3, "§7" + needMore + " more needed");
-      } else {
-        this.sideboard.setScore(line - 1, "§7" + needMore + " more needed");
-        this.spectatorSideboard.setScore(3, "§7" + needMore + " more needed");
-      }
+      this.sideboard.setScore(line - 1, "§7" + needMore + " more needed");
+      this.spectatorSideboard.setScore(3, "§7" + needMore + " more needed");
     } else {
       this.sideboard.setScore(line - 1, "");
       this.spectatorSideboard.setScore(3, "");
@@ -156,7 +146,7 @@ public class ScoreboardManager {
     }
   }
 
-  public TeamTablist getTablist() {
+  public Tablist getTablist() {
     return tablist;
   }
 

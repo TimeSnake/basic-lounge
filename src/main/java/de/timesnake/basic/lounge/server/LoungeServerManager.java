@@ -21,7 +21,7 @@ import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.map.LoungeMap;
 import de.timesnake.basic.lounge.map.MapManager;
-import de.timesnake.basic.lounge.scoreboard.ScoreboardManager;
+import de.timesnake.basic.lounge.scoreboard.LoungeScoreboardManager;
 import de.timesnake.basic.lounge.team.LoungeTeam;
 import de.timesnake.basic.lounge.team.TeamManager;
 import de.timesnake.basic.lounge.user.InventoryManager;
@@ -62,7 +62,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   protected final List<LoungeMap> loungeMaps = new ArrayList<>();
 
   private InventoryManager inventoryManager;
-  private de.timesnake.basic.lounge.scoreboard.ScoreboardManager scoreboardManager;
+  private LoungeScoreboardManager scoreboardManager;
 
   private StateManager stateManager;
   private Scheduler scheduler;
@@ -143,7 +143,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     this.scheduler = new Scheduler();
 
-    this.scoreboardManager = new ScoreboardManager();
+    this.scoreboardManager = new LoungeScoreboardManager();
 
     this.waitingGameManager = new WaitingGameManager();
     this.petManager = new PetManager(BasicLounge.getPlugin());
@@ -220,16 +220,13 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   public void prepareLounge() {
-    this.stateManager.updateState(StateManager.State.PREPARING);
     this.scheduler.resetGameCountdown();
     this.loadRandomLoungeMap();
     this.teamManager.resetTeams();
     this.logger.info("Prepared lounge");
-    this.stateManager.updateState(StateManager.State.WAITING_PLAYERS);
   }
 
   public void startGame() {
-    this.stateManager.updateState(StateManager.State.PRE_GAME);
     Server.getChat().setBroadcastJoinQuit(false);
 
     Server.runTaskLoopAsynchrony((user) -> ((LoungeUser) user).switchToGameServer(), Server.getGameUsers(),
@@ -290,7 +287,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     return teamManager;
   }
 
-  public ScoreboardManager getLoungeScoreboardManager() {
+  public LoungeScoreboardManager getLoungeScoreboardManager() {
     return this.scoreboardManager;
   }
 

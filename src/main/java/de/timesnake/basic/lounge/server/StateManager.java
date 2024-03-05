@@ -7,12 +7,17 @@ package de.timesnake.basic.lounge.server;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.basic.util.Status;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 
 public class StateManager {
 
+  private final Logger logger = LogManager.getLogger("lounge.state");
+
   private State state;
+  private boolean gameServerReady = false;
   private boolean manualWaiting = false;
 
   public void onPlayerUpdate() {
@@ -23,17 +28,26 @@ public class StateManager {
 
   public void onServerUpdate(TmpGameServer.State state) {
     switch (state) {
-      case ONLINE, STARTING -> this.updateState(State.WAITING_SERVER);
-      case READY -> this.checkStart();
-      case OFFLINE -> this.checkCancelStart();
+      case STARTING -> this.updateState(State.WAITING_SERVER);
+      case READY -> {
+        this.gameServerReady = true;
+        this.checkStart();
+      }
+      case OFFLINE -> {
+        this.gameServerReady = false;
+        this.checkCancelStart();
+      }
       case PREGAME -> this.updateState(State.PRE_GAME);
-      case IN_GAME -> this.updateState(State.IN_GAME);
+      case IN_GAME -> {
+        this.gameServerReady = false;
+        this.updateState(State.IN_GAME);
+      }
       case POST_GAME -> this.updateState(State.POST_GAME);
     }
   }
 
   public void checkStart() {
-    if (!LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
+    if (!this.gameServerReady) {
       LoungeServer.getGameServer().start();
     }
 
@@ -42,21 +56,24 @@ public class StateManager {
       return;
     }
 
+    if (LoungeServer.getTimeManager().isGameCountdownRunning()) {
+      return;
+    }
+
     int playerNumber = Server.getPreGameUsers().size();
 
     if (playerNumber < LoungeServer.getGame().getAutoStartPlayerNumber()) {
       this.updateState(State.WAITING_PLAYERS);
 
-      if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
-        Server.getSpectatorUsers().forEach(user -> {
-          ((LoungeUser) user).loadSpectatorInventory();
-          user.showTDTitle("", "§wClick the helmet to join", Duration.ofSeconds(7));
-        });
-      }
+      Server.getSpectatorUsers().forEach(user -> {
+        ((LoungeUser) user).loadSpectatorInventory();
+        user.showTDTitle("", "§wClick the helmet to join", Duration.ofSeconds(7));
+      });
+      this.logger.info("Enabled spectator join");
       return;
     }
 
-    if (!LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
+    if (!this.gameServerReady) {
       this.updateState(State.WAITING_SERVER);
       return;
     }
@@ -64,6 +81,12 @@ public class StateManager {
     if (LoungeServer.getGame().isEqualTimeSizeRequired() && playerNumber % LoungeServer.getGame().getTeams().size() != 0) {
       return;
     }
+
+    Server.getSpectatorUsers().forEach(user -> {
+      ((LoungeUser) user).loadSpectatorInventory();
+      user.showTDTitle("", "§wClick the helmet to join", Duration.ofSeconds(7));
+    });
+    this.logger.info("Enabled spectator join");
 
     LoungeServer.getTimeManager().startGameCountdown();
   }
@@ -76,7 +99,7 @@ public class StateManager {
     } else if (LoungeServer.getGame().isEqualTimeSizeRequired() && playerNumber % LoungeServer.getGame().getTeams().size() != 0) {
       LoungeServer.broadcastLoungeTDMessage("§pWaiting for players to create equal teams.");
       LoungeServer.getTimeManager().resetGameCountdown();
-    } else if (!LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
+    } else if (!this.gameServerReady) {
       LoungeServer.getTimeManager().resetGameCountdown();
     }
   }
@@ -84,7 +107,7 @@ public class StateManager {
   public void updateState(State state) {
     this.state = state;
     switch (state) {
-      case PREPARING, PRE_GAME -> Server.setStatus(Status.Server.PRE_GAME);
+      case PRE_GAME -> Server.setStatus(Status.Server.PRE_GAME);
       case IN_GAME -> {
         Server.setStatus(Status.Server.IN_GAME);
         LoungeServer.prepareLounge();
@@ -92,6 +115,8 @@ public class StateManager {
       case POST_GAME -> Server.setStatus(Status.Server.POST_GAME);
       case WAITING_SERVER, WAITING_PLAYERS, STARTING -> Server.setStatus(Status.Server.ONLINE);
     }
+
+    this.logger.info("Updated state to {}", state.name().toLowerCase());
   }
 
   public void setManualWaiting(boolean wait) {
@@ -116,8 +141,11 @@ public class StateManager {
     return this.state.equals(state);
   }
 
+  public boolean isGameServerReady() {
+    return gameServerReady;
+  }
+
   public enum State {
-    PREPARING,
     WAITING_PLAYERS,
     WAITING_SERVER,
     STARTING,

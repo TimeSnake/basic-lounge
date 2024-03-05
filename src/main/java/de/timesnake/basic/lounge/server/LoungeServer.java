@@ -9,7 +9,7 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.map.LoungeMap;
 import de.timesnake.basic.lounge.map.MapManager;
-import de.timesnake.basic.lounge.scoreboard.ScoreboardManager;
+import de.timesnake.basic.lounge.scoreboard.LoungeScoreboardManager;
 import de.timesnake.basic.lounge.team.TeamManager;
 import de.timesnake.basic.lounge.user.InventoryManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
@@ -63,7 +63,7 @@ public class LoungeServer extends GameServer {
     server.broadcastCountdownCancelledMessage();
   }
 
-  public static ScoreboardManager getLoungeScoreboardManager() {
+  public static LoungeScoreboardManager getLoungeScoreboardManager() {
     return server.getLoungeScoreboardManager();
   }
 

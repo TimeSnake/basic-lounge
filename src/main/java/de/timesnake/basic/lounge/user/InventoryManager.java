@@ -14,7 +14,6 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.StateManager;
-import de.timesnake.basic.lounge.server.TmpGameServer;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
 import de.timesnake.channel.util.message.ChannelServerMessage;
 import de.timesnake.channel.util.message.MessageType;
@@ -56,6 +55,7 @@ public class InventoryManager implements UserInventoryInteractListener,
         LoungeServer.getLoungeScoreboardManager().getTablist().addEntry(user);
         user.sendPluginTDMessage(Plugin.LOUNGE, "§sJoined the game");
 
+        LoungeServer.getStateManager().onPlayerUpdate();
         LoungeServer.getStateManager().checkStart();
       }, true);
 
@@ -126,7 +126,7 @@ public class InventoryManager implements UserInventoryInteractListener,
         LoungeUser user = ((LoungeUser) e.getUser());
 
         if (LoungeServer.getGameServer().getTeamAmount() > 1) {
-          if (LoungeServer.getGameServer().getState().equals(TmpGameServer.State.READY)) {
+          if (LoungeServer.getStateManager().isGameServerReady()) {
             LoungeServer.getGameServer().setDiscord(!LoungeServer.getGameServer().isDiscord());
             Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
                 MessageType.Server.DISCORD, LoungeServer.getGameServer().isDiscord()));
