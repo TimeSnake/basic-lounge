@@ -6,11 +6,7 @@ package de.timesnake.basic.lounge.user;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
+import de.timesnake.basic.bukkit.util.user.inventory.*;
 import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.StateManager;
@@ -52,7 +48,7 @@ public class InventoryManager implements UserInventoryInteractListener,
         }
 
         user.joinLounge();
-        LoungeServer.getLoungeScoreboardManager().getTablist().addEntry(user);
+        LoungeServer.getLoungeScoreboardManager().getTablist().reloadEntry(user, true);
         user.sendPluginTDMessage(Plugin.LOUNGE, "§sJoined the game");
 
         LoungeServer.getStateManager().onPlayerUpdate();

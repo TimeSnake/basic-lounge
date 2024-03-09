@@ -4,13 +4,12 @@
 
 package de.timesnake.basic.lounge.server;
 
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.Chat;
-import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.TmpGame;
@@ -45,6 +44,7 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -171,7 +171,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   @Override
-  public Tablist getGameTablist() {
+  public Tablist2 getGameTablist() {
     return LoungeServerManager.this.getLoungeScoreboardManager().getTablist();
   }
 
@@ -179,7 +179,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   protected TmpGame loadGame(DbGame dbGame, boolean loadWorlds) {
     return new TmpGame((DbTmpGame) dbGame, false) {
       @Override
-      public LoungeTeam loadTeam(DbTeam team) throws UnsupportedGroupRankException {
+      public LoungeTeam loadTeam(DbTeam team) {
         return new LoungeTeam(team);
       }
     };
@@ -200,7 +200,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       }
 
       @Override
-      public ExLocation getSpectatorSpawn() {
+      public @NotNull ExLocation getSpectatorSpawn() {
         return null;
       }
 

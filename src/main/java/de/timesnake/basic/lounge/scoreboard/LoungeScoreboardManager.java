@@ -4,18 +4,22 @@
 
 package de.timesnake.basic.lounge.scoreboard;
 
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.group.DisplayGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.*;
+import de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
+import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.chat.ExTextColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoungeScoreboardManager {
 
-  private final Tablist tablist;
+  private final Tablist2 tablist;
   private final GameTeam gameTeam;
   private final GameTeam spectatorTeam;
 
@@ -23,27 +27,17 @@ public class LoungeScoreboardManager {
   private final Sideboard spectatorSideboard;
 
   public LoungeScoreboardManager() {
-    this.gameTeam = new GameTeam("0", "game", "", ChatColor.WHITE, ChatColor.WHITE);
-    this.spectatorTeam = new GameTeam("0", "spec", "", ChatColor.WHITE, ChatColor.GRAY);
+    this.gameTeam = new GameTeam(0, "game", "", ExTextColor.WHITE, ExTextColor.WHITE);
+    this.spectatorTeam = new GameTeam(1, "spec", "", ExTextColor.WHITE, ExTextColor.GRAY);
 
-    this.tablist = Server.getScoreboardManager().registerTeamTablist(
-        new TeamTablistBuilder("lounge_side")
-            .colorType(TeamTablist.ColorType.WHITE)
-            .teams(List.of(this.gameTeam))
-            .teamType(this.gameTeam.getTeamType())
-            .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
-            .remainTeam(this.spectatorTeam)
-            .userJoin((e, tablist) -> {
-              if (e.getUser().getTask() != null
-                  && e.getUser().getTask().equalsIgnoreCase(LoungeServer.getGame().getName())
-                  && (e.getUser().getStatus().equals(Status.User.PRE_GAME)
-                  || e.getUser().getStatus().equals(Status.User.IN_GAME))) {
-                tablist.addEntry(e.getUser());
-              } else {
-                ((TeamTablist) tablist).addRemainEntry(e.getUser());
-              }
-            })
-            .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
+    List<de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType> types = new ArrayList<>();
+    types.add(TablistGroupType.GAME_TEAM);
+    types.addAll(DisplayGroup.MAIN_TABLIST_GROUPS);
+
+    this.tablist = Server.getScoreboardManager().registerTablist(
+        new Tablist2.Builder("lounge_side")
+            .colorGroupType(TablistGroupType.GAME_TEAM)
+            .groupTypes(types));
 
     if (LoungeServer.getGameServer().areKitsEnabled()) {
       this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName() + " §bKits");
@@ -146,7 +140,7 @@ public class LoungeScoreboardManager {
     }
   }
 
-  public Tablist getTablist() {
+  public Tablist2 getTablist() {
     return tablist;
   }
 

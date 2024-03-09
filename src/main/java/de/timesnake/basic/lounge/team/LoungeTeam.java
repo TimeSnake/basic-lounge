@@ -6,7 +6,6 @@ package de.timesnake.basic.lounge.team;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
-import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.lounge.chat.Plugin;
@@ -30,14 +29,13 @@ public class LoungeTeam extends Team {
   private ExItemStack item;
 
 
-  public LoungeTeam(DbTeam dbTeam)
-      throws UnsupportedGroupRankException {
+  public LoungeTeam(DbTeam dbTeam) {
     super(dbTeam);
   }
 
   public ExItemStack createTeamItem(TeamSelection teamSelection, int slot) {
     this.item = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
-            this.getChatColor() + this.getDisplayName(), this.getColor())
+            this.getTextColor().getLegacyToken() + this.getDisplayName(), this.getColor())
         .setSlot(slot)
         .hideAll()
         .onClick(event -> {

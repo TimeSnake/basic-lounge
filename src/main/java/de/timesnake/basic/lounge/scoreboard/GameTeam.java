@@ -4,21 +4,19 @@
 
 package de.timesnake.basic.lounge.scoreboard;
 
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
-import org.bukkit.ChatColor;
+import de.timesnake.library.chat.ExTextColor;
 
-public class GameTeam implements TablistableGroup, TablistableRemainTeam {
+public class GameTeam implements TablistGroup {
 
-  private final String rank;
+  private final int rank;
   private final String name;
   private final String prefix;
-  private final ChatColor prefixChatColor;
-  private final ChatColor chatColor;
+  private final ExTextColor prefixChatColor;
+  private final ExTextColor chatColor;
 
-  public GameTeam(String rank, String name, String prefix, ChatColor prefixChatColor,
-      ChatColor chatColor) {
+  public GameTeam(int rank, String name, String prefix, ExTextColor prefixChatColor, ExTextColor chatColor) {
     this.rank = rank;
     this.name = name;
     this.prefix = prefix;
@@ -31,7 +29,7 @@ public class GameTeam implements TablistableGroup, TablistableRemainTeam {
   }
 
   @Override
-  public String getTablistRank() {
+  public int getTablistRank() {
     return this.rank;
   }
 
@@ -46,12 +44,12 @@ public class GameTeam implements TablistableGroup, TablistableRemainTeam {
   }
 
   @Override
-  public ChatColor getTablistPrefixChatColor() {
+  public ExTextColor getTablistPrefixChatColor() {
     return this.prefixChatColor;
   }
 
   @Override
-  public ChatColor getTablistChatColor() {
+  public ExTextColor getTablistChatColor() {
     return this.chatColor;
   }
 }
