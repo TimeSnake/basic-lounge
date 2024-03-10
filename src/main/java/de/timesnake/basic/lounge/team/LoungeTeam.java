@@ -35,7 +35,7 @@ public class LoungeTeam extends Team {
 
   public ExItemStack createTeamItem(TeamSelection teamSelection, int slot) {
     this.item = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET,
-            this.getTextColor().getLegacyToken() + this.getDisplayName(), this.getColor())
+            this.getTDColor() + this.getDisplayName(), this.getColor())
         .setSlot(slot)
         .hideAll()
         .onClick(event -> {
