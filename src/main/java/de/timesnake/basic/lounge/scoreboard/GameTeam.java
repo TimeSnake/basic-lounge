@@ -5,8 +5,8 @@
 package de.timesnake.basic.lounge.scoreboard;
 
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.library.chat.ExTextColor;
+import org.jetbrains.annotations.NotNull;
 
 public class GameTeam implements TablistGroup {
 
@@ -24,17 +24,13 @@ public class GameTeam implements TablistGroup {
     this.chatColor = chatColor;
   }
 
-  public TablistGroupType getTeamType() {
-    return TablistGroupType.DUMMY;
-  }
-
   @Override
   public int getTablistRank() {
     return this.rank;
   }
 
   @Override
-  public String getTablistName() {
+  public @NotNull String getTablistName() {
     return this.name;
   }
 
@@ -44,12 +40,12 @@ public class GameTeam implements TablistGroup {
   }
 
   @Override
-  public ExTextColor getTablistPrefixChatColor() {
+  public ExTextColor getTablistPrefixColor() {
     return this.prefixChatColor;
   }
 
   @Override
-  public ExTextColor getTablistChatColor() {
+  public ExTextColor getTablistColor() {
     return this.chatColor;
   }
 }

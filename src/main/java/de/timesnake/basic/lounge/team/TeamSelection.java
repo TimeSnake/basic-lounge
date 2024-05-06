@@ -39,10 +39,15 @@ public class TeamSelection {
           LoungeUser user = ((LoungeUser) event.getUser());
           Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wThe team selection is closed");
+            sender.sendPluginTDMessage("§wTeam selection is closed");
+            event.setCancelled(true);
+            return;
+          } else if (this.isBlocked() && !this.isSilentBlocked()) {
+            sender.sendPluginTDMessage("§wSelecting teams is forbidden");
             event.setCancelled(true);
             return;
           }
+
           user.openInventoryTeamSelection();
           event.setCancelled(true);
         });
@@ -59,6 +64,11 @@ public class TeamSelection {
           Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
             sender.sendPluginTDMessage("§wTeam selection is closed");
+            user.closeInventory();
+            event.setCancelled(true);
+            return;
+          } else if (this.isBlocked() && !this.isSilentBlocked()) {
+            sender.sendPluginTDMessage("§wSelecting teams is forbidden");
             user.closeInventory();
             event.setCancelled(true);
             return;
@@ -97,17 +107,13 @@ public class TeamSelection {
 
   protected void loadTeams() {
     int i = 2;
-    for (Team team : LoungeServer.getGame()
-        .getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount())) {
+    for (Team team : LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount())) {
       // first and second inventory column empty (for random selection)
       if (i % 9 == 0) {
         i += 2;
       }
 
-      // create item
-      ExItemStack item = ((LoungeTeam) team).createTeamItem(this, i);
-      // team adds item
-      this.teams.put(item, ((LoungeTeam) team));
+      this.teams.put(((LoungeTeam) team).createTeamItem(this, i), ((LoungeTeam) team));
       i++;
     }
   }
