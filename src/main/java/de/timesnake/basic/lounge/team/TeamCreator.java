@@ -37,7 +37,6 @@ public class TeamCreator {
   }
 
   public void createTeams() {
-
     this.logger.info("Team-selection closed");
 
     if (LoungeServer.getGameServer().getTeamAmount() == 0) {
@@ -85,23 +84,20 @@ public class TeamCreator {
 
   private void setDynamically() {
     // calculate max players per team
-    double ratioSum = 0;
-
-    for (Team team : this.teams) {
-      ratioSum += team.getRatio();
-    }
+    double ratioSum = this.teams.stream().mapToDouble(Team::getRatio).sum();
 
     for (LoungeTeam team : this.teams) {
       int size = (int) (playerAmount * team.getRatio() / ratioSum);
 
       if (team.hasMinSize() && size < team.getMinSize()) {
         team.setMaxPlayers(team.getMinSize());
-        size = team.getMinSize();
-      } else {
+        sumMaxTeamPlayer += team.getMinSize();
+      } else if (sumMaxTeamPlayer < playerAmount) {
         team.setMaxPlayers(size);
+        sumMaxTeamPlayer += size;
+      } else {
+        team.setMaxPlayers(team.hasMinSize() ? team.getMinSize() : 0);
       }
-
-      sumMaxTeamPlayer += size;
     }
 
     // fix round fails
@@ -154,8 +150,8 @@ public class TeamCreator {
       this.teams.sort(Comparator.comparingInt(t -> t.getUsersSelected().size()));
       Collections.reverse(this.teams);
 
-      // remove not used teams
-      while (smallestTeamAmount < this.teams.size()) {
+      // remove not required teams
+      while (this.teams.size() > smallestTeamAmount) {
         this.teams.removeLast();
       }
 
@@ -225,7 +221,6 @@ public class TeamCreator {
     }
 
     this.logger.info("Finished team creation");
-
     LoungeServer.getDiscordManager().init();
   }
 

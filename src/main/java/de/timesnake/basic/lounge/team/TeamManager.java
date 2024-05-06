@@ -12,8 +12,9 @@ import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import java.util.HashSet;
 import org.bukkit.inventory.Inventory;
+
+import java.util.HashSet;
 
 public class TeamManager {
 
@@ -54,8 +55,7 @@ public class TeamManager {
     for (User user : Server.getUsers()) {
       ((TeamUser) user).setTeam(null);
     }
-    Server.runTaskSynchrony(() -> Server.getUsersWithOpenInventory("Teamselection")
-        .forEach(User::closeInventory), BasicLounge.getPlugin());
+    Server.runTaskSynchrony(() -> this.getTeamSelectionExInventory().close(), BasicLounge.getPlugin());
     new TeamCreator().createTeams();
   }
 
