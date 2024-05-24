@@ -95,7 +95,7 @@ public class UserManager implements Listener {
   public void onUserDamageByUser(UserDamageByUserEvent e) {
     WaitingGameManager waitingGameManager = LoungeServer.getWaitingGameManager();
 
-    boolean gameManaged = waitingGameManager.onUserDamage(e);
+    boolean gameManaged = waitingGameManager.onUserDamageByUser(e);
 
     if (!gameManaged) {
       e.setCancelled(true);

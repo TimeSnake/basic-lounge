@@ -10,9 +10,9 @@ import de.timesnake.basic.bukkit.util.group.DisplayGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.lounge.server.LoungeServer;
-import de.timesnake.library.chat.ExTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +20,37 @@ import java.util.List;
 public class LoungeScoreboardManager {
 
   private final Tablist2 tablist;
-  private final GameTeam gameTeam;
-  private final GameTeam spectatorTeam;
+  private final TablistGroup gameGroup;
+  private final TablistGroup spectatorGroup;
 
   private final Sideboard sideboard;
   private final Sideboard spectatorSideboard;
 
   public LoungeScoreboardManager() {
-    this.gameTeam = new GameTeam(0, "game", "", ExTextColor.WHITE, ExTextColor.WHITE);
-    this.spectatorTeam = new GameTeam(1, "spec", "", ExTextColor.WHITE, ExTextColor.GRAY);
+    this.gameGroup = new TablistGroup() {
+
+      @Override
+      public int getTablistRank() {
+        return 0;
+      }
+
+      @Override
+      public String getTablistName() {
+        return "game";
+      }
+    };
+    this.spectatorGroup = new TablistGroup() {
+
+      @Override
+      public int getTablistRank() {
+        return 1;
+      }
+
+      @Override
+      public String getTablistName() {
+        return "spec";
+      }
+    };
 
     List<de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType> types = new ArrayList<>();
     types.add(TablistGroupType.GAME_TEAM);
@@ -37,7 +59,8 @@ public class LoungeScoreboardManager {
     this.tablist = Server.getScoreboardManager().registerTablist(
         new Tablist2.Builder("lounge_side")
             .colorGroupType(TablistGroupType.GAME_TEAM)
-            .groupTypes(types));
+            .groupTypes(types)
+            .addDefaultGroup(TablistGroupType.GAME_TEAM, this.spectatorGroup));
 
     if (LoungeServer.getGameServer().areKitsEnabled()) {
       this.tablist.setHeader("§6" + LoungeServer.getGame().getDisplayName() + " §bKits");
@@ -144,11 +167,11 @@ public class LoungeScoreboardManager {
     return tablist;
   }
 
-  public GameTeam getGameTeam() {
-    return gameTeam;
+  public TablistGroup getGameGroup() {
+    return gameGroup;
   }
 
-  public GameTeam getSpectatorTeam() {
-    return spectatorTeam;
+  public TablistGroup getSpectatorGroup() {
+    return spectatorGroup;
   }
 }

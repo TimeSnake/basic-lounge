@@ -222,7 +222,6 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   public void prepareLounge() {
     this.scheduler.resetGameCountdown();
     this.loadRandomLoungeMap();
-    this.teamManager.resetTeams();
     this.logger.info("Prepared lounge");
   }
 

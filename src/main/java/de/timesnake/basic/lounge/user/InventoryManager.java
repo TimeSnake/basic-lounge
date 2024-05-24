@@ -47,6 +47,11 @@ public class InventoryManager implements UserInventoryInteractListener,
           return;
         }
 
+        if (LoungeServer.getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
+          user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame is already starting");
+          return;
+        }
+
         user.joinLounge();
         LoungeServer.getLoungeScoreboardManager().getTablist().reloadEntry(user, true);
         user.sendPluginTDMessage(Plugin.LOUNGE, "§sJoined the game");

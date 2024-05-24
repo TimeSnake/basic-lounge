@@ -14,8 +14,6 @@ import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import org.bukkit.inventory.Inventory;
 
-import java.util.HashSet;
-
 public class TeamManager {
 
   private final TeamSelection teamSelection;
@@ -56,14 +54,15 @@ public class TeamManager {
       ((TeamUser) user).setTeam(null);
     }
     Server.runTaskSynchrony(() -> this.getTeamSelectionExInventory().close(), BasicLounge.getPlugin());
+    this.resetTeams();
     new TeamCreator().createTeams();
   }
 
   public void resetTeams() {
     for (Team team : LoungeServer.getGame().getTeams()) {
-      team.setUsers(new HashSet<>());
       ((LoungeTeam) team).clearUserSelected();
       ((LoungeTeam) team).setMaxPlayers(null);
+      team.clearUsers();
     }
   }
 }

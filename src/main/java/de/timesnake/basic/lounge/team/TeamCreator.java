@@ -23,17 +23,13 @@ public class TeamCreator {
 
   private final Logger logger = LogManager.getLogger("lounge.team.creation");
 
-  private final List<User> usersWithRandomTeam;
   private final int playerAmount;
   private final LinkedList<LoungeTeam> teams;
-  private int sumMaxTeamPlayer = 0;
 
   public TeamCreator() {
-    this.usersWithRandomTeam = new ArrayList<>();
     this.playerAmount = Server.getPreGameUsers().size();
-    this.teams = new LinkedList(LoungeServer.getGame()
-        .getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()));
-    this.teams.sort(Comparator.comparingInt(Team::getRank));
+    this.teams =
+        new LinkedList(LoungeServer.getGame().getTeamsSortedByRank(LoungeServer.getGameServer().getTeamAmount()));
   }
 
   public void createTeams() {
@@ -55,36 +51,25 @@ public class TeamCreator {
       if (LoungeServer.getGameServer().getTeamAmount() == 1) {
         this.createSingleTeam();
       } else {
-        this.createMultipleTeams();
+        Integer maxPerTeam = LoungeServer.getGameServer().getMaxPlayersPerTeam();
+        if (maxPerTeam != null) {
+          this.calcTeamSizesByMax(maxPerTeam);
+        } else {
+          this.calcTeamSizesByRatio();
+        }
+
+        for (LoungeTeam team : this.teams) {
+          this.logger.info("{}: {}", team.getName(), team.getMaxPlayers());
+        }
+        this.assignUsersToTeams();
       }
     }, BasicLounge.getPlugin());
-
-    for (Team team : LoungeServer.getGame().getTeams()) {
-      ((LoungeTeam) team).clearUserSelected();
-    }
   }
 
-  private synchronized void createMultipleTeams() {
-    this.calcTeamSizes();
-    this.divideUsersInTeams();
-  }
-
-  private void calcTeamSizes() {
-    Integer maxPerTeam = LoungeServer.getGameServer().getMaxPlayersPerTeam();
-    if (maxPerTeam != null) {
-      this.setFixedSize(maxPerTeam);
-    } else {
-      this.setDynamically();
-    }
-
-    for (LoungeTeam team : this.teams) {
-      this.logger.info("{}: {}", team.getName(), team.getMaxPlayers());
-    }
-  }
-
-  private void setDynamically() {
+  private void calcTeamSizesByRatio() {
     // calculate max players per team
     double ratioSum = this.teams.stream().mapToDouble(Team::getRatio).sum();
+    int sumMaxTeamPlayer = 0;
 
     for (LoungeTeam team : this.teams) {
       int size = (int) (playerAmount * team.getRatio() / ratioSum);
@@ -134,7 +119,7 @@ public class TeamCreator {
     }
   }
 
-  private void setFixedSize(int maxPerTeam) {
+  private void calcTeamSizesByMax(int maxPerTeam) {
     for (LoungeTeam team : this.teams) {
       team.setMaxPlayers(maxPerTeam);
     }
@@ -147,8 +132,7 @@ public class TeamCreator {
       }
 
       // try to keep teams with higher user selections
-      this.teams.sort(Comparator.comparingInt(t -> t.getUsersSelected().size()));
-      Collections.reverse(this.teams);
+      this.teams.sort(Comparator.comparingInt(t -> ((LoungeTeam) t).getUsersSelected().size()).reversed());
 
       // remove not required teams
       while (this.teams.size() > smallestTeamAmount) {
@@ -171,17 +155,17 @@ public class TeamCreator {
     }
   }
 
-  private void divideUsersInTeams() {
-    //selected teams
+  private void assignUsersToTeams() {
     List<User> users = new ArrayList<>(Server.getPreGameUsers());
-    Collections.shuffle(users);
+    Collections.shuffle(users, Server.getRandom());
+
+    List<User> usersWithRandomTeam = new ArrayList<>();
 
     if (!LoungeServer.getTeamManager().getTeamSelection().isBlocked()) {
       for (User user : users) {
         LoungeTeam selectedTeam = ((LoungeUser) user).getSelectedTeam();
 
-        if (selectedTeam != null
-            && selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
+        if (selectedTeam != null && selectedTeam.getUsers().size() < selectedTeam.getMaxPlayers()) {
           ((LoungeUser) user).setTeam(selectedTeam);
           ((LoungeUser) user).setSelectedTeam(selectedTeam);
 
@@ -195,10 +179,9 @@ public class TeamCreator {
       usersWithRandomTeam.addAll(users);
     }
 
-    Collections.shuffle(this.usersWithRandomTeam);
-    Collections.shuffle(this.teams);
+    Collections.shuffle(usersWithRandomTeam, Server.getRandom());
+    Collections.shuffle(this.teams, Server.getRandom());
 
-    //random
     for (User user : usersWithRandomTeam) {
       for (LoungeTeam team : this.teams) {
         if (team.getUsers().size() < team.getMaxPlayers()) {
