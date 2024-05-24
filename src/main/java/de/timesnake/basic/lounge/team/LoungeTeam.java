@@ -28,7 +28,6 @@ public class LoungeTeam extends Team {
 
   private ExItemStack item;
 
-
   public LoungeTeam(DbTeam dbTeam) {
     super(dbTeam);
   }

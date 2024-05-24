@@ -41,9 +41,9 @@ public class LoungeUser extends StatUser {
   public TablistGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
     if (type.equals(TablistGroupType.GAME_TEAM)) {
       if (this.hasStatus(Status.User.SPECTATOR)) {
-        return LoungeServer.getLoungeScoreboardManager().getSpectatorTeam();
+        return null;
       }
-      return LoungeServer.getLoungeScoreboardManager().getGameTeam();
+      return LoungeServer.getLoungeScoreboardManager().getGameGroup();
     }
     return super.getTablistGroup(type);
   }
