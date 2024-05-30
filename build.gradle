@@ -10,7 +10,7 @@ plugins {
 
 
 group = "de.timesnake"
-version = '1.5.0'
+version = '1.6.0'
 var projectId = 48
 
 repositories {
@@ -40,7 +40,7 @@ dependencies {
   compileOnly "de.timesnake:channel-bukkit:4.+"
   compileOnly "de.timesnake:channel-api:4.+"
 
-  implementation "de.timesnake:library-waitinggame:1.+"
+  implementation "de.timesnake:library-waitinggame:2.+"
   implementation "de.timesnake:library-pets:1.+"
 
   implementation "de.timesnake:library-game:1.+"
