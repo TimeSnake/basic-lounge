@@ -158,6 +158,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   public final void onLoungeDisable() {
     this.discordManager.cleanup();
+    this.petManager.onDisable();
   }
 
   @Override
