@@ -1,5 +1,5 @@
 main: de.timesnake.basic.lounge.main.BasicLounge
-version: 1.5.0
+version: 1.6.0
 name: basic-lounge
 author: timesnake
 database: true
