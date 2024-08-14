@@ -150,7 +150,7 @@ public class TmpGameServer implements ChannelListener {
       this.state = State.POST_GAME;
     }
 
-    this.logger.info("Updated state of game server to " + this.state);
+    this.logger.info("Updated state of game server to {}", this.state);
     LoungeServer.getStateManager().onServerUpdate(this.state);
   }
 
