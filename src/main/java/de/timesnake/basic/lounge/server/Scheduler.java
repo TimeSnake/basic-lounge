@@ -57,7 +57,7 @@ public class Scheduler {
           if (LoungeServer.getGameServer().areMapsEnabled()) {
             Map map = LoungeServer.getMapManager().getVotedMap();
             LoungeServer.getGameServer().getDatabase().setMapName(map.getName());
-            LoungeServer.broadcastLoungeTDMessage("§wMap: §v" + map.getDisplayName());
+            LoungeServer.broadcastLoungeTDMessage("§hMap: §v" + map.getDisplayName());
             LoungeServer.getMapManager().resetMapVotes();
           } else {
             Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
@@ -83,6 +83,8 @@ public class Scheduler {
           case 9 -> {
             if (LoungeServer.getGame().hasTexturePack()) {
               LoungeServer.broadcastTDTitle("", "§wLoading texture pack...", Duration.ofSeconds(3));
+              Server.getUsers().forEach(u -> u.setResourcePack(LoungeServer.getGame().getTexturePackLink(),
+                  LoungeServer.getGame().getTexturePackHash(), true));
             }
           }
           case 8 -> {
