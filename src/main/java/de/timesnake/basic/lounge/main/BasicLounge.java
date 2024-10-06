@@ -10,13 +10,12 @@ import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.StartServerCmd;
 import de.timesnake.basic.lounge.team.TeamSelectionCmd;
 import de.timesnake.basic.lounge.user.GameCmd;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class BasicLounge extends JavaPlugin {
 
-  public static Plugin getPlugin() {
+  public static JavaPlugin getPlugin() {
     return plugin;
   }
 

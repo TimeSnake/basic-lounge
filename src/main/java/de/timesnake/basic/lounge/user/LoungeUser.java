@@ -50,7 +50,7 @@ public class LoungeUser extends StatUser {
 
   public void joinLounge() {
     this.setDefault();
-    this.addItemLeave();
+    this.setItem(8, InventoryManager.LEAVE_ITEM);
     this.teleport(LoungeServer.getSpawn());
     this.setStatus(Status.User.PRE_GAME);
     this.setTask(LoungeServer.getTask());
@@ -67,21 +67,21 @@ public class LoungeUser extends StatUser {
 
   public void loadLoungeInventory() {
     if (LoungeServer.getGameServer().getTeamAmount() > 1) {
-      this.addItemTeamSelection();
+      this.setItem(0, LoungeServer.getTeamManager().getTeamSelectionItem());
     }
     if (LoungeServer.getGameServer().areKitsEnabled()) {
-      this.addItemKitSelection();
+      this.setItem(1, LoungeServer.getKitManager().getKitSelectionItem());
     }
     if (LoungeServer.getGameServer().areMapsEnabled()) {
-      this.addItemMapSelection();
+      this.setItem(2, LoungeServer.getMapManager().getMapSelectionItem());
     }
 
     if (this.hasPermission("lounge.settings")) {
-      this.addItemSettings();
+      this.setItem(7, InventoryManager.SETTINGS_ITEM);
     }
 
-    this.addItemGameDescription();
-    this.addItemLeave();
+    this.setItem(6, LoungeServer.getInventoryManager().getGameDescriptionItem());
+    this.setItem(8, InventoryManager.LEAVE_ITEM);
   }
 
   @Override
@@ -95,7 +95,7 @@ public class LoungeUser extends StatUser {
     this.setSelectedMap(null);
     this.setSelectedTeam(null);
     this.teleport(LoungeServer.getSpawn());
-    this.addItemLeave();
+    this.setItem(8, InventoryManager.LEAVE_ITEM);
     this.lockInventory();
   }
 
@@ -107,40 +107,8 @@ public class LoungeUser extends StatUser {
     this.openInventory(LoungeServer.getTeamManager().getTeamSelectionInventory());
   }
 
-  public void openInventoryKitSelection() {
-    this.openInventory(LoungeServer.getKitManager().getKitSelectionInventory());
-  }
-
   public void openInventorySettings() {
     this.openInventory(LoungeServer.getInventoryManager().getSettingsInv());
-  }
-
-  public void openInventoryMapSelection() {
-    this.openInventory(LoungeServer.getMapManager().getMapSelectionInventory());
-  }
-
-  public void addItemTeamSelection() {
-    this.setItem(0, LoungeServer.getTeamManager().getTeamSelectionItem());
-  }
-
-  public void addItemKitSelection() {
-    this.setItem(1, LoungeServer.getKitManager().getKitSelectionItem());
-  }
-
-  public void addItemSettings() {
-    this.setItem(7, InventoryManager.SETTINGS_ITEM);
-  }
-
-  public void addItemMapSelection() {
-    this.setItem(2, LoungeServer.getMapManager().getMapSelectionItem());
-  }
-
-  public void addItemGameDescription() {
-    this.setItem(6, LoungeServer.getInventoryManager().getGameDescriptionItem());
-  }
-
-  public void addItemLeave() {
-    this.setItem(8, InventoryManager.LEAVE_ITEM);
   }
 
   public void leaveLounge() {
