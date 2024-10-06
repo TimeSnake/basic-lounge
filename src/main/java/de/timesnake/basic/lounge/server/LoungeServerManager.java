@@ -35,6 +35,7 @@ import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.server.DbLoungeServer;
 import de.timesnake.database.util.server.DbTmpGameServer;
 import de.timesnake.library.pets.PetManager;
+import de.timesnake.library.shop.ShopManager;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
 import org.apache.logging.log4j.LogManager;
@@ -79,6 +80,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   protected LoungeMap currentMap;
   private TmpGameServer tmpGameServer;
+
+  private ShopManager shopManager;
 
   public void onLoungeEnable() {
     super.onGameEnable();
@@ -152,6 +155,8 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     this.discordManager = new DiscordManager();
 
     this.stateManager = new StateManager();
+
+    this.shopManager = new ShopManager(BasicLounge.getPlugin(), this.petManager, 5);
 
     this.logger.info("Server loaded");
   }
