@@ -5,7 +5,6 @@
 package de.timesnake.basic.lounge.map;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Map;
@@ -40,15 +39,12 @@ public class MapSelection {
         .setDisplayName("§6Maps")
         .onInteract(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wMap voting is closed");
-            event.setCancelled(true);
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
             return;
           }
-          user.openInventoryMapSelection();
-          event.setCancelled(true);
-        });
+          user.openInventory(this.getInventory());
+        }, true);
 
     int invSize = (int) (9 * Math.ceil(GameServer.getGame().getMaps().size() / 7.0));
     this.inventory = new ExInventory(invSize > 0 ? invSize : 9, Component.text("Map-Voting"));
@@ -58,19 +54,16 @@ public class MapSelection {
         .setLore(ChatColor.GRAY + "Vote for a random map")
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
 
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wMap voting is closed");
-            event.setCancelled(true);
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
             return;
           }
 
           user.setSelectedMap(null);
-          sender.sendPluginTDMessage("§sVoted for a random map");
+          user.sendPluginTDMessage(Plugin.LOUNGE, "§sVoted for a random map");
           user.closeInventory();
-          event.setCancelled(true);
-        });
+        }, true);
 
     this.inventory.setItemStack(0, randomMapItem);
 
@@ -103,19 +96,15 @@ public class MapSelection {
         .setDisplayName(NAME_COLOR + map.getDisplayName())
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
-
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wMap voting is closed");
-            event.setCancelled(true);
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
             return;
           }
 
           user.setSelectedMap(map);
-          sender.sendPluginTDMessage("§sVoted for map §v" + map.getDisplayName());
+          user.sendPluginTDMessage(Plugin.LOUNGE, "§sVoted for map §v" + map.getDisplayName());
           user.closeInventory();
-          event.setCancelled(true);
-        });
+        }, true);
 
     LinkedList<String> lore = new LinkedList<>();
     lore.addLast("");

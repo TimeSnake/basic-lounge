@@ -17,8 +17,6 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.time.Duration;
-
 public class Scheduler {
 
   private static final String STARTING_BAR_TEXT = "§fStarting in §c%s§fs";
@@ -80,13 +78,7 @@ public class Scheduler {
             Server.getChannel().sendMessage(new ChannelServerMessage<>(Server.getName(),
                 MessageType.Server.GAME_PLAYERS, Server.getGameUsers().size()));
           }
-          case 9 -> {
-            if (LoungeServer.getGame().hasTexturePack()) {
-              LoungeServer.broadcastTDTitle("", "§wLoading texture pack...", Duration.ofSeconds(3));
-              Server.getUsers().forEach(u -> u.setResourcePack(LoungeServer.getGame().getTexturePackLink(),
-                  LoungeServer.getGame().getTexturePackHash(), true));
-            }
-          }
+          case 9 -> LoungeServer.getResourcePackManager().loadResourcePack();
           case 8 -> {
             LoungeServer.startGame();
             gameCountdownTask.cancel();
