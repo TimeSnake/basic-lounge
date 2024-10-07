@@ -107,6 +107,9 @@ public class LoungeServer extends GameServer {
     return server.getStateManager();
   }
 
-  private static final LoungeServerManager server = LoungeServerManager.getInstance();
+  public static ResourcePackManager getResourcePackManager() {
+    return server.getResourcePackManager();
+  }
 
+  private static final LoungeServerManager server = LoungeServerManager.getInstance();
 }

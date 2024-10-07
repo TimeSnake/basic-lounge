@@ -5,7 +5,6 @@
 package de.timesnake.basic.lounge.team;
 
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
@@ -37,20 +36,15 @@ public class TeamSelection {
         .immutable()
         .onInteract(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wTeam selection is closed");
-            event.setCancelled(true);
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wTeam selection is closed");
             return;
           } else if (this.isBlocked() && !this.isSilentBlocked()) {
-            sender.sendPluginTDMessage("§wSelecting teams is forbidden");
-            event.setCancelled(true);
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wSelecting teams is forbidden");
             return;
           }
-
           user.openInventoryTeamSelection();
-          event.setCancelled(true);
-        });
+        }, true);
 
     int invSize = (int) (9 * Math.ceil(LoungeServer.getGameServer().getTeamAmount() / 7.0));
     this.inventory = new ExInventory(invSize > 0 ? invSize : 9, "Teamselection");
@@ -61,26 +55,22 @@ public class TeamSelection {
         .immutable()
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            sender.sendPluginTDMessage("§wTeam selection is closed");
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wTeam selection is closed");
             user.closeInventory();
-            event.setCancelled(true);
             return;
           } else if (this.isBlocked() && !this.isSilentBlocked()) {
-            sender.sendPluginTDMessage("§wSelecting teams is forbidden");
+            user.sendPluginTDMessage(Plugin.LOUNGE, "§wSelecting teams is forbidden");
             user.closeInventory();
-            event.setCancelled(true);
             return;
           }
 
           user.setSelectedTeam(null);
-          sender.sendPluginTDMessage("§sYou selected team §vRandom");
+          user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou selected team §vRandom");
           this.logger.info("'{}' selected team random", user.getName());
 
           user.closeInventory();
-          event.setCancelled(true);
-        });
+        }, true);
 
     this.inventory.setItemStack(0, randomTeamItem);
   }

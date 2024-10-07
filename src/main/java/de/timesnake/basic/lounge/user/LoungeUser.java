@@ -63,6 +63,7 @@ public class LoungeUser extends StatUser {
     this.setSelectedTeam(null);
     this.lockInventoryItemMove();
     this.loadLoungeInventory();
+    LoungeServer.getResourcePackManager().loadResourcePackForUser(this);
   }
 
   public void loadLoungeInventory() {
@@ -179,11 +180,11 @@ public class LoungeUser extends StatUser {
     }
 
     if (LoungeServer.getGame().getTeams().size() > 1) {
-      if (this.getSelectedTeam() != null) {
+      if (this.selectedTeam != null) {
         if (LoungeServer.getGameServer().areKitsEnabled()) {
-          super.setSideboardScore(6, team.getTDColor() + team.getDisplayName());
+          super.setSideboardScore(6, this.selectedTeam.getTDColor() + this.selectedTeam.getDisplayName());
         } else {
-          super.setSideboardScore(3, team.getTDColor() + team.getDisplayName());
+          super.setSideboardScore(3, this.selectedTeam.getTDColor() + this.selectedTeam.getDisplayName());
         }
       } else {
         if (LoungeServer.getGameServer().areKitsEnabled()) {

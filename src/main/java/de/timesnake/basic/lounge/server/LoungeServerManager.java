@@ -77,11 +77,13 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   private PetManager petManager;
 
   private DiscordManager discordManager;
+  private ResourcePackManager resourcePackManager;
 
   protected LoungeMap currentMap;
   private TmpGameServer tmpGameServer;
 
   private ShopManager shopManager;
+
 
   public void onLoungeEnable() {
     super.onGameEnable();
@@ -153,6 +155,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     this.statsManager = new StatsManager();
     this.discordManager = new DiscordManager();
+    this.resourcePackManager = new ResourcePackManager();
 
     this.stateManager = new StateManager();
 
@@ -312,4 +315,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     return stateManager;
   }
 
+  public ResourcePackManager getResourcePackManager() {
+    return resourcePackManager;
+  }
 }

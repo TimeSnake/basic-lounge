@@ -34,8 +34,7 @@ public class KitSelection {
         return;
       }
       user.openInventory(this.getInventory());
-      event.setCancelled(true);
-    });
+    }, true);
 
     if (GameServer.getGame().getKits().isEmpty() || GameServer.getGame().getKits().size() > 42) {
       this.inventory = null;
@@ -73,10 +72,9 @@ public class KitSelection {
 
       user.setSelectedKit(kit);
       user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou selected kit §v" + kit.getName());
-      this.logger.info(user.getName() + " selected kit " + kit.getName());
+      this.logger.info("{} selected kit {}", user.getName(), kit.getName());
 
       user.closeInventory();
-      event.setCancelled(true);
     };
   }
 
