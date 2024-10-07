@@ -63,7 +63,6 @@ public class LoungeUser extends StatUser {
     this.setSelectedTeam(null);
     this.lockInventoryItemMove();
     this.loadLoungeInventory();
-    LoungeServer.getResourcePackManager().loadResourcePackForUser(this);
   }
 
   public void loadLoungeInventory() {
