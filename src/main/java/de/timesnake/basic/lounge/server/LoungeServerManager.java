@@ -159,7 +159,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
     this.stateManager = new StateManager();
 
-    this.shopManager = new ShopManager(BasicLounge.getPlugin(), this.petManager, 5);
+    this.shopManager = new ShopManager(BasicLounge.getPlugin(), this.petManager, 4, 5);
 
     this.logger.info("Server loaded");
   }
