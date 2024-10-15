@@ -15,6 +15,7 @@ import de.timesnake.basic.lounge.team.LoungeTeam;
 import de.timesnake.library.basic.util.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 public class LoungeUser extends StatUser {
@@ -50,6 +51,7 @@ public class LoungeUser extends StatUser {
 
   public void joinLounge() {
     this.setDefault();
+    this.setGameMode(GameMode.SURVIVAL);
     this.setItem(8, InventoryManager.LEAVE_ITEM);
     this.teleport(LoungeServer.getSpawn());
     this.setStatus(Status.User.PRE_GAME);
@@ -63,6 +65,11 @@ public class LoungeUser extends StatUser {
     this.setSelectedTeam(null);
     this.lockInventoryItemMove();
     this.loadLoungeInventory();
+
+    if (LoungeServer.getGame().hasTexturePack()) {
+      this.setResourcePack(LoungeServer.getGame().getTexturePackLink(),
+          LoungeServer.getGame().getTexturePackHash(), true);
+    }
   }
 
   public void loadLoungeInventory() {
