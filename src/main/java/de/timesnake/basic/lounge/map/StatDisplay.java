@@ -8,7 +8,8 @@ import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbLoungeMapDisplay;
 import de.timesnake.database.util.object.BlockSide;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class StatDisplay {
 
@@ -20,19 +21,6 @@ public class StatDisplay {
   private final Color statFirstColor;
   private final Color statSecondColor;
   private final Color statThirdColor;
-
-  public StatDisplay(ExBlock block, BlockSide facing, BlockSide orientation, Color titleColor,
-      Color statNameColor,
-      Color statFirstColor, Color statSecondColor, Color statThirdColor) {
-    this.block = block;
-    this.facing = facing;
-    this.orientation = orientation;
-    this.titleColor = titleColor;
-    this.statNameColor = statNameColor;
-    this.statFirstColor = statFirstColor;
-    this.statSecondColor = statSecondColor;
-    this.statThirdColor = statThirdColor;
-  }
 
   public StatDisplay(ExWorld world, DbLoungeMapDisplay display) {
     this.block = new ExBlock(world.getBlockAt(display.getX(), display.getY(), display.getZ()));
