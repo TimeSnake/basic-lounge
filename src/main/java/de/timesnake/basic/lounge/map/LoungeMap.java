@@ -13,7 +13,6 @@ import de.timesnake.database.util.game.DbLoungeMapDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.GameRule;
-import org.bukkit.Location;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +47,8 @@ public class LoungeMap {
     }
 
     if (this.world == null) {
-      this.logger.warn("Map-World '{}' of map '{}' could not loaded, world not exists", this.world.getName(), this.name);
+      this.logger.warn("Map-World '{}' of map '{}' could not loaded, world not exists", dbMap.getWorldName(),
+          this.name);
       return;
     }
 
@@ -75,7 +75,7 @@ public class LoungeMap {
     return world;
   }
 
-  public Location getSpawn() {
+  public ExLocation getSpawn() {
     return spawn;
   }
 

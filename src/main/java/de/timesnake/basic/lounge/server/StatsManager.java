@@ -38,6 +38,9 @@ public class StatsManager implements Listener, ChannelListener {
 
   private static final int FONT_SIZE = 24;
 
+  private static final Font FONT = new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE);
+  private static final Font LARGE_FONT = new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8);
+
   private final Logger logger = LogManager.getLogger("lounge.stats.manager");
 
   private final Map<LoungeUser, HashMap<Integer, MapDisplay>> displayByUser = new HashMap<>();
@@ -50,11 +53,9 @@ public class StatsManager implements Listener, ChannelListener {
 
   @EventHandler
   public void onUserJoin(UserJoinEvent e) {
-
     LoungeUser user = ((LoungeUser) e.getUser());
 
-    HashMap<Integer, MapDisplay> displays = this.displayByUser.computeIfAbsent(user,
-        u -> new HashMap<>());
+    HashMap<Integer, MapDisplay> displays = this.displayByUser.computeIfAbsent(user, u -> new HashMap<>());
 
     for (Map.Entry<Integer, HashMap<Integer, StatType<?>>> displayEntry :
         LoungeServer.getGame().getStatByLineByDisplay().entrySet()) {
@@ -66,8 +67,7 @@ public class StatsManager implements Listener, ChannelListener {
         continue;
       }
 
-      StatDisplay display = LoungeServer.getCurrentMap()
-          .getPersonalStatsDisplayLocation(displayIndex);
+      StatDisplay display = LoungeServer.getCurrentMap().getPersonalStatsDisplayLocation(displayIndex);
 
       if (display == null) {
         continue;
@@ -90,29 +90,24 @@ public class StatsManager implements Listener, ChannelListener {
       Color nameColor = display.getStatNameColor();
       Color firstColor = display.getStatFirstColor();
 
-      displayBuilder.drawText(width * 128 / 2, 18,
-          new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8),
-          titleColor,
-          "Personal Stats", background, MapDisplayBuilder.Align.CENTER);
+      displayBuilder.drawText(width * 128 / 2, 18, LARGE_FONT,
+          titleColor, "Personal Stats", background, MapDisplayBuilder.Align.CENTER);
 
       for (int line = 0; line < maxLine; ++line) {
         StatType<?> stat = statsByLine.get(line + 1);
         String value = this.getPersonalStat(user, stat);
         if (stat != null && value != null) {
           int y = yOffset + line * (FONT_SIZE + lineOffset);
-          displayBuilder.drawText(xOffset, y,
-              new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-              nameColor,
+          displayBuilder.drawText(xOffset, y, FONT, nameColor,
               stat.getDisplayName(), background, MapDisplayBuilder.Align.LEFT);
-          displayBuilder.drawText(xSoreOffset, y,
-              new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-              firstColor, value, background, MapDisplayBuilder.Align.RIGHT);
+          displayBuilder.drawText(xSoreOffset, y, FONT, firstColor,
+              value, background, MapDisplayBuilder.Align.RIGHT);
         }
       }
 
       MapDisplay mapDisplay = displayBuilder.onBlock(user, display.getBlock(),
           BlockFace.valueOf(display.getFacing().name()),
-          BlockFace.valueOf(display.getOrientation().name()), true);
+          BlockFace.valueOf(display.getOrientation().name()));
 
       displays.put(displayIndex, mapDisplay);
     }
@@ -160,8 +155,7 @@ public class StatsManager implements Listener, ChannelListener {
         continue;
       }
 
-      StatDisplay display = LoungeServer.getCurrentMap()
-          .getGlobalStatsDisplayLocation(displayIndex);
+      StatDisplay display = LoungeServer.getCurrentMap().getGlobalStatsDisplayLocation(displayIndex);
 
       if (display == null) {
         return;
@@ -186,9 +180,7 @@ public class StatsManager implements Listener, ChannelListener {
       Color secondColor = display.getStatSecondColor();
       Color thirdColor = display.getStatThirdColor();
 
-      displayBuilder.drawText(width * 128 / 2, 18,
-          new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE + 8),
-          titleColor,
+      displayBuilder.drawText(width * 128 / 2, 18, LARGE_FONT, titleColor,
           "Global Stats", background, MapDisplayBuilder.Align.CENTER);
 
       for (int line = 0; line < maxLine; ++line) {
@@ -201,55 +193,43 @@ public class StatsManager implements Listener, ChannelListener {
             this.getGlobalLine(stat);
 
         int y = yOffset + 4 * line * (FONT_SIZE + lineOffset) + line * 32;
-        displayBuilder.drawText(width * 128 / 2, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.BOLD, FONT_SIZE),
-            nameColor,
+        displayBuilder.drawText(width * 128 / 2, y, FONT, nameColor,
             stat.getDisplayName(), background, MapDisplayBuilder.Align.CENTER);
 
         y += FONT_SIZE + lineOffset;
 
-        displayBuilder.drawText(xOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            firstColor,
-            places.getA().getA() + ". " + places.getA().getB(), background,
-            MapDisplayBuilder.Align.LEFT);
-        displayBuilder.drawText(xSoreOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            firstColor, places.getA().getC(), background,
-            MapDisplayBuilder.Align.RIGHT);
+        displayBuilder.drawText(xOffset, y, FONT, firstColor,
+            places.getA().getA() + ". " + places.getA().getB(), background, MapDisplayBuilder.Align.LEFT);
+        displayBuilder.drawText(xSoreOffset, y, FONT, firstColor,
+            places.getA().getC(), background, MapDisplayBuilder.Align.RIGHT);
 
         y += FONT_SIZE + lineOffset;
 
-        displayBuilder.drawText(xOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            secondColor, places.getB().getA() + ". " + places.getB().getB(),
-            background, MapDisplayBuilder.Align.LEFT);
-        displayBuilder.drawText(xSoreOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            secondColor, places.getB().getC(), background,
-            MapDisplayBuilder.Align.RIGHT);
+        displayBuilder.drawText(xOffset, y, FONT, secondColor,
+            places.getB().getA() + ". " + places.getB().getB(), background, MapDisplayBuilder.Align.LEFT);
+        displayBuilder.drawText(xSoreOffset, y, FONT, secondColor,
+            places.getB().getC(), background, MapDisplayBuilder.Align.RIGHT);
 
         y += FONT_SIZE + lineOffset;
 
-        displayBuilder.drawText(xOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            thirdColor, places.getC().getA() + ". " + places.getC().getB(),
-            background, MapDisplayBuilder.Align.LEFT);
-        displayBuilder.drawText(xSoreOffset, y,
-            new Font(MapDisplayBuilder.ExMapFont.MINECRAFT, Font.PLAIN, FONT_SIZE),
-            thirdColor, places.getC().getC(), background,
-            MapDisplayBuilder.Align.RIGHT);
+        displayBuilder.drawText(xOffset, y, FONT, thirdColor,
+            places.getC().getA() + ". " + places.getC().getB(), background, MapDisplayBuilder.Align.LEFT);
+        displayBuilder.drawText(xSoreOffset, y, FONT, thirdColor,
+            places.getC().getC(), background, MapDisplayBuilder.Align.RIGHT);
       }
 
       MapDisplay mapDisplay = displayBuilder.onBlock(display.getBlock(),
           BlockFace.valueOf(display.getFacing().name()),
-          BlockFace.valueOf(display.getOrientation().name()), true);
+          BlockFace.valueOf(display.getOrientation().name()));
 
       this.globalDisplayByIndex.put(displayIndex, mapDisplay);
     }
+
+    this.logger.info("Updated global displays");
   }
 
-  private <Value> Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String, String>> getGlobalLine(
+  private <Value> Triple<Triple<String, String, String>, Triple<String, String, String>, Triple<String, String,
+      String>> getGlobalLine(
       StatType<Value> stat) {
     Triple<Integer, UUID, Value> first = new Triple<>(1, null, stat.getDefaultValue());
     Triple<Integer, UUID, Value> second = new Triple<>(2, null, stat.getDefaultValue());

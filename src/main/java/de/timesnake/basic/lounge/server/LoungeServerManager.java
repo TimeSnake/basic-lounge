@@ -120,7 +120,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       loungeMap.getWorld().restrict(ExWorld.Restriction.PLACE_IN_BLOCK, true);
       loungeMap.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
       this.loungeMaps.add(loungeMap);
-      this.logger.info("Loaded map '{}'", loungeMap.getName());
+      this.logger.info("Initialized map '{}'", loungeMap.getName());
     }
 
     if (this.loungeMaps.isEmpty()) {
@@ -210,7 +210,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
       @Override
       public @NotNull ExLocation getSpectatorSpawn() {
-        return null;
+        return LoungeServerManager.this.currentMap.getSpawn();
       }
 
       @Override
@@ -262,12 +262,11 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
 
   public void loadRandomLoungeMap() {
     Server.runTaskSynchrony(() -> {
-      int index = (int) (Math.random() * this.loungeMaps.size());
-      this.currentMap = this.loungeMaps.get(index);
+      this.currentMap = this.loungeMaps.get(Server.getRandom().nextInt(this.loungeMaps.size()));
       this.currentMap.getWorld().loadChunk(this.currentMap.getSpawn().getChunk());
       this.currentMap.getWorld().setTime(0);
       this.statsManager.updateGlobalDisplays();
-      this.logger.info("Loaded map " + this.currentMap.getName());
+      this.logger.info("Loaded map {}", this.currentMap.getName());
     }, BasicLounge.getPlugin());
   }
 
