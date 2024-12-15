@@ -50,7 +50,9 @@ public class LoungeUser extends StatUser {
   }
 
   public void joinLounge() {
-    this.setDefault();
+    this.resetPlayerProperties();
+    this.clearInventory();
+    this.unlockAll();
     this.setGameMode(GameMode.SURVIVAL);
     this.setItem(8, InventoryManager.LEAVE_ITEM);
     this.teleport(LoungeServer.getSpawn());
@@ -93,7 +95,9 @@ public class LoungeUser extends StatUser {
 
   @Override
   public void joinSpectator() {
-    this.setDefault();
+    this.unlockAll();
+    this.resetPlayerProperties();
+    this.clearInventory();
     this.setStatus(Status.User.SPECTATOR);
     this.setTask(LoungeServer.getTask());
     this.setSideboard(LoungeServer.getLoungeScoreboardManager().getSpectatorSideboard());
