@@ -101,7 +101,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
     this.tmpGameServer = new TmpGameServer(gameDbServer);
 
     // lounge maps
-    for (DbLoungeMap map : Database.getLounges().getCachedMaps()) {
+    for (DbLoungeMap map : Database.getGames().getCachedLoungeMaps()) {
       LoungeMap loungeMap;
       try {
         loungeMap = new LoungeMap(map);
@@ -214,7 +214,7 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
       }
 
       @Override
-      public boolean loadTools() {
+      public boolean loadSpectatorTools() {
         return false;
       }
     };
