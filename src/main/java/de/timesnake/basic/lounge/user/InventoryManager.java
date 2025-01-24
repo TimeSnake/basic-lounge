@@ -33,7 +33,7 @@ import java.util.List;
 public class InventoryManager implements UserInventoryInteractListener,
     InventoryHolder {
 
-  public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.ANVIL)
+  public static final ExItemStack LEAVE_ITEM = new ExItemStack(Material.RED_DYE)
       .setDisplayName("§cLeave (hold right)");
 
   public static final ExItemStack JOIN_LOUNGE_ITEM = ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.GRAY)
