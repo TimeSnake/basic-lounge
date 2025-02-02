@@ -8,7 +8,6 @@ import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.database.util.game.DbTeam;
@@ -39,7 +38,7 @@ public class LoungeTeam extends Team {
         .hideAll()
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
-          Sender sender = user.asSender(Plugin.LOUNGE);
+          Sender sender = user.asSender(LoungeServer.PLUGIN);
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
             sender.sendPluginMessage(
                 Component.text("Team selection is closed", ExTextColor.WARNING));

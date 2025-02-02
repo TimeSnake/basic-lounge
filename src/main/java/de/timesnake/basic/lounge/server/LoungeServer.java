@@ -12,11 +12,14 @@ import de.timesnake.basic.lounge.map.MapManager;
 import de.timesnake.basic.lounge.scoreboard.LoungeScoreboardManager;
 import de.timesnake.basic.lounge.team.TeamManager;
 import de.timesnake.basic.lounge.user.InventoryManager;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.waitinggames.WaitingGameManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 
 public class LoungeServer extends GameServer {
+
+  public static final Plugin PLUGIN = new Plugin("Lounge", "BLB");
 
   public static final int MAP_SELECTION_CLOSED = 20;
   public static final int JOINING_CLOSED = 16;

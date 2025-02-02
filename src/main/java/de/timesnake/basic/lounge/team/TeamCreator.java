@@ -8,7 +8,6 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.game.util.user.TeamUser;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
@@ -218,7 +217,7 @@ public class TeamCreator {
   }
 
   private void sendJoinedTeamMessage(User user, Team team) {
-    user.sendPluginMessage(Plugin.LOUNGE,
+    user.sendPluginMessage(LoungeServer.PLUGIN,
         Component.text("You joined team ", ExTextColor.PERSONAL)
             .append(Component.text(team.getDisplayName(), team.getTextColor())));
     this.logger.info("User '{}' joined team '{}'", user.getName(), team.getName());

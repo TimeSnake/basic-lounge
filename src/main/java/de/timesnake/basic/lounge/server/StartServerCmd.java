@@ -8,14 +8,13 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
 import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 
 public class StartServerCmd implements CommandListener {
 
-  private final Code perm = Plugin.LOUNGE.createPermssionCode("lounge.start.server");
+  private final Code perm = LoungeServer.PLUGIN.createPermssionCode("lounge.start.server");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {

@@ -8,7 +8,6 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
 import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
@@ -18,7 +17,7 @@ import net.kyori.adventure.text.Component;
 
 public class TeamSelectionCmd implements CommandListener {
 
-  private final Code perm = Plugin.LOUNGE.createPermssionCode("lounge.teamselection");
+  private final Code perm = LoungeServer.PLUGIN.createPermssionCode("lounge.teamselection");
 
   @Override
   public void onCommand(Sender sender, PluginCommand PluginCommand, Arguments<Argument> args) {

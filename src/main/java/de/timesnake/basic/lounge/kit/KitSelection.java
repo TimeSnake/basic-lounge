@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
 import de.timesnake.basic.game.util.game.Kit;
 import de.timesnake.basic.game.util.server.GameServer;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import net.kyori.adventure.text.Component;
@@ -30,7 +29,7 @@ public class KitSelection {
     this.item.onInteract(event -> {
       LoungeUser user = (LoungeUser) event.getUser();
       if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-        user.sendPluginTDMessage(Plugin.LOUNGE, "§wThe kit selection is closed");
+        user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wThe kit selection is closed");
         return;
       }
       user.openInventory(this.getInventory());
@@ -66,12 +65,12 @@ public class KitSelection {
       LoungeUser user = ((LoungeUser) event.getUser());
 
       if (LoungeServer.getGameCountdown() <= LoungeServer.KIT_SELECTION_CLOSED) {
-        user.sendPluginTDMessage(Plugin.LOUNGE, "§wKit selection is closed");
+        user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wKit selection is closed");
         return;
       }
 
       user.setSelectedKit(kit);
-      user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou selected kit §v" + kit.getName());
+      user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sYou selected kit §v" + kit.getName());
       this.logger.info("{} selected kit {}", user.getName(), kit.getName());
 
       user.closeInventory();

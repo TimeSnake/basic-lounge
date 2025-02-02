@@ -7,7 +7,6 @@ package de.timesnake.basic.lounge.user;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.*;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.StateManager;
 import de.timesnake.channel.util.message.ChannelDiscordMessage;
@@ -43,18 +42,18 @@ public class InventoryManager implements UserInventoryInteractListener,
         LoungeUser user = (LoungeUser) e.getUser();
 
         if (Server.getGameNotServiceUsers().size() >= LoungeServer.getGame().getMaxPlayers()) {
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame is full");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wGame is full");
           return;
         }
 
         if (LoungeServer.getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame is already starting");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wGame is already starting");
           return;
         }
 
         user.joinLounge();
         LoungeServer.getLoungeScoreboardManager().getTablist().reloadEntry(user, true);
-        user.sendPluginTDMessage(Plugin.LOUNGE, "§sJoined the game");
+        user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sJoined the game");
 
         LoungeServer.getStateManager().onPlayerUpdate();
         LoungeServer.getStateManager().checkStart();
@@ -73,15 +72,15 @@ public class InventoryManager implements UserInventoryInteractListener,
 
         if (LoungeServer.getStateManager().isState(StateManager.State.STARTING)) {
           if (LoungeServer.getGameCountdown() <= 30) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame is already starting");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wGame is already starting");
             user.closeInventory();
             return;
           }
           LoungeServer.getTimeManager().setGameCountdown(30);
           LoungeServer.getStateManager().checkStart();
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§sForced a quick start");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sForced a quick start");
         } else {
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§wCountdown must run to force a quick-start");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wCountdown must run to force a quick-start");
         }
         user.closeInventory();
       }, true);
@@ -94,7 +93,7 @@ public class InventoryManager implements UserInventoryInteractListener,
         LoungeUser user = ((LoungeUser) e.getUser());
 
         if (LoungeServer.getTimeManager().getGameCountdown() <= LoungeServer.JOINING_CLOSED) {
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame is already starting");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wGame is already starting");
           user.clearInventory();
           return;
         }
@@ -141,11 +140,11 @@ public class InventoryManager implements UserInventoryInteractListener,
             }
             user.updateInventory();
           } else {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wGame server is not ready");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wGame server is not ready");
           }
         } else {
           user.closeInventory();
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§wToo few teams to enable discord");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wToo few teams to enable discord");
         }
       });
 

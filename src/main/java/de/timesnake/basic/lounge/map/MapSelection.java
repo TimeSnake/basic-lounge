@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.basic.game.util.server.GameServer;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import net.kyori.adventure.text.Component;
@@ -40,7 +39,7 @@ public class MapSelection {
         .onInteract(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wMap voting is closed");
             return;
           }
           user.openInventory(this.getInventory());
@@ -56,12 +55,12 @@ public class MapSelection {
           LoungeUser user = ((LoungeUser) event.getUser());
 
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wMap voting is closed");
             return;
           }
 
           user.setSelectedMap(null);
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§sVoted for a random map");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sVoted for a random map");
           user.closeInventory();
         }, true);
 
@@ -97,12 +96,12 @@ public class MapSelection {
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
           if (LoungeServer.getGameCountdown() <= LoungeServer.MAP_SELECTION_CLOSED) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wMap voting is closed");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wMap voting is closed");
             return;
           }
 
           user.setSelectedMap(map);
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§sVoted for map §v" + map.getDisplayName());
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sVoted for map §v" + map.getDisplayName());
           user.closeInventory();
         }, true);
 

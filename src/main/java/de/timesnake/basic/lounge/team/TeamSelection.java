@@ -8,7 +8,6 @@ import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.game.util.game.Team;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import org.apache.logging.log4j.LogManager;
@@ -37,10 +36,10 @@ public class TeamSelection {
         .onInteract(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wTeam selection is closed");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wTeam selection is closed");
             return;
           } else if (this.isBlocked() && !this.isSilentBlocked()) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wSelecting teams is forbidden");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wSelecting teams is forbidden");
             return;
           }
           user.openInventoryTeamSelection();
@@ -56,17 +55,17 @@ public class TeamSelection {
         .onClick(event -> {
           LoungeUser user = ((LoungeUser) event.getUser());
           if (LoungeServer.getGameCountdown() <= LoungeServer.TEAM_SELECTION_CLOSED) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wTeam selection is closed");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wTeam selection is closed");
             user.closeInventory();
             return;
           } else if (this.isBlocked() && !this.isSilentBlocked()) {
-            user.sendPluginTDMessage(Plugin.LOUNGE, "§wSelecting teams is forbidden");
+            user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wSelecting teams is forbidden");
             user.closeInventory();
             return;
           }
 
           user.setSelectedTeam(null);
-          user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou selected team §vRandom");
+          user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sYou selected team §vRandom");
           this.logger.info("'{}' selected team random", user.getName());
 
           user.closeInventory();
