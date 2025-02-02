@@ -9,14 +9,13 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.entity.MapDisplayBuilder;
 import de.timesnake.basic.game.util.game.Kit;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.user.LoungeUser;
 import de.timesnake.library.chat.ExTextColor;
-import java.awt.Color;
-import java.awt.Font;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
+
+import java.awt.*;
 
 public class KitManager {
 
@@ -62,7 +61,7 @@ public class KitManager {
       } else {
         ((LoungeUser) user).setSelectedKit(kit);
       }
-      user.sendPluginMessage(Plugin.LOUNGE,
+      user.sendPluginMessage(LoungeServer.PLUGIN,
           Component.text("You will get the kit ", ExTextColor.PERSONAL)
               .append(Component.text(((LoungeUser) user).getSelectedKit().getName(),
                   ExTextColor.VALUE)));

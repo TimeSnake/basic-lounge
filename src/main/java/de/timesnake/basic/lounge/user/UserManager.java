@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.library.basic.util.Status;
@@ -35,13 +34,14 @@ public class UserManager implements Listener {
     // spectator
     if (user.getStatus().equals(Status.User.SPECTATOR)) {
       ((LoungeUser) user).joinSpectator();
-      user.sendPluginTDMessage(Plugin.LOUNGE, "§sYou can join the game in a few moments");
+      user.sendPluginTDMessage(LoungeServer.PLUGIN, "§sYou can join the game in a few moments");
       return;
     }
 
     if (LoungeServer.getGame().hasTexturePack()) {
-      user.sendPluginTDMessage(Plugin.LOUNGE, "§wThis game uses a texture pack. "
-          + "It is highly recommended to use the texture pack. The texture pack will be loaded at the game start.");
+      user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wThis game uses a texture pack. "
+                                                    + "It is highly recommended to use the texture pack. The texture " +
+                                                    "pack will be loaded at the game start.");
     }
 
     // game user
@@ -53,8 +53,8 @@ public class UserManager implements Listener {
       }
     }
 
-    user.sendPluginTDMessage(Plugin.LOUNGE, "§wYou didn't joined the lounge!");
-    user.asSender(Plugin.LOUNGE).sendTDMessageCommandHelp("Use", "service");
+    user.sendPluginTDMessage(LoungeServer.PLUGIN, "§wYou didn't joined the lounge!");
+    user.asSender(LoungeServer.PLUGIN).sendTDMessageCommandHelp("Use", "service");
     user.getInventory().clear();
   }
 

@@ -6,6 +6,7 @@ package de.timesnake.basic.lounge.main;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
+import de.timesnake.basic.lounge.server.LoungeServer;
 import de.timesnake.basic.lounge.server.LoungeServerManager;
 import de.timesnake.basic.lounge.server.StartServerCmd;
 import de.timesnake.basic.lounge.team.TeamSelectionCmd;
@@ -31,12 +32,9 @@ public class BasicLounge extends JavaPlugin {
 
     BasicLounge.plugin = this;
 
-    Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(),
-        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
-    Server.getCommandManager().addCommand(this, "startgame", new GameCmd(),
-        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
-    Server.getCommandManager().addCommand(this, "teamselection", new TeamSelectionCmd(),
-        de.timesnake.basic.lounge.chat.Plugin.LOUNGE);
+    Server.getCommandManager().addCommand(this, "startserver", new StartServerCmd(), LoungeServer.PLUGIN);
+    Server.getCommandManager().addCommand(this, "startgame", new GameCmd(), LoungeServer.PLUGIN);
+    Server.getCommandManager().addCommand(this, "teamselection", new TeamSelectionCmd(), LoungeServer.PLUGIN);
 
     LoungeServerManager.getInstance().onLoungeEnable();
 

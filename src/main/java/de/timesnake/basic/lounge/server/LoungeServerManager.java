@@ -15,7 +15,6 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
-import de.timesnake.basic.lounge.chat.Plugin;
 import de.timesnake.basic.lounge.kit.KitManager;
 import de.timesnake.basic.lounge.main.BasicLounge;
 import de.timesnake.basic.lounge.map.LoungeMap;
@@ -247,11 +246,11 @@ public class LoungeServerManager extends GameServerManager<TmpGame> implements L
   }
 
   public void broadcastLoungeMessage(Component msg) {
-    Server.broadcastMessage(Plugin.LOUNGE, msg);
+    Server.broadcastMessage(LoungeServer.PLUGIN, msg);
   }
 
   public void broadcastLoungeTDMessage(String msg) {
-    Server.broadcastTDMessage(Plugin.LOUNGE, msg);
+    Server.broadcastTDMessage(LoungeServer.PLUGIN, msg);
   }
 
   public void broadcastCountdownCancelledMessage() {
